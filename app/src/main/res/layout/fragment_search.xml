@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.search.SearchFragment">
+
+
+    <LinearLayout
+        android:id="@+id/frag1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/purple_700"
+        android:orientation="horizontal"
+        android:padding="4dp"
+        android:weightSum="10">
+        <TextView
+            android:layout_weight="9"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:background="@drawable/detailsbg"
+            android:drawableLeft="@drawable/ic_baseline_search_24"
+            android:drawablePadding="4dp"
+            android:gravity="center_vertical"
+            android:hint="@string/search_by_name_or_id_or_last_4_digit_of_a_c"
+            android:paddingLeft="4dp"
+            android:textSize="15sp"
+            android:id="@+id/search_click_tv"
+             />
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="35dp"
+            android:layout_weight="1"
+            android:background="@drawable/ic_baseline_more_verticledots_24"
+            android:id="@+id/verticledotsmenu_Click"
+            />
+    </LinearLayout>
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tab_layout"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@color/purple_700"
+        android:elevation="12dp"
+        app:tabTextColor="#FFFFFF"
+        app:tabIndicatorColor="#FFB240"
+        app:tabSelectedTextColor="#FFB240"
+        app:tabMaxWidth="0dp"
+        app:tabGravity="fill"
+        app:tabMode="fixed" />
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+</LinearLayout>

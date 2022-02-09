@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/ACBook/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.2703125" />
+        <entry key="..\:/ACBook/app/src/main/res/drawable/bg_white.xml" value="0.2703125" />
+        <entry key="..\:/ACBook/app/src/main/res/drawable/button_search.xml" value="0.2703125" />
+        <entry key="..\:/ACBook/app/src/main/res/drawable/detailsbg.xml" value="0.2703125" />
+        <entry key="..\:/ACBook/app/src/main/res/drawable/ic_baseline_arrow_back_24.xml" value="0.2703125" />
+        <entry key="..\:/ACBook/app/src/main/res/drawable/ic_baseline_arrow_circle_right_24.xml" value="0.26666666666666666" />
+        <entry key="..\:/ACBook/app/src/main/res/drawable/ic_baseline_more_horiz_24.xml" value="0.2703125" />
+        <entry key="..\:/ACBook/app/src/main/res/drawable/ic_baseline_more_vert_24.xml" value="0.26615384615384613" />
+        <entry key="..\:/ACBook/app/src/main/res/drawable/ic_baseline_more_verticledots_24.xml" value="0.2703125" />
+        <entry key="..\:/ACBook/app/src/main/res/drawable/ic_baseline_person_search_24.xml" value="0.1" />
+        <entry key="..\:/ACBook/app/src/main/res/drawable/ic_baseline_personimage_24.xml" value="0.2703125" />
+        <entry key="..\:/ACBook/app/src/main/res/drawable/ic_baseline_search_24.xml" value="0.26666666666666666" />
+        <entry key="..\:/ACBook/app/src/main/res/drawable/ic_baseline_verticledots_24.xml" value="0.2703125" />
+        <entry key="..\:/ACBook/app/src/main/res/drawable/ic_dashboard_black_24dp.xml" value="0.2101851851851852" />
+        <entry key="..\:/ACBook/app/src/main/res/drawable/ic_home_black_24dp.xml" value="0.14635416666666667" />
+        <entry key="..\:/ACBook/app/src/main/res/drawable/ic_launcher_background.xml" value="0.2703125" />
+        <entry key="..\:/ACBook/app/src/main/res/drawable/ic_notifications_black_24dp.xml" value="0.2703125" />
+        <entry key="..\:/ACBook/app/src/main/res/drawable/insert_buttonbg.xml" value="0.2703125" />
+        <entry key="..\:/ACBook/app/src/main/res/drawable/update_buttonbg.xml" value="0.2703125" />
+        <entry key="..\:/ACBook/app/src/main/res/layout/activity_bottom_navigation.xml" value="0.2" />
+        <entry key="..\:/ACBook/app/src/main/res/layout/activity_find.xml" value="0.264" />
+        <entry key="..\:/ACBook/app/src/main/res/layout/activity_insert_data.xml" value="0.264" />
+        <entry key="..\:/ACBook/app/src/main/res/layout/activity_main.xml" value="0.264" />
+        <entry key="..\:/ACBook/app/src/main/res/layout/activity_navigation.xml" value="0.25416666666666665" />
+        <entry key="..\:/ACBook/app/src/main/res/layout/fragment_active_l_g.xml" value="0.25416666666666665" />
+        <entry key="..\:/ACBook/app/src/main/res/layout/fragment_active_m.xml" value="0.24010416666666667" />
+        <entry key="..\:/ACBook/app/src/main/res/layout/fragment_dashboard.xml" value="0.25416666666666665" />
+        <entry key="..\:/ACBook/app/src/main/res/layout/fragment_home.xml" value="0.25416666666666665" />
+        <entry key="..\:/ACBook/app/src/main/res/layout/fragment_inactive.xml" value="0.25416666666666665" />
+        <entry key="..\:/ACBook/app/src/main/res/layout/fragment_more.xml" value="0.25416666666666665" />
+        <entry key="..\:/ACBook/app/src/main/res/layout/fragment_notifications.xml" value="0.25416666666666665" />
+        <entry key="..\:/ACBook/app/src/main/res/layout/fragment_search.xml" value="0.264" />
+        <entry key="..\:/ACBook/app/src/main/res/layout/fragment_searches.xml" value="0.25416666666666665" />
+        <entry key="..\:/ACBook/app/src/main/res/layout/ii.xml" value="0.25416666666666665" />
+        <entry key="..\:/ACBook/app/src/main/res/layout/l_m_g_singlerecord.xml" value="0.25416666666666665" />
+        <entry key="..\:/ACBook/app/src/main/res/layout/person_profile.xml" value="0.264" />
+        <entry key="..\:/ACBook/app/src/main/res/layout/person_profile_red.xml" value="0.4" />
+        <entry key="..\:/ACBook/app/src/main/res/layout/records_display_format.xml" value="0.2" />
+        <entry key="..\:/ACBook/app/src/main/res/layout/show_add_details.xml" value="0.25416666666666665" />
+        <entry key="..\:/ACBook/app/src/main/res/layout/single_person_profile.xml" value="0.25416666666666665" />
+        <entry key="..\:/ACBook/app/src/main/res/layout/single_search_row.xml" value="0.264" />
+        <entry key="..\:/ACBook/app/src/main/res/menu/bottom_nav_menu.xml" value="0.25416666666666665" />
+        <entry key="..\:/ACBook/app/src/main/res/menu/options.xml" value="0.2" />
+        <entry key="..\:/ACBook/app/src/main/res/menu/popuo_menu.xml" value="0.264" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>

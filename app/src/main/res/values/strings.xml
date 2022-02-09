@@ -1,0 +1,83 @@
+<resources>
+    <string name="app_name">AC Book</string>
+    <string name="update">UPDATE</string>
+    <string name="all_records">All Records</string>
+    <string name="search_by_name_or_id_or_last_4_digit_of_a_c">Search by Name  or  ID  or  A/C  or  Aadhar</string>
+    <string name="enter_details">ENTER DETAILS</string>
+    <string name="enter_name">NAME</string>
+    <string name="enter_a_c_number">A/C number</string>
+    <string name="account_holder_name">A/C Holder Name</string>
+    <string name="enter_aadhar_card_number">AADHAR CARD NUMBER</string>
+    <string name="enter_phone_number">PHONE NUMBER</string>
+    <string name="skilled_in">TYPE</string>
+    <string name="remarks_only_500_letters">REMARKS Only 250 letters</string>
+    <string name="enter_bank_name">Bank Name</string>
+    <string name="enter_ifsc_code">IFSC Code</string>
+    <string name="menu_insert_new_">NEW PERSON</string>
+    <string name="menu_update">UPDATE</string>
+    <string name="insert_data">ADD</string>
+    <string name="father_name">FATHER NAME</string>
+
+
+    <string-array name="indian_bank_names">
+        <item>ALLAHABAD BANK</item>
+        <item>ANDHRA BANK</item>
+        <item>BANK OF BARODA</item>
+        <item>BANK OF INDIA</item>
+        <item>BANK OF MAHARASHTRA</item>
+        <item>CANARA BANK</item>
+        <item>CENTRAL BANK OF INDIA</item>
+        <item>CORPORATION BANK</item>
+        <item>DENA BANK</item>
+        <item>INDIAN BANK</item>
+        <item>INDIAN OVERSEAS BANK</item>
+        <item>ORIENTAL BANK OF COMMERCE</item>
+        <item>PUNJAB AND SIND BANK</item>
+        <item>PUNJAB NATIONAL BANK</item>
+        <item>SYNDICATE BANK</item>
+        <item>UCO BANK</item>
+        <item>UNION BANK OF INDIA</item>
+        <item>UNITED BANK OF INDIA</item>
+        <item>VIJAYA BANK</item>
+        <item>IDBI BANK LIMITED</item>
+        <item>STATE BANK OF INDIA</item>
+        <item>STATE BANK OF BIKANER AND JAIPUR</item>
+        <item>STATE BANK OF HYDERABAD</item>
+        <item>STATE BANK OF MYSORE</item>
+        <item>STATE BANK OF PATIALA</item>
+        <item>STATE BANK OF TRAVANCORE</item>
+        <item>CATHOLIC SYRIAN BANK</item>
+        <item>CITY UNION BANK</item>
+        <item>DHANALAKSHMI BANK</item>
+        <item>FEDERAL BANK</item>
+        <item>ING VYSYA BANK LTD</item>
+        <item>JAMMU AND KASHMIR BANK</item>
+        <item>KARNATAKA BANK</item>
+        <item>KARUR VYSYA BANK</item>
+        <item>LAKSHMI VILAS BANK</item>
+        <item>THE RATNAKAR BANK</item>
+        <item>NANITAL BANK</item>
+        <item>SBI COMMERCIAL AND INTERNATIONAL BANK</item>
+        <item>SOUTH INDIA BANK</item>
+        <item>TAMILNADU MERCANTILE BANK</item>
+        <item>UNITED WESTERN BANK</item>
+        <item>INDUSIND BANK</item>
+        <item>HDFC BANK</item>
+        <item>ICICI BANK</item>
+        <item>AXIS BANK</item>
+        <item>KOTAK MAHINDRA BANK</item>
+        <item>YES BANK</item>
+        <item>DEVELOPMENT CREDIT BANK</item>
+    </string-array>
+
+    <string name="title_activity_navigation">NavigationActivity</string>
+    <string name="title_search">SEARCH</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="mestre">M</string>
+    <string name="laber">L</string>
+    <string name="women_laber">G</string>
+
+</resources>
