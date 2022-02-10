@@ -27,7 +27,7 @@
         android:layout_height="50dp"
         android:layout_margin="8dp"
         android:id="@+id/serach_view"
-        android:background="#FFFFFF"
+        android:background="@drawable/detailsbg"
         app:defaultQueryHint="Last 4,5 digits of A/C,Aadhar Card"
         android:inputType="textCapCharacters|textAutoCorrect"
         app:iconifiedByDefault="false">

@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.database.Cursor;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -102,6 +103,10 @@ Boolean aboolean=false;
         view.setBackgroundColor(Color.GREEN);
         btn2.setBackgroundColor(Color.WHITE);
         btn3.setBackgroundColor(Color.WHITE);
+
+        //setting background custom image of theres button
+        btn3.setBackgroundResource(R.drawable.detailsbg);
+        btn2.setBackgroundResource(R.drawable.detailsbg);
         btnData("SELECT ID,NAME,ACTIVE FROM "+db.TABLE_NAME+" WHERE TYPE='M'");
     }
 
@@ -110,6 +115,10 @@ Boolean aboolean=false;
         view.setBackgroundColor(Color.GREEN);
         btn1.setBackgroundColor(Color.WHITE);
         btn3.setBackgroundColor(Color.WHITE);
+
+        //setting background custom image of theres button
+        btn3.setBackgroundResource(R.drawable.detailsbg);
+        btn1.setBackgroundResource(R.drawable.detailsbg);
         btnData("SELECT ID,NAME,ACTIVE FROM "+db.TABLE_NAME+" WHERE TYPE='L'");
     }
 
@@ -118,6 +127,10 @@ Boolean aboolean=false;
         view.setBackgroundColor(Color.GREEN);
         btn1.setBackgroundColor(Color.WHITE);
         btn2.setBackgroundColor(Color.WHITE);
+
+        //setting background custom image of theres button
+        btn1.setBackgroundResource(R.drawable.detailsbg);
+        btn2.setBackgroundResource(R.drawable.detailsbg);
         btnData("SELECT ID,NAME,ACTIVE FROM "+db.TABLE_NAME+" WHERE TYPE='G'");
     }
 
