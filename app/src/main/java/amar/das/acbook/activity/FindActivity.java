@@ -2,21 +2,23 @@ package amar.das.acbook.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.text.Layout;
 import android.view.View;
+import android.view.inputmethod.InputMethod;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
 
 import amar.das.acbook.PersonRecordDatabase;
 import amar.das.acbook.R;
@@ -24,6 +26,7 @@ import amar.das.acbook.adapters.AllMLGRecordAdapter;
 import amar.das.acbook.adapters.SearchAdapter;
 import amar.das.acbook.model.MLGAllRecordModel;
 import amar.das.acbook.model.SearchModel;
+import amar.das.acbook.ui.search.SearchFragment;
 
 public class FindActivity extends AppCompatActivity {
 SearchView searchView;
@@ -31,9 +34,8 @@ RecyclerView searchRecycler;
 ArrayList<SearchModel> datalist;
 ArrayList<MLGAllRecordModel> allMLGList;
 PersonRecordDatabase db;
-Button goback_click,btn1,btn2,btn3;
+Button  btn1,btn2,btn3;
 Boolean aboolean=false;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +44,6 @@ Boolean aboolean=false;
 
         db=new PersonRecordDatabase(this);//on start only database should be create
         //ids
-        goback_click =findViewById(R.id.goback);
         searchView=findViewById(R.id.serach_view);
         searchRecycler=findViewById(R.id.search_recyclerview);
         btn1=findViewById(R.id.mestre_btn);
@@ -72,6 +73,10 @@ Boolean aboolean=false;
         searchRecycler.setAdapter(searchAdapter);
         db.close();//closing database to prevent dataleak
 
+       // searchView.setQuery("I",true); //to set default text to serach box
+
+        //when Find Activity open then automatically keyboard should open
+        showSoftKeyboard(searchView);
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 
@@ -90,12 +95,13 @@ Boolean aboolean=false;
             }
         });
 
-        goback_click.setOnClickListener(new View.OnClickListener() {//go from activity to fragment
-            @Override
-            public void onClick(View view) {
 
-            }
-        });
+    }
+    public void showSoftKeyboard(View searchView) {//code link https://developer.android.com/training/keyboard-input/visibility#java
+        if (searchView.requestFocus()) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(searchView, InputMethodManager.SHOW_IMPLICIT);
+        }
     }
 
     public void mestre_btn(View view) {
@@ -105,8 +111,8 @@ Boolean aboolean=false;
         btn3.setBackgroundColor(Color.WHITE);
 
         //setting background custom image of theres button
-        btn3.setBackgroundResource(R.drawable.detailsbg);
-        btn2.setBackgroundResource(R.drawable.detailsbg);
+        btn3.setBackgroundResource(R.drawable.white_detailsbg);
+        btn2.setBackgroundResource(R.drawable.white_detailsbg);
         btnData("SELECT ID,NAME,ACTIVE FROM "+db.TABLE_NAME+" WHERE TYPE='M'");
     }
 
@@ -117,8 +123,8 @@ Boolean aboolean=false;
         btn3.setBackgroundColor(Color.WHITE);
 
         //setting background custom image of theres button
-        btn3.setBackgroundResource(R.drawable.detailsbg);
-        btn1.setBackgroundResource(R.drawable.detailsbg);
+        btn3.setBackgroundResource(R.drawable.white_detailsbg);
+        btn1.setBackgroundResource(R.drawable.white_detailsbg);
         btnData("SELECT ID,NAME,ACTIVE FROM "+db.TABLE_NAME+" WHERE TYPE='L'");
     }
 
@@ -129,8 +135,8 @@ Boolean aboolean=false;
         btn2.setBackgroundColor(Color.WHITE);
 
         //setting background custom image of theres button
-        btn1.setBackgroundResource(R.drawable.detailsbg);
-        btn2.setBackgroundResource(R.drawable.detailsbg);
+        btn1.setBackgroundResource(R.drawable.white_detailsbg);
+        btn2.setBackgroundResource(R.drawable.white_detailsbg);
         btnData("SELECT ID,NAME,ACTIVE FROM "+db.TABLE_NAME+" WHERE TYPE='G'");
     }
 
@@ -163,4 +169,9 @@ Boolean aboolean=false;
         Toast.makeText(FindActivity.this, "Total size: "+allMLGRecordAdapter.getItemCount(), Toast.LENGTH_SHORT).show();
     }
 
+    public void goto_back(View view) {
+        finish();//first destroy then go back
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.find_layout, new SearchFragment()).commit();
+    }
 }

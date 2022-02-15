@@ -1,7 +1,15 @@
 package amar.das.acbook.model;
 
 public class MestreLaberGModel {
-    String advanceAmount,id;
+    String advanceAmount,name,id;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     byte[] person_img;
 

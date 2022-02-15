@@ -49,7 +49,7 @@
             android:layout_marginLeft="2dp"
             android:layout_marginRight="2dp"
             tools:listitem="@layout/single_person_profile"
-            android:id="@+id/recycle1_6000"/>
+            android:id="@+id/recycle1_6000" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:layout_weight="1"

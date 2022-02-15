@@ -6,7 +6,8 @@
     android:layout_height="match_parent"
     tools:context=".activity.FindActivity"
     android:orientation="vertical"
-    android:background="@color/purple_700">
+    android:background="@color/purple_700"
+    android:id="@+id/find_layout">
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -17,9 +18,10 @@
         android:layout_weight="1"
         android:layout_width="0dp"
         android:layout_height="30dp"
+        android:layout_marginLeft="2dp"
         android:background="@drawable/ic_baseline_arrow_back_24"
         android:layout_gravity="center_vertical"
-        android:id="@+id/goback"/>
+        android:onClick="goto_back"/>
 
     <androidx.appcompat.widget.SearchView
         android:layout_weight="9"
@@ -27,12 +29,18 @@
         android:layout_height="50dp"
         android:layout_margin="8dp"
         android:id="@+id/serach_view"
-        android:background="@drawable/detailsbg"
+        android:background="@drawable/white_detailsbg"
         app:defaultQueryHint="Last 4,5 digits of A/C,Aadhar Card"
         android:inputType="textCapCharacters|textAutoCorrect"
-        app:iconifiedByDefault="false">
+        app:iconifiedByDefault="false"
+        app:searchIcon="@null"
+
+        >
     </androidx.appcompat.widget.SearchView>
-<!-- app:iconifiedByDefault="false" so that user enter anywhere to write not on only icon -->
+<!-- app:iconifiedByDefault="false" so that user enter anywhere to write and show icon by default.means to make searchview
+expanded automatically
+ app:searchIcon="@null" to remove default icon-->
+
 </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
@@ -54,7 +62,7 @@
             android:textColor="@color/black"
             android:textAlignment="center"
             android:onClick="mestre_btn"
-            android:background="@drawable/detailsbg"
+            android:background="@drawable/white_detailsbg"
             android:id="@+id/mestre_btn"/>
         <Button
             android:layout_weight="1"
@@ -68,7 +76,7 @@
             android:textColor="@color/black"
             android:textAlignment="center"
             android:onClick="laber_btn"
-            android:background="@drawable/detailsbg"
+            android:background="@drawable/white_detailsbg"
             android:id="@+id/laber_btn"
              />
         <Button
@@ -83,7 +91,7 @@
             android:textColor="@color/black"
             android:textAlignment="center"
             android:onClick="g_btn"
-            android:background="@drawable/detailsbg"
+            android:background="@drawable/white_detailsbg"
             android:id="@+id/g_btn"
            />
 

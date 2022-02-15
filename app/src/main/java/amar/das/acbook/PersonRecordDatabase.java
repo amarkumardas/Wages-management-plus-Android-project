@@ -95,5 +95,33 @@ public class PersonRecordDatabase extends SQLiteOpenHelper {
         //db.close();//error connection pool has been closed
         return cursor;
     }
+    //update
+    public boolean updateData(String name, String bankaccount, String ifsccode, String bankname, String aadharcard, String phonenumber, String skill, String fathername, byte[] image,String acholder,String Id ) {
+        try {
+            db = this.getWritableDatabase();//getting permission
+            ContentValues cv = new ContentValues();//to enter data at once it is like hash map
+            cv.put(COL_2, name);
+            cv.put(COL_3, bankaccount);
+            cv.put(COL_4, ifsccode);
+            cv.put(COL_5, bankname);
+            cv.put(COL_6, aadharcard);
+            cv.put(COL_7, phonenumber);
+            cv.put(COL_8, skill);
+            cv.put(COL_9, fathername);
+            cv.put(COL_10, image);
+            cv.put(COL_11, acholder);
+
+            //0 is returned if no record updated and it return number of rows updated
+            long rowid = db.update(TABLE_NAME, cv, "ID=?", new String[]{Id});
+            db.close();//closing db after operation performed
+            if (rowid == 0)//data not inserted
+                return false;
+            else
+                return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 
 }

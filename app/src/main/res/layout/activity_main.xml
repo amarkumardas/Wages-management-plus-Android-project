@@ -28,7 +28,7 @@
             android:layout_marginLeft="2dp"
             android:layout_marginRight="2dp"
             android:layout_weight="8"
-            android:background="@drawable/detailsbg"
+            android:background="@drawable/white_detailsbg"
             android:gravity="center_vertical"
             android:hint="@string/search_by_name_or_id_or_last_4_digit_of_a_c"
             android:inputType="textCapCharacters"

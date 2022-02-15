@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 
 import java.util.ArrayList;
 
-import amar.das.acbook.adapters.MestreAdapter;
+import amar.das.acbook.adapters.MestreLaberGAdapter;
 import amar.das.acbook.model.MestreLaberGModel;
 import amar.das.acbook.PersonRecordDatabase;
 import amar.das.acbook.R;
@@ -25,7 +25,7 @@ public class ActiveLGFragment extends Fragment {
     private FragmentActiveLGBinding binding;
     ArrayList<MestreLaberGModel> lGArrayList;
     RecyclerView lGRecyclerView;
-    MestreAdapter madapter;
+    MestreLaberGAdapter madapter;
     PersonRecordDatabase db;
     int amountad=1;
 
@@ -39,22 +39,25 @@ public class ActiveLGFragment extends Fragment {
         lGRecyclerView=root.findViewById(R.id.recycle_active_l_g);
 
         //mestre
-        Cursor cursorGL=db.getData("SELECT IMAGE,ID FROM "+db.TABLE_NAME+" WHERE TYPE='L' OR TYPE='G' AND ACTIVE='1' LIMIT 150");//getting only mestre image from database
+        Cursor cursorGL=db.getData("SELECT IMAGE,ID,NAME FROM "+db.TABLE_NAME+" WHERE TYPE='L' OR TYPE='G' AND ACTIVE='1' LIMIT 150");//getting only mestre image from database
         lGArrayList =new ArrayList<>();
-        String id;
+        String id,name;
         while(cursorGL.moveToNext()){
-            MestreLaberGModel model=new MestreLaberGModel();
+            MestreLaberGModel data=new MestreLaberGModel();
             byte[] image=cursorGL.getBlob(0);
             id=cursorGL.getString(1);
-            model.setPerson_img(image);
-            model.setId(id);
-            model.setAdvanceAmount(""+amountad++);
-            lGArrayList.add(model);//adding data to mestrearraylist
+            name=cursorGL.getString(2);
+            data.setName(name);
+            data.setPerson_img(image);
+            data.setId(id);
+            data.setAdvanceAmount(""+amountad++);
+            lGArrayList.add(data);//adding data to mestrearraylist
         }
         cursorGL.close();//closing cursor after finish
-        madapter=new MestreAdapter(getContext(), lGArrayList);
+        madapter=new MestreLaberGAdapter(getContext(), lGArrayList);
         //activeMestreCount.setText(""+madapter.getItemCount());
         lGRecyclerView.setAdapter(madapter);
+        lGRecyclerView.setHasFixedSize(true);
         lGRecyclerView.setLayoutManager(new GridLayoutManager(getContext(),4));//spancount is number of rows
         db.close();//closing database to prevent dataleak
 

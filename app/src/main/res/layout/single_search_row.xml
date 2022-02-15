@@ -64,7 +64,6 @@
                     android:layout_height="wrap_content"
                     android:text="A/C:     123456 "
                     android:textSize="17dp"
-
                     android:textColor="@color/black"
                     android:layout_marginLeft="2dp"
                     />

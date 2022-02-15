@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 
 import java.util.ArrayList;
 
-import amar.das.acbook.adapters.MestreAdapter;
+import amar.das.acbook.adapters.MestreLaberGAdapter;
 import amar.das.acbook.model.MestreLaberGModel;
 import amar.das.acbook.PersonRecordDatabase;
 import amar.das.acbook.R;
@@ -25,7 +25,7 @@ public class ActiveMFragment extends Fragment {
     private FragmentActiveMBinding binding;
     ArrayList<MestreLaberGModel> mestreactiveArrayList;
     RecyclerView mestreRecyclerView;
-    MestreAdapter madapter;
+    MestreLaberGAdapter madapter;
     PersonRecordDatabase db;
     int amountad=1;
 
@@ -39,22 +39,25 @@ public class ActiveMFragment extends Fragment {
          mestreRecyclerView=root.findViewById(R.id.recycle_active_mestre);
 
          //mestre
-        Cursor cursormestre=db.getData("SELECT IMAGE,ID FROM "+db.TABLE_NAME+" WHERE TYPE='M' AND ACTIVE='1' LIMIT 100");//getting only mestre image from database
+        Cursor cursormestre=db.getData("SELECT IMAGE,ID,NAME FROM "+db.TABLE_NAME+" WHERE TYPE='M' AND ACTIVE='1' LIMIT 100");//getting only mestre image from database
         mestreactiveArrayList =new ArrayList<>();
-        String id;
+        String id,name;
         while(cursormestre.moveToNext()){
-            MestreLaberGModel model=new MestreLaberGModel();
+            MestreLaberGModel data=new MestreLaberGModel();
             byte[] image=cursormestre.getBlob(0);
             id=cursormestre.getString(1);
-            model.setPerson_img(image);
-            model.setId(id);
-            model.setAdvanceAmount(""+amountad++);
-            mestreactiveArrayList.add(model);//adding data to mestrearraylist
+            name=cursormestre.getString(2);
+            data.setName(name);
+            data.setPerson_img(image);
+            data.setId(id);
+            data.setAdvanceAmount(""+amountad++);
+            mestreactiveArrayList.add(data);//adding data to mestrearraylist
         }
         cursormestre.close();//closing cursor after finish
-        madapter=new MestreAdapter(getContext(), mestreactiveArrayList);
+        madapter=new MestreLaberGAdapter(getContext(), mestreactiveArrayList);
         //activeMestreCount.setText(""+madapter.getItemCount());
         mestreRecyclerView.setAdapter(madapter);
+        mestreRecyclerView.setHasFixedSize(true);
         mestreRecyclerView.setLayoutManager(new GridLayoutManager(getContext(),4));//spancount is number of rows
         db.close();//closing database to prevent dataleak
 

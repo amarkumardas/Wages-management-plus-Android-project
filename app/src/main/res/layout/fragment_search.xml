@@ -22,7 +22,7 @@
             android:layout_height="40dp"
             android:layout_marginLeft="2dp"
             android:layout_marginRight="2dp"
-            android:background="@drawable/detailsbg"
+            android:background="@drawable/white_detailsbg"
             android:drawableLeft="@drawable/ic_baseline_search_24"
             android:drawablePadding="4dp"
             android:gravity="center_vertical"

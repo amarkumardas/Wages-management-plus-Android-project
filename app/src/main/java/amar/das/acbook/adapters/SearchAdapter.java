@@ -1,6 +1,7 @@
 package amar.das.acbook.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import amar.das.acbook.R;
+import amar.das.acbook.activity.IndividualPersonDetailActivity;
 import amar.das.acbook.model.SearchModel;
 
 public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder> implements Filterable {
@@ -63,7 +65,9 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
        holder.singleRowCartView.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View view) {
-               Toast.makeText(view.getContext(), ""+data.getId(), Toast.LENGTH_SHORT).show();
+               Intent intent=new Intent(contex,IndividualPersonDetailActivity.class);
+               intent.putExtra("ID",data.getId());
+               contex.startActivity(intent);
            }
        });
     }
@@ -155,11 +159,11 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
            name=itemView.findViewById(R.id.search_name_tv);
-            id=itemView.findViewById(R.id.search_id_tv);
+           id=itemView.findViewById(R.id.search_id_tv);
            aadhar=itemView.findViewById(R.id.search_aadhar_tv);
            account=itemView.findViewById(R.id.search_ac_tv);
-            father=itemView.findViewById(R.id.search_father_tv);
-            singleRowCartView=itemView.findViewById(R.id.single_row_cartview);
+           father=itemView.findViewById(R.id.search_father_tv);
+           singleRowCartView=itemView.findViewById(R.id.single_row_cartview);
 
         }
     }

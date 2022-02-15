@@ -24,7 +24,7 @@
         android:layout_weight="5"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="ID: 123456789"
+        android:text="12345678901"
         android:textStyle="bold"
         android:background="#86C6CADF"
         android:textColor="@color/black"

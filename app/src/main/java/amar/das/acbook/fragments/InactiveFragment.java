@@ -18,7 +18,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import amar.das.acbook.adapters.MestreAdapter;
+import amar.das.acbook.adapters.MestreLaberGAdapter;
 import amar.das.acbook.model.MestreLaberGModel;
 import amar.das.acbook.PersonRecordDatabase;
 import amar.das.acbook.R;
@@ -34,7 +34,7 @@ public class InactiveFragment extends Fragment {
 
     RecyclerView recyclerView1_6000;
     RecyclerView recyclerView6001_above;
-    MestreAdapter madapter;
+    MestreLaberGAdapter madapter;
     Boolean isScrolling1 =false;
     Boolean isScrolling2 =false;
 
@@ -57,27 +57,29 @@ public class InactiveFragment extends Fragment {
         recyclerView6001_above =root.findViewById(R.id.recycle6001_above);
 
         //1-6000
-        Cursor cursormestre=db.getData("SELECT IMAGE,ID FROM "+db.TABLE_NAME+" WHERE TYPE='M' AND ACTIVE='1' LIMIT 14 ");//getting image from database
+        Cursor cursormestre=db.getData("SELECT IMAGE,ID,NAME FROM "+db.TABLE_NAME+" WHERE TYPE='M' AND ACTIVE='1' LIMIT 14 ");//getting image from database
         // Cursor cursorinactive=db.getImage("SELECT IMAGE,ADVANCEAMOUNT FROM "+db.TABLE_NAME+" WHERE ADVANCEAMOUNT  BETWEEN 0 AND 3000 AND ACTIVE='0' ORDER BY ADVANCEAMOUNT DESC");//this query will fetch image and advanceamount between 0 to 3000 and is not active ie;0 in decending order
         arrayList1_6000 =new ArrayList<>();
         byte[] image;
-        String id;
+        String id,name;
         while(cursormestre.moveToNext()){
-            MestreLaberGModel model=new MestreLaberGModel();
+            MestreLaberGModel data=new MestreLaberGModel();
             image=cursormestre.getBlob(0);
             id=cursormestre.getString(1);
-            model.setPerson_img(image);
-            model.setAdvanceAmount("0000000000");
-            model.setId(id);
-            arrayList1_6000.add(model);
+            name=cursormestre.getString(2);
+            data.setName(name);
+            data.setPerson_img(image);
+            data.setAdvanceAmount("0000000000");
+            data.setId(id);
+            arrayList1_6000.add(data);
         }
         cursormestre.close();
-        madapter=new MestreAdapter(getContext(), arrayList1_6000);
+        madapter=new MestreLaberGAdapter(getContext(), arrayList1_6000);
         //activeMestreCount.setText(""+madapter.getItemCount());
         recyclerView1_6000.setAdapter(madapter);
         manager1 =new GridLayoutManager(getContext(),2);//grid layout
-
         recyclerView1_6000.setLayoutManager(manager1);
+        recyclerView1_6000.setHasFixedSize(true);
         recyclerView1_6000.addOnScrollListener(new RecyclerView.OnScrollListener() {
 
             @Override//this method is called when we start scrolling recycleview
@@ -99,35 +101,37 @@ public class InactiveFragment extends Fragment {
                 if(isScrolling1 && (currentItem1 + scrollOutItems1 == totalItem1)){
                     isScrolling1 =false;
                     Toast.makeText(getContext(), "Please Wait Loading", Toast.LENGTH_SHORT).show();
-                    fetchData("SELECT IMAGE,ID FROM " + db.TABLE_NAME + " WHERE TYPE='M' OR TYPE='L' OR TYPE='G' AND ACTIVE='1'",arrayList1_6000);
+                    fetchData("SELECT IMAGE,ID,NAME FROM " + db.TABLE_NAME + " WHERE TYPE='M' OR TYPE='L' OR TYPE='G' AND ACTIVE='1'",arrayList1_6000);
                     recyclerView1_6000.clearOnScrollListeners();//this will remove scrollListener so we wont be able to scroll after loading all data and finished scrolling to last
-
                 }
             }
         });
 
 
         //6001-ABOVE
-        Cursor cursorinactive=db.getData("SELECT IMAGE,ID FROM " + db.TABLE_NAME + " WHERE TYPE='M' OR TYPE='L' OR TYPE='G' AND ACTIVE='1' LIMIT 14 ");//getting image from database
+        Cursor cursorinactive=db.getData("SELECT IMAGE,ID,NAME FROM " + db.TABLE_NAME + " WHERE TYPE='M' OR TYPE='L' OR TYPE='G' AND ACTIVE='1' LIMIT 14 ");//getting image from database
         // Cursor cursorinactive=db.getImage("SELECT IMAGE,ADVANCEAMOUNT FROM "+db.TABLE_NAME+" WHERE ADVANCEAMOUNT  BETWEEN 10001 AND 1000000 AND ACTIVE='0' ORDER BY ADVANCEAMOUNT DESC");
 
         arrayList6001_above =new ArrayList<>();
         while(cursorinactive.moveToNext()){
-            MestreLaberGModel model=new MestreLaberGModel();
+            MestreLaberGModel data=new MestreLaberGModel();
             image=cursorinactive.getBlob(0);
             id=cursorinactive.getString(1);
-            model.setPerson_img(image);
-            model.setAdvanceAmount("0000000000");
-            model.setId(id);
-            arrayList6001_above.add(model);
+            name=cursorinactive.getString(2);
+            data.setName(name);
+            data.setPerson_img(image);
+            data.setAdvanceAmount("0000000000");
+            data.setId(id);
+            arrayList6001_above.add(data);
         }
         cursorinactive.close();
         db.close();
-        madapter=new MestreAdapter(getContext(), arrayList6001_above);
+        madapter=new MestreLaberGAdapter(getContext(), arrayList6001_above);
 
         manager2 =new GridLayoutManager(getContext(),2);//grid layout
         recyclerView6001_above.setAdapter(madapter);
         recyclerView6001_above.setLayoutManager(manager2);
+        recyclerView6001_above.setHasFixedSize(true);
         recyclerView6001_above.addOnScrollListener(new RecyclerView.OnScrollListener() {
 
             @Override//this method is called when we start scrolling recycleview
@@ -149,7 +153,7 @@ public class InactiveFragment extends Fragment {
                 if(isScrolling2 && (currentItem2 + scrollOutItems2 == totalItem2)){
                      isScrolling2 =false;
                     Toast.makeText(getContext(), "Please Wait Loading", Toast.LENGTH_SHORT).show();
-                    fetchData("SELECT IMAGE,ID FROM " + db.TABLE_NAME + " WHERE TYPE='M' OR TYPE='L' OR TYPE='G' AND ACTIVE='1'",arrayList6001_above); //LIMIT 14 OFFSET 50 NOT working
+                    fetchData("SELECT IMAGE,ID,NAME FROM " + db.TABLE_NAME + " WHERE TYPE='M' OR TYPE='L' OR TYPE='G' AND ACTIVE='1'",arrayList6001_above); //LIMIT 14 OFFSET 50 NOT working
                     recyclerView6001_above.clearOnScrollListeners();//this will remove scrollListener so we wont be able to scroll after loading all data and finished scrolling to last
                 }
             }
@@ -170,18 +174,20 @@ public class InactiveFragment extends Fragment {
     private void dataLoad(String querys,ArrayList<MestreLaberGModel> arraylist){
         Cursor cursormestre = db.getData(querys);//getting image from database
         byte[] image;
-        String id;
+        String id,name;
         //Toast.makeText(getContext(), ""+arraylist.size(), Toast.LENGTH_SHORT).show(); error null pointer exception
         arraylist.clear();//clearing the previous object which is there ie.14 object
         while (cursormestre.moveToNext()) {
-            MestreLaberGModel model = new MestreLaberGModel();
+            MestreLaberGModel data = new MestreLaberGModel();
              image = cursormestre.getBlob(0);
              id=cursormestre.getString(1);
-            model.setPerson_img(image);
-            model.setAdvanceAmount(""+amountad++);
-            model.setId(id);
-            arraylist.add(model);
-            madapter.notifyDataSetChanged();//Use the notifyDataSetChanged() every time the list is updated,or inserted or deleted
+             name=cursormestre.getString(2);
+             data.setName(name);
+             data.setPerson_img(image);
+             data.setAdvanceAmount(""+amountad++);
+             data.setId(id);
+             arraylist.add(data);
+             madapter.notifyDataSetChanged();//Use the notifyDataSetChanged() every time the list is updated,or inserted or deleted
         }
         cursormestre.close();
         db.close();//closing database

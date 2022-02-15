@@ -1,6 +1,7 @@
 package amar.das.acbook.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -8,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,12 +16,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import amar.das.acbook.R;
+import amar.das.acbook.activity.IndividualPersonDetailActivity;
 import amar.das.acbook.model.MLGAllRecordModel;
 
 public class AllMLGRecordAdapter extends RecyclerView.Adapter<AllMLGRecordAdapter.ViewHolder> {
     Context context;
     ArrayList<MLGAllRecordModel> arrayList;//because more operation is retrieving
-
+   //array lis has data name id and active
     public AllMLGRecordAdapter(Context context,ArrayList<MLGAllRecordModel> data){
         this.arrayList=data;
         this.context=context;
@@ -47,7 +48,9 @@ public class AllMLGRecordAdapter extends RecyclerView.Adapter<AllMLGRecordAdapte
         holder.layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {//WE have to send id
-                Toast.makeText(context.getApplicationContext(), "Click on ID: "+data.getId(), Toast.LENGTH_SHORT).show();
+                Intent intent=new Intent(context, IndividualPersonDetailActivity.class);
+                intent.putExtra("ID",data.getId());
+                context.startActivity(intent);
             }
         });
     }

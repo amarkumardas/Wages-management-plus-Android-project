@@ -20,6 +20,9 @@ import amar.das.acbook.databinding.FragmentSearchBinding;
 public class SearchFragment extends Fragment  {
     private FragmentSearchBinding binding ;
     TextView searchBox;
+    //important
+    //to store image in db we have to convert Bitmap to bytearray
+    //to set in imageview we have to get from db as Blob known as large byte and convert it to Bitmap then set in imageview
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -38,6 +41,7 @@ public class SearchFragment extends Fragment  {
              public void onClick(View view) {
                  Intent intent=new Intent(getContext(),FindActivity.class);
                  startActivity(intent);
+
              }
          });
 
