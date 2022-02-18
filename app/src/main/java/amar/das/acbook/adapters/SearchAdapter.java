@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -65,7 +64,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
        holder.singleRowCartView.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View view) {
-               Intent intent=new Intent(contex,IndividualPersonDetailActivity.class);
+               Intent intent=new Intent(contex, IndividualPersonDetailActivity.class);
                intent.putExtra("ID",data.getId());
                contex.startActivity(intent);
            }

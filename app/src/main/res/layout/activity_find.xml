@@ -102,11 +102,11 @@ expanded automatically
         android:id="@+id/search_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="2dp"
-        android:background="#121212">
+        android:background="#D6DADF">
 
     </androidx.recyclerview.widget.RecyclerView>
 
 </LinearLayout>
 <!--
-Add SearchView In RecyclerView | Android RecyclerView Tutorial -->
+Add SearchView In RecyclerView | Android RecyclerView Tutorial
+android:background="#121212"-->

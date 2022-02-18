@@ -64,6 +64,7 @@ public class InsertDataActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        overridePendingTransition(0, 0); //we have used overridePendingTransition(), it is used to remove activity create animation while re-creating activity.
         setContentView(R.layout.activity_insert_data);
 
 
@@ -335,20 +336,19 @@ public class InsertDataActivity extends AppCompatActivity {
                 public void onClick(DialogInterface dialogInterface, int i) {
                     dialogInterface.dismiss();
 
-                    boolean isInserted,isUpdated;
-                    isUpdated=isInserted=false;
+                    boolean  booleanvalue=false;
 
                     //update
                     if(getIntent().hasExtra("ID")){//will execute when updating
                         //get data from db
-                        isUpdated=personDb.updateData(personName, personAccount, personIfsccode, personBankName, personAadhar, personPhon, personType, personFathername, imagestore, personAccountHolderName,fromIntentPersonId);
-                        if(isUpdated==true){//if it is updated then show successfull message
+                        booleanvalue=personDb.updateData(personName, personAccount, personIfsccode, personBankName, personAadhar, personPhon, personType, personFathername, imagestore, personAccountHolderName,fromIntentPersonId);
+                        if(booleanvalue==true){//if it is updated then show successfull message
                             Toast.makeText(InsertDataActivity.this, "ID: "+fromIntentPersonId+" Updated successfully", Toast.LENGTH_SHORT).show();
 
                             //after success then go to previous activity automatically and destroy current activity so that when pressing back user should not get same activity this is done by finish();
-                            Intent in=new Intent(getBaseContext(),IndividualPersonDetailActivity.class);//completed then go back
-                            in.putExtra("ID",fromIntentPersonId);//after going bact to this IndividualPersonDetailActivity then it require ID so putExtra is used
-                            startActivity(in);
+//                            Intent in=new Intent(getBaseContext(),IndividualPersonDetailActivity.class);//completed then go back
+//                            in.putExtra("ID",fromIntentPersonId);//after going bact to this IndividualPersonDetailActivity then it require ID so putExtra is used
+//                            startActivity(in);
                             finish();//destroy current activity
 
                         }else
@@ -356,12 +356,12 @@ public class InsertDataActivity extends AppCompatActivity {
 
                     }else {//this will execute only when adding new person
 
-                        for (int k = 1; k <= 20; k++) {
+                        for (int k = 1; k <= 1000; k++) {
                             //inserting data to sqlite database
-                            isInserted = personDb.insertData(personName, personAccount, personIfsccode, personBankName, personAadhar, personPhon, personType, personFathername, imagestore, personAccountHolderName);
+                             booleanvalue = personDb.insertData(personName, personAccount, personIfsccode, personBankName, personAadhar, personPhon, personType, personFathername, imagestore, personAccountHolderName);
                         }
 
-                        if (isInserted == true) {//checking for duplicate
+                        if ( booleanvalue == true) {//checking for duplicate
                             Cursor result = personDb.getId(personName, personAccount, personIfsccode, personBankName, personAadhar, personPhon, personType, personFathername, personAccountHolderName);
                             StringBuilder buffer;//because it is not synchronized and efficient then stringbuffer and no need to lock and unlock
                             String holdlastid="";
@@ -430,15 +430,15 @@ public class InsertDataActivity extends AppCompatActivity {
         return byteArrayOutputStream.toByteArray();//converted bitmap to byte array
     }
 
-    public void go_back(View view) { //go from activity to fragment
-
-        if(getIntent().hasExtra("ID")){//when it is called from other activity intent
-            Intent in=new Intent(getBaseContext(),IndividualPersonDetailActivity.class); //go back
-            in.putExtra("ID",fromIntentPersonId);//after going bact to this IndividualPersonDetailActivity then it require ID so putExtra is used
-            startActivity(in);
+    public void go_back(View view) {
+         //from activity to activity
+        if(getIntent().hasExtra("ID")){//execute when it is called from other activity intent
+//            Intent in=new Intent(getBaseContext(),IndividualPersonDetailActivity.class); //go back
+//            in.putExtra("ID",fromIntentPersonId);//after going back to this IndividualPersonDetailActivity then it require ID so putExtra is used
+//            startActivity(in);
             finish();//destroy current activity
-        }else {
-            finish();//first destroy then go back
+        }else {//go from activity to fragment
+            finish();//first destroy current activity then go back
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.insert_detailsof_l_m_g, new SearchFragment()).commit();
         }

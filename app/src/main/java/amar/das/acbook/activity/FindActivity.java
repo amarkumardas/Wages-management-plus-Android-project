@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -40,6 +41,7 @@ Boolean aboolean=false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        overridePendingTransition(0, 0); //we have used overridePendingTransition(), it is used to remove activity create animation while re-creating activity.This can be applied only on activity
         setContentView(R.layout.activity_find);
 
         db=new PersonRecordDatabase(this);//on start only database should be create
@@ -87,8 +89,9 @@ Boolean aboolean=false;
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                if(aboolean==true)//this will set adapter to recycler view while switching from button M L G
+                if(aboolean==true) {//this will set adapter to recycler view while switching from button M L G
                     searchRecycler.setAdapter(searchAdapter);
+                }
 
                searchAdapter.getFilter().filter(newText);
                 return false;
@@ -164,7 +167,7 @@ Boolean aboolean=false;
         AllMLGRecordAdapter allMLGRecordAdapter=new AllMLGRecordAdapter(this,allMLGList);
         searchRecycler.setHasFixedSize(true);
         searchRecycler.setAdapter(allMLGRecordAdapter);
-        aboolean=true;//to set recycler view on onQueryTextChange method
+        aboolean=true;//to set adapter recycler view on onQueryTextChange method
         db.close();//closing database to prevent dataleak
         Toast.makeText(FindActivity.this, "Total size: "+allMLGRecordAdapter.getItemCount(), Toast.LENGTH_SHORT).show();
     }
@@ -174,4 +177,21 @@ Boolean aboolean=false;
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.find_layout, new SearchFragment()).commit();
     }
+
+    /*In some situations, we need to recall activity again from onCreate(). This example demonstrates how to reload activity
+    whenever we return back to this activity we will always get refreshed activity
+    Disadvantage is whenever we press back button then it will load all data eg:50000 then it will take time to return back because we are refreshing
+    This feature is added to see only update of Name,Aadhar card and Account number but this situation is very rare because people name,aadhar,account would rarely change 1 time so removing this feature*/
+//    @Override
+//    protected void onRestart() {
+//        super.onRestart();
+//        //we have used Intent to recreate an activity as shown below -
+//        Intent i = new Intent(FindActivity.this, FindActivity.class);
+//        finish();//destroying current/same activity
+//        overridePendingTransition(0, 0);
+//        startActivity(i);//starting same/current activity ie. refreshed activity
+//        overridePendingTransition(0, 0);
+//        //we have used overridePendingTransition(), it is used to remove activity create animation while re-creating activity.This can be done only in activity
+//    }
+
 }

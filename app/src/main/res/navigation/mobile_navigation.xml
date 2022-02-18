@@ -8,13 +8,13 @@
     <fragment
         android:id="@+id/navigation_search"
         android:name="amar.das.acbook.ui.search.SearchFragment"
-        android:label="@string/title_search"
+        android:label="@string/title_ml"
         tools:layout="@layout/fragment_home"/>
 
     <fragment
         android:id="@+id/navigation_dashboard"
         android:name="amar.das.acbook.ui.home.HomeFragment"
-        android:label="@string/title_dashboard"
+        android:label="@string/title_houseowner"
         tools:layout="@layout/fragment_search" />
 
     <fragment
