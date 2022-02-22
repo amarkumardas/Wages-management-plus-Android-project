@@ -39,7 +39,7 @@ public class ActiveLGFragment extends Fragment {
         lGRecyclerView=root.findViewById(R.id.recycle_active_l_g);
 
         //mestre
-        Cursor cursorGL=db.getData("SELECT IMAGE,ID,NAME FROM "+db.TABLE_NAME+" WHERE TYPE='L' OR TYPE='G' AND ACTIVE='1' LIMIT 150");//getting only mestre image from database
+        Cursor cursorGL=db.getData("SELECT IMAGE,ID,NAME FROM "+db.TABLE_NAME1 +" WHERE TYPE='L' OR TYPE='G' AND ACTIVE='1' LIMIT 150");//getting only mestre image from database
         lGArrayList =new ArrayList<>();
         String id,name;
         while(cursorGL.moveToNext()){

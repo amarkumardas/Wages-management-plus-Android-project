@@ -7,7 +7,6 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -15,7 +14,6 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -142,7 +140,7 @@ public class InsertDataActivity extends AppCompatActivity {
         if(getIntent().hasExtra("ID")){
             fromIntentPersonId=getIntent().getStringExtra("ID");//getting id from intent
             //retrieving data from db
-            Cursor cursor1=personDb.getData("SELECT NAME,BANKACCOUNT,IFSCCODE,BANKNAME,AADHARCARD,PHONE,TYPE,FATHERNAME,IMAGE,ACHOLDER FROM "+personDb.TABLE_NAME+" WHERE ID='"+fromIntentPersonId+"'");
+            Cursor cursor1=personDb.getData("SELECT NAME,BANKACCOUNT,IFSCCODE,BANKNAME,AADHARCARD,PHONE,TYPE,FATHERNAME,IMAGE,ACHOLDER FROM "+personDb.TABLE_NAME1 +" WHERE ID='"+fromIntentPersonId+"'");
 
             if(cursor1 != null) {
                 cursor1.moveToFirst();
@@ -159,7 +157,7 @@ public class InsertDataActivity extends AppCompatActivity {
                     laberRadio.setChecked(true);
                  else if(skill.equals("M"))
                      mestreRadio.setChecked(true);
-                 else
+                 else//skill.equals("G")
                      womenRadio.setChecked(true);
 
                 fathername.setText(cursor1.getString(7));
@@ -341,14 +339,14 @@ public class InsertDataActivity extends AppCompatActivity {
                     //update
                     if(getIntent().hasExtra("ID")){//will execute when updating
                         //get data from db
-                        booleanvalue=personDb.updateData(personName, personAccount, personIfsccode, personBankName, personAadhar, personPhon, personType, personFathername, imagestore, personAccountHolderName,fromIntentPersonId);
+                        booleanvalue=personDb.updateDataTable1(personName, personAccount, personIfsccode, personBankName, personAadhar, personPhon, personType, personFathername, imagestore, personAccountHolderName,fromIntentPersonId);
                         if(booleanvalue==true){//if it is updated then show successfull message
                             Toast.makeText(InsertDataActivity.this, "ID: "+fromIntentPersonId+" Updated successfully", Toast.LENGTH_SHORT).show();
 
                             //after success then go to previous activity automatically and destroy current activity so that when pressing back user should not get same activity this is done by finish();
-//                            Intent in=new Intent(getBaseContext(),IndividualPersonDetailActivity.class);//completed then go back
-//                            in.putExtra("ID",fromIntentPersonId);//after going bact to this IndividualPersonDetailActivity then it require ID so putExtra is used
-//                            startActivity(in);
+                            Intent in=new Intent(getBaseContext(),IndividualPersonDetailActivity.class);//completed then go back
+                            in.putExtra("ID",fromIntentPersonId);//after going bact to this IndividualPersonDetailActivity then it require ID so putExtra is used
+                            startActivity(in);
                             finish();//destroy current activity
 
                         }else
@@ -356,30 +354,34 @@ public class InsertDataActivity extends AppCompatActivity {
 
                     }else {//this will execute only when adding new person
 
-                        for (int k = 1; k <= 1000; k++) {
+                        //for (int k = 1; k <= 10; k++) {
                             //inserting data to sqlite database
-                             booleanvalue = personDb.insertData(personName, personAccount, personIfsccode, personBankName, personAadhar, personPhon, personType, personFathername, imagestore, personAccountHolderName);
-                        }
+                             booleanvalue = personDb.insertDataTable1(personName, personAccount, personIfsccode, personBankName, personAadhar, personPhon, personType, personFathername, imagestore, personAccountHolderName);
+                        //}
 
                         if ( booleanvalue == true) {//checking for duplicate
                             Cursor result = personDb.getId(personName, personAccount, personIfsccode, personBankName, personAadhar, personPhon, personType, personFathername, personAccountHolderName);
                             StringBuilder buffer;//because it is not synchronized and efficient then stringbuffer and no need to lock and unlock
                             String holdlastid="";
-                            if(result.getCount() == 1 || result.getCount() > 1){
+
+                            if(result.getCount() == 1 || result.getCount() > 1){//no duplicate
                                 buffer=new StringBuilder( );
-                                if(result.moveToFirst() && result.getCount()==1) {
+
+                                if(result.moveToFirst() && result.getCount()==1) {//ONLY 1 DATE NO DUPLICATE
+                                    insertDataToTable3(result.getString(0));
                                     buffer.append("\n" + "New Person ID no: " + result.getString(0));
                                     displResult("Added Successfully", buffer.toString());
                                     add.setVisibility(View.VISIBLE);
                                 }
 
-                                if(result.getCount() > 1){//this will be true when user all details is same to others
+                                if(result.getCount() > 1){//this will be true when user all details is same to others means DUPLICATE
                                     buffer.append("Matching "+result.getCount()+" Person with same Details:"+"\n");
                                     result.moveToPrevious();//it help to start from first othervise 1 item is not displayed
                                     while(result.moveToNext()){
                                         holdlastid=""+result.getString(0);//to diaplay new added person ids comes at last when loop
                                         buffer.append("\nPerson ID: "+result.getString(0));
                                     }
+                                    insertDataToTable3(holdlastid);//holdlastid variable has newly added id.If insertDataToTable3(holdlastid); this method is placed in while loop then all matching duplicate this method have to execute which is useless and produce exception
                                     displResult("Successfully Added New Person ID is: "+holdlastid,buffer.toString());
                                     add.setVisibility(View.VISIBLE);
                                 }
@@ -424,6 +426,14 @@ public class InsertDataActivity extends AppCompatActivity {
        detailsReview.create().show();
     }
 
+    private void insertDataToTable3(String id) {
+        Boolean bool=personDb.insertDataTable3( id,0,0,0,0,null,null,null,null);
+        if(bool== true)
+            Toast.makeText(this, "Inserted to table 3", Toast.LENGTH_SHORT).show();
+        else
+            Toast.makeText(this, "Not Inserted to table 3", Toast.LENGTH_SHORT).show();
+    }
+
     private byte[] convertBitmapToByteArray(Bitmap bitmap) {
         ByteArrayOutputStream byteArrayOutputStream=new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG,50,byteArrayOutputStream);
@@ -432,10 +442,10 @@ public class InsertDataActivity extends AppCompatActivity {
 
     public void go_back(View view) {
          //from activity to activity
-        if(getIntent().hasExtra("ID")){//execute when it is called from other activity intent
-//            Intent in=new Intent(getBaseContext(),IndividualPersonDetailActivity.class); //go back
-//            in.putExtra("ID",fromIntentPersonId);//after going back to this IndividualPersonDetailActivity then it require ID so putExtra is used
-//            startActivity(in);
+        if(getIntent().hasExtra("ID")){//execute when it is called from other activity with ID intent
+            Intent in=new Intent(getBaseContext(),IndividualPersonDetailActivity.class); //go back
+            in.putExtra("ID",fromIntentPersonId);//after going back to this IndividualPersonDetailActivity then it require ID so putExtra is used
+            startActivity(in);
             finish();//destroy current activity
         }else {//go from activity to fragment
             finish();//first destroy current activity then go back

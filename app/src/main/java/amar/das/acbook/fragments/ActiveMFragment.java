@@ -39,7 +39,7 @@ public class ActiveMFragment extends Fragment {
          mestreRecyclerView=root.findViewById(R.id.recycle_active_mestre);
 
          //mestre
-        Cursor cursormestre=db.getData("SELECT IMAGE,ID,NAME FROM "+db.TABLE_NAME+" WHERE TYPE='M' AND ACTIVE='1' LIMIT 100");//getting only mestre image from database
+        Cursor cursormestre=db.getData("SELECT IMAGE,ID,NAME FROM "+db.TABLE_NAME1 +" WHERE TYPE='M' AND ACTIVE='1' LIMIT 100");//getting only mestre image from database
         mestreactiveArrayList =new ArrayList<>();
         String id,name;
         while(cursormestre.moveToNext()){

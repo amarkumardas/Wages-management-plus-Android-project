@@ -7,13 +7,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.text.Layout;
 import android.view.View;
-import android.view.inputmethod.InputMethod;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.Toast;
@@ -56,7 +53,7 @@ Boolean aboolean=false;
         searchRecycler.setHasFixedSize(true);
 
         //getting all data
-        Cursor cursor=db.getData("SELECT ID,NAME,BANKACCOUNT,AADHARCARD,FATHERNAME FROM "+db.TABLE_NAME+" WHERE ACTIVE='1' OR ACTIVE='0'");
+        Cursor cursor=db.getData("SELECT ID,NAME,BANKACCOUNT,AADHARCARD,FATHERNAME FROM "+db.TABLE_NAME1 +" WHERE ACTIVE='1' OR ACTIVE='0'");
         datalist=new ArrayList<>();
 
         while(cursor.moveToNext()){
@@ -116,7 +113,7 @@ Boolean aboolean=false;
         //setting background custom image of theres button
         btn3.setBackgroundResource(R.drawable.white_detailsbg);
         btn2.setBackgroundResource(R.drawable.white_detailsbg);
-        btnData("SELECT ID,NAME,ACTIVE FROM "+db.TABLE_NAME+" WHERE TYPE='M'");
+        btnData("SELECT ID,NAME,ACTIVE FROM "+db.TABLE_NAME1 +" WHERE TYPE='M'");
     }
 
     public void laber_btn(View view) {
@@ -128,7 +125,7 @@ Boolean aboolean=false;
         //setting background custom image of theres button
         btn3.setBackgroundResource(R.drawable.white_detailsbg);
         btn1.setBackgroundResource(R.drawable.white_detailsbg);
-        btnData("SELECT ID,NAME,ACTIVE FROM "+db.TABLE_NAME+" WHERE TYPE='L'");
+        btnData("SELECT ID,NAME,ACTIVE FROM "+db.TABLE_NAME1 +" WHERE TYPE='L'");
     }
 
     public void g_btn(View view) {
@@ -140,7 +137,7 @@ Boolean aboolean=false;
         //setting background custom image of theres button
         btn1.setBackgroundResource(R.drawable.white_detailsbg);
         btn2.setBackgroundResource(R.drawable.white_detailsbg);
-        btnData("SELECT ID,NAME,ACTIVE FROM "+db.TABLE_NAME+" WHERE TYPE='G'");
+        btnData("SELECT ID,NAME,ACTIVE FROM "+db.TABLE_NAME1 +" WHERE TYPE='G'");
     }
 
     public void btnData(String query){
