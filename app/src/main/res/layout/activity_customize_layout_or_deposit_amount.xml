@@ -35,24 +35,24 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="50dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginLeft="10dp"
             android:orientation="horizontal"
             android:padding="4dp"
-            android:weightSum="15">
+            android:weightSum="15"
+            android:background="@drawable/border_outline_while_bg">
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="10"
+                android:layout_weight="8"
                 android:text="ENTER DEPOSIT AMOUNT ="
-                android:textColor="@color/purple_700"
+                android:textColor="#1AA30A"
+                android:layout_gravity="center_vertical"
                 android:paddingLeft="15dp"
                 android:textSize="14dp" />
 
 
             <EditText
-                android:layout_weight="5"
+                android:layout_weight="7"
                 android:layout_width="0dp"
                 android:layout_height="45dp"
                 android:layout_marginTop="1dp"
@@ -63,7 +63,9 @@
                 android:textColor="#2C980F"
                 android:textSize="20dp"
                 android:inputType="numberDecimal"
-                android:id="@+id/custom_input_giving_amount_et"/>
+                android:id="@+id/custom_deposit_et">
+                <requestFocus></requestFocus><!--cursor will focus here when this activity is open and to open keyboard code is written in manifest file writing focus here is important otherwise keyboard will not open-->
+            </EditText>
         </LinearLayout>
     <LinearLayout
         android:id="@+id/date_mic_desc_layout"
@@ -72,10 +74,11 @@
         android:layout_marginTop="20dp"
         android:orientation="horizontal"
         android:padding="4dp"
-        android:weightSum="20">
+        android:weightSum="21"
+        android:background="@drawable/border_outline_while_bg">
 
         <TextView
-            android:id="@+id/custon_date_icon_tv"
+            android:id="@+id/custom_date_icon_tv"
             android:layout_weight="3"
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -84,7 +87,7 @@
             android:textSize="20dp"
             android:background="@drawable/ic_round_edit_calendar_20"/>
         <TextView
-            android:layout_weight="13"
+            android:layout_weight="10"
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:background="@drawable/white_detailsbg"
@@ -97,15 +100,30 @@
             android:textColor="@color/black"
             android:textSize="20dp"
             android:id="@+id/custom_date_tv"/>
-
+        <Chronometer
+            android:layout_weight="3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textSize="10dp"
+            android:textColor="@color/black"
+            android:id="@+id/custom_chronometer"
+            android:layout_marginLeft="40dp"/>
         <TextView
             android:id="@+id/custom_mic_tv"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_marginLeft="140dp"
-            android:layout_marginRight="20dp"
-            android:layout_weight="4"
+            android:layout_weight="3"
             android:background="@drawable/black_sharp_mic_24" />
+        <TextView
+            android:layout_weight="2"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_marginRight="2dp"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/ic_black_sharp_tick_done_20"
+            android:id="@+id/custom_save_audio_tv"/>
+
+
     </LinearLayout>
 
         <EditText
@@ -115,7 +133,7 @@
             android:layout_marginTop="20dp"
             android:layout_marginRight="10dp"
             android:layout_marginLeft="10dp"
-            android:id="@+id/custom_user_ed"
+            android:id="@+id/custom_description_et"
             />
         <LinearLayout
             android:layout_width="match_parent"

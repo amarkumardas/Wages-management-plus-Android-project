@@ -2,8 +2,15 @@ package amar.das.acbook.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.Chronometer;
+import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.TextView;
 
 import amar.das.acbook.R;
 import amar.das.acbook.databinding.ActivityCustomizeLayoutOrDepositAmountBinding;
@@ -21,6 +28,42 @@ ActivityCustomizeLayoutOrDepositAmountBinding binding;
         String [] districts=getResources().getStringArray(R.array.districts);
         ArrayAdapter<String> adapter=new ArrayAdapter<>(CustomizeLayoutOrDepositAmount.this, android.R.layout.select_dialog_item,districts);
         binding.customSpinnerSetting.setAdapter(adapter);
+
+        //ids
+
+
+        Spinner  spinner=findViewById(R.id.custom_spinner_setting);
+        TextView micIcon=findViewById(R.id.custom_mic_tv);
+        TextView dateIcon=findViewById(R.id.custom_date_icon_tv);
+        TextView inputDate=findViewById(R.id.custom_date_tv);
+        TextView saveAudio=findViewById(R.id.custom_save_audio_tv);
+
+        Chronometer playAudioChronometer =findViewById(R.id.custom_chronometer);
+
+
+        EditText deposit_amount=findViewById(R.id.custom_deposit_et);
+
+        EditText description=findViewById(R.id.custom_description_et);
+        Button save=findViewById(R.id.custom_save_btn);
+        Button cancel=findViewById(R.id.custom_cancel_btn);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         //https://stackoverflow.com/questions/5368225/spinner-item-gets-automatically-selected-upon-entering-activity-how-do-i-avoid
         //when activity is loaded spinner item is selected automatically so to avoid this we are using spinnerSetting.setSelection(initialposition, false);
@@ -75,4 +118,6 @@ ActivityCustomizeLayoutOrDepositAmountBinding binding;
 //            }
 //        });
     }
+
+
 }

@@ -33,9 +33,8 @@
         app:defaultQueryHint="Last 4,5 digits of A/C,Aadhar Card"
         android:inputType="textCapCharacters|textAutoCorrect"
         app:iconifiedByDefault="false"
-        app:searchIcon="@null"
-
-        >
+        app:searchIcon="@null">
+        <requestFocus></requestFocus><!--cursor will focus here when this activity is open and to open keyboard code is written in manifest file writing focus here is important otherwise keyboard will not open-->
     </androidx.appcompat.widget.SearchView>
 <!-- app:iconifiedByDefault="false" so that user enter anywhere to write and show icon by default.means to make searchview
 expanded automatically

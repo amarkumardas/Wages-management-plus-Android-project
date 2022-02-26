@@ -100,12 +100,15 @@
             android:layout_marginRight="2dp"
             android:layout_marginLeft="2dp"
             android:singleLine="true"
-            android:maxLength="3"
+            android:maxLength="4"
             android:textAlignment="center"
             android:textColor="@color/black"
             android:textSize="20dp"
             android:inputType="numberDecimal"
-            android:id="@+id/input_p1_et"/>
+            android:id="@+id/input_p1_et">
+            <requestFocus></requestFocus><!--cursor will focus here when this activity is open and to open keyboard code is written in manifest file writing focus here is important otherwise keyboard will not open-->
+        </EditText>
+
 
         <EditText
             android:layout_weight="1"
@@ -114,7 +117,7 @@
             android:layout_marginTop="1dp"
             android:background="@drawable/white_detailsbg"
             android:textStyle="bold"
-            android:maxLength="3"
+            android:maxLength="4"
             android:singleLine="true"
             android:layout_marginRight="2dp"
             android:layout_marginLeft="2dp"
@@ -130,7 +133,7 @@
             android:layout_marginTop="1dp"
             android:background="@drawable/white_detailsbg"
             android:textStyle="bold"
-            android:maxLength="3"
+            android:maxLength="4"
             android:singleLine="true"
             android:layout_marginRight="2dp"
             android:layout_marginLeft="2dp"
@@ -146,7 +149,7 @@
             android:layout_marginTop="1dp"
             android:background="@drawable/white_detailsbg"
             android:textStyle="bold"
-            android:maxLength="3"
+            android:maxLength="4"
             android:layout_marginRight="2dp"
             android:layout_marginLeft="2dp"
             android:singleLine="true"
@@ -160,9 +163,8 @@
             android:id="@+id/suggestion_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
+            android:background="@drawable/border_outline_while_bg"
             android:layout_marginTop="10dp"
-
             android:orientation="horizontal"
             android:padding="4dp"
             android:weightSum="20">
@@ -173,8 +175,9 @@
                 android:layout_weight="9"
                 android:text="Days required to work  ="
                 android:textColor="@color/purple_700"
-                android:textAlignment="textStart"
-                android:textSize="13dp" />
+                android:layout_gravity="center_vertical"
+                android:textSize="13dp"
+                />
 
             <TextView
                 android:id="@+id/no_of_days"
@@ -183,7 +186,7 @@
                 android:layout_weight="4"
                 android:text="1000"
                 android:background="#D6DADF"
-                android:textAlignment="textStart"
+                android:layout_gravity="center_vertical"
                 android:textSize="14dp" />
 
             <TextView
@@ -202,7 +205,7 @@
             android:layout_height="wrap_content"
 
             android:layout_marginTop="10dp"
-
+            android:background="@drawable/border_outline_while_bg"
             android:orientation="horizontal"
             android:padding="4dp"
             android:weightSum="15">
@@ -212,7 +215,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="7"
                 android:text="This week work amount ="
-                android:layout_gravity="center"
+                android:layout_gravity="center_vertical"
                 android:textColor="@color/purple_700"
                 android:textSize="13dp" />
 
@@ -220,8 +223,8 @@
                 android:layout_weight="3"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:textAlignment="textStart"
-                android:text="3500"
+                android:layout_gravity="center_vertical"
+                android:text="35000"
                 android:textColor="#0DAF07"
                 android:textStyle="bold"
                 android:textSize="20dp"
@@ -248,7 +251,8 @@
             android:layout_marginTop="20dp"
             android:orientation="horizontal"
             android:padding="4dp"
-            android:weightSum="20">
+            android:weightSum="21"
+            android:background="@drawable/border_outline_while_bg">
 
             <TextView
                 android:id="@+id/date_icon_tv"
@@ -256,12 +260,11 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="10dp"
-
                 android:textColor="@color/black"
                 android:textSize="20dp"
                 android:background="@drawable/ic_round_edit_calendar_20"/>
             <TextView
-                android:layout_weight="13"
+                android:layout_weight="10"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
                 android:background="@drawable/white_detailsbg"
@@ -272,22 +275,34 @@
                 android:singleLine="true"
                 android:layout_marginLeft="10dp"
                 android:textColor="@color/black"
-                android:textSize="15dp"
+                android:textSize="18dp"
                 android:id="@+id/input_date_tv"/>
 
             <Chronometer
-                android:layout_width="wrap_content"
+                android:layout_weight="3"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
                 android:textSize="10dp"
-                android:id="@+id/chronometer"/>
+                android:textColor="@color/black"
+                android:id="@+id/chronometer"
+                 android:layout_marginLeft="40dp"/>
+
             <TextView
                 android:id="@+id/mic_tv"
+                android:layout_weight="3"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="140dp"
-                android:layout_marginRight="20dp"
-                android:layout_weight="4"
-                android:background="@drawable/black_sharp_mic_24" />
+                android:background="@drawable/black_sharp_mic_24"/>
+            <TextView
+                android:layout_weight="2"
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+               android:layout_marginRight="2dp"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/ic_black_sharp_tick_done_20"
+                android:id="@+id/save_audio_tv"/>
+
         </LinearLayout>
         <EditText
             android:layout_width="match_parent"

@@ -74,8 +74,8 @@ Boolean aboolean=false;
 
        // searchView.setQuery("I",true); //to set default text to serach box
 
-        //when Find Activity open then automatically keyboard should open
-        showSoftKeyboard(searchView);
+        //when Find Activity open then automatically keyboard should open.this is manual way of openeing keyboard
+        //showSoftKeyboard(searchView);//to show keyboard code added to manifest file
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 
@@ -97,12 +97,12 @@ Boolean aboolean=false;
 
 
     }
-    public void showSoftKeyboard(View searchView) {//code link https://developer.android.com/training/keyboard-input/visibility#java
-        if (searchView.requestFocus()) {
-            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.showSoftInput(searchView, InputMethodManager.SHOW_IMPLICIT);
-        }
-    }
+//    public void showSoftKeyboard(View searchView) {//code link https://developer.android.com/training/keyboard-input/visibility#java
+//        if (searchView.requestFocus()) {
+//            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+//            imm.showSoftInput(searchView, InputMethodManager.SHOW_IMPLICIT);
+//        }
+//    }
 
     public void mestre_btn(View view) {
         //setting back ground color

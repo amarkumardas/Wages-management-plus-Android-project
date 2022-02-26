@@ -381,7 +381,7 @@ public class InsertDataActivity extends AppCompatActivity {
                                         holdlastid=""+result.getString(0);//to diaplay new added person ids comes at last when loop
                                         buffer.append("\nPerson ID: "+result.getString(0));
                                     }
-                                    insertDataToTable3(holdlastid);//holdlastid variable has newly added id.If insertDataToTable3(holdlastid); this method is placed in while loop then all matching duplicate this method have to execute which is useless and produce exception
+                                    insertDataToTable3(holdlastid);//holdlastid variable has newly added id.If this insertDataToTable3(holdlastid);  method is placed in while loop then all matching duplicate then have to  execute which is useless and produce exception
                                     displResult("Successfully Added New Person ID is: "+holdlastid,buffer.toString());
                                     add.setVisibility(View.VISIBLE);
                                 }

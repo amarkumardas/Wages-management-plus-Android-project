@@ -31,9 +31,7 @@ public class PersonRecordDatabase extends SQLiteOpenHelper {
     public final static String TABLE_NAME2="wages_table";
     public final static String COL_21="ID";
     public final static String COL_22="DATE";
-    public final static String COL_23="MICNAME";
     public final static String COL_24="MICPATH";
-    public final static String COL_25="MICLENGTH";
     public final static String COL_26="DESCRIPTION";
     public final static String COL_27="WAGES";
     public final static String COL_28="DEPOSIT";
@@ -41,7 +39,7 @@ public class PersonRecordDatabase extends SQLiteOpenHelper {
     public final static String COL_221="P2";
     public final static String COL_222="P3";
     public final static String COL_223="P4";
-    public final static String COL_224="EDITED";
+    public final static String COL_224="ISDEPOSITED";
 
     //table 3
     public final static String TABLE_NAME3="rate_skills_indicator_table";
@@ -65,7 +63,7 @@ public class PersonRecordDatabase extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase sqLiteDatabase) {//it will execute only once        //NOT NULL OR DEFAULT NOT WORKING AND VARCHAR GIVEN VALUE NOT WORKING HOLDING MORE THAN GIVEN VALUE
      try {//if some error occur it will handle
          sqLiteDatabase.execSQL("CREATE TABLE " + TABLE_NAME1 + " (ID INTEGER PRIMARY KEY AUTOINCREMENT,NAME VARCHAR(100) DEFAULT NULL,BANKACCOUNT VARCHAR(20) DEFAULT NULL,IFSCCODE VARCHAR(11) DEFAULT NULL,BANKNAME VARCHAR(38) DEFAULT NULL,AADHARCARD VARCHAR(12) DEFAULT NULL,PHONE VARCHAR(10) DEFAULT NULL,TYPE CHAR(1) DEFAULT NULL,FATHERNAME VARCHAR(100) DEFAULT NULL,IMAGE BLOB DEFAULT NULL,ACHOLDER VARCHAR(100) DEFAULT NULL,ACTIVE CHAR(1) DEFAULT 1);");
-         sqLiteDatabase.execSQL("CREATE TABLE " + TABLE_NAME2 + " (ID INTEGER ,DATE TEXT DEFAULT NULL,MICNAME TEXT DEFAULT NULL,MICPATH TEXT DEFAULT NULL,MICLENGTH INTEGER DEFAULT NULL,DESCRIPTION TEXT DEFAULT NULL,WAGES NUMERIC DEFAULT NULL,DEPOSIT NUMERIC DEFAULT NULL,P1 FLOAT DEFAULT NULL,P2 FLOAT DEFAULT NULL,P3 FLOAT DEFAULT NULL,P4 FLOAT DEFAULT NULL,EDITED CHAR(1) DEFAULT NULL);");
+         sqLiteDatabase.execSQL("CREATE TABLE " + TABLE_NAME2 + " (ID INTEGER ,DATE TEXT DEFAULT NULL,MICPATH TEXT DEFAULT NULL,DESCRIPTION TEXT DEFAULT NULL,WAGES NUMERIC DEFAULT NULL,DEPOSIT NUMERIC DEFAULT NULL,P1 FLOAT DEFAULT NULL,P2 FLOAT DEFAULT NULL,P3 FLOAT DEFAULT NULL,P4 FLOAT DEFAULT NULL,ISDEPOSITED CHAR(1) DEFAULT NULL);");
          sqLiteDatabase.execSQL("CREATE TABLE " + TABLE_NAME3 + " (ID INTEGER PRIMARY KEY NOT NULL ,R1 INTEGER DEFAULT NULL,R2 INTEGER DEFAULT NULL,R3 INTEGER DEFAULT NULL,R4 INTEGER DEFAULT NULL,SKILL1 CHAR(1) DEFAULT NULL,SKILL2 CHAR(1) DEFAULT NULL,SKILL3 CHAR(1) DEFAULT NULL,INDICATOR CHAR(1) DEFAULT NULL);");//id is primary key because according to id only data is stored in table 3 so no duplicate
      }catch(Exception e){
          e.printStackTrace();
@@ -179,23 +177,133 @@ public class PersonRecordDatabase extends SQLiteOpenHelper {
     }
 
     //insertdata TO table 2
-    public boolean insertDataTable2(String id,String date,String micname,String micPath,int micLength,String description,int wages,int deposit, float p1,float p2,float p3,float p4,String edited ) {
+    public boolean insert_1_Person_WithWagesTable2(String id, String date, String micPath, String description, int wages, float p1, String isDeposited) {
         try {
             db = this.getWritableDatabase();//getting permission
             ContentValues cv = new ContentValues();//to enter data at once it is like hash map
             cv.put(COL_21, id);
             cv.put(COL_22, date);
-            cv.put(COL_23, micname);
             cv.put(COL_24, micPath);
-            cv.put(COL_25, micLength);
             cv.put(COL_26, description);
             cv.put(COL_27, wages);
-            cv.put(COL_28, deposit);
+            cv.put(COL_29, p1);
+           cv.put(COL_224, isDeposited);
+            //-1 is returned if error occurred. .insert(...) returns the row id of the new inserted record
+            long rowid = db.insert(TABLE_NAME2, null, cv);
+            db.close();//closing db after operation performed
+            if (rowid == -1)//data not inserted
+                return false;
+            else
+                return true;
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+    public boolean insert_2_Person_WithWagesTable2(String id, String date, String micPath, String description, int wages, float p1,float p2, String isDeposited) {
+        try {
+            db = this.getWritableDatabase();//getting permission
+            ContentValues cv = new ContentValues();//to enter data at once it is like hash map
+            cv.put(COL_21, id);
+            cv.put(COL_22, date);
+
+            cv.put(COL_24, micPath);
+
+            cv.put(COL_26, description);
+            cv.put(COL_27, wages);
+
+            cv.put(COL_29, p1);
+            cv.put(COL_221, p2);
+
+            cv.put(COL_224, isDeposited);
+            //-1 is returned if error occurred. .insert(...) returns the row id of the new inserted record
+            long rowid = db.insert(TABLE_NAME2, null, cv);
+            db.close();//closing db after operation performed
+            if (rowid == -1)//data not inserted
+                return false;
+            else
+                return true;
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+    public boolean insert_3_Person_WithWagesTable2(String id, String date, String micPath, String description, int wages, float p1,float p2,float p3, String isDeposited) {
+        try {
+            db = this.getWritableDatabase();//getting permission
+            ContentValues cv = new ContentValues();//to enter data at once it is like hash map
+            cv.put(COL_21, id);
+            cv.put(COL_22, date);
+
+            cv.put(COL_24, micPath);
+
+            cv.put(COL_26, description);
+            cv.put(COL_27, wages);
+
+            cv.put(COL_29, p1);
+            cv.put(COL_221, p2);
+            cv.put(COL_222, p3);
+            cv.put(COL_224, isDeposited);
+            //-1 is returned if error occurred. .insert(...) returns the row id of the new inserted record
+            long rowid = db.insert(TABLE_NAME2, null, cv);
+            db.close();//closing db after operation performed
+            if (rowid == -1)//data not inserted
+                return false;
+            else
+                return true;
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+    public boolean insert_4_Person_WithWagesTable2(String id, String date, String micPath, String description, int wages, float p1,float p2,float p3,float p4, String isDeposited) {
+        try {
+            db = this.getWritableDatabase();//getting permission
+            ContentValues cv = new ContentValues();//to enter data at once it is like hash map
+            cv.put(COL_21, id);
+            cv.put(COL_22, date);
+
+            cv.put(COL_24, micPath);
+
+            cv.put(COL_26, description);
+            cv.put(COL_27, wages);
+
             cv.put(COL_29, p1);
             cv.put(COL_221, p2);
             cv.put(COL_222, p3);
             cv.put(COL_223, p4);
-            cv.put(COL_224, edited);
+
+            cv.put(COL_224, isDeposited);
+            //-1 is returned if error occurred. .insert(...) returns the row id of the new inserted record
+            long rowid = db.insert(TABLE_NAME2, null, cv);
+            db.close();//closing db after operation performed
+            if (rowid == -1)//data not inserted
+                return false;
+            else
+                return true;
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+    public boolean insert_Deposit_Table2(String id, String date, String micPath, String description, int wages,int deposite, float p1,float p2,float p3,float p4, String isDeposited) {
+        try {
+            db = this.getWritableDatabase();//getting permission
+            ContentValues cv = new ContentValues();//to enter data at once it is like hash map
+            cv.put(COL_21, id);
+            cv.put(COL_22, date);
+
+            cv.put(COL_24, micPath);
+
+            cv.put(COL_26, description);
+            cv.put(COL_27, wages);
+            cv.put(COL_28, deposite);
+            cv.put(COL_29, p1);
+            cv.put(COL_221, p2);
+            cv.put(COL_222, p3);
+            cv.put(COL_223, p4);
+
+            cv.put(COL_224, isDeposited);
             //-1 is returned if error occurred. .insert(...) returns the row id of the new inserted record
             long rowid = db.insert(TABLE_NAME2, null, cv);
             db.close();//closing db after operation performed
