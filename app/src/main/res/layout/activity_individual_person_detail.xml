@@ -262,7 +262,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textAlignment="center"
-            android:text="M"
             android:textColor="@color/black"
             android:textStyle="bold"
             android:background="#B5B3B0"
@@ -273,7 +272,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textAlignment="center"
-            android:text="L"
             android:textColor="@color/black"
             android:textStyle="bold"
             android:textSize="13dp"
@@ -283,7 +281,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textAlignment="center"
-            android:text="L"
             android:textColor="@color/black"
             android:textStyle="bold"
             android:textSize="13dp"
@@ -293,7 +290,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textAlignment="center"
-            android:text="L"
             android:textColor="@color/black"
             android:textStyle="bold"
             android:textSize="13dp"
@@ -311,8 +307,12 @@
             android:layout_height="500dp"
             android:layout_marginLeft="1dp"
             android:layout_marginRight="1dp"
-            tools:listitem="@layout/single_record_row"></androidx.recyclerview.widget.RecyclerView>
+            tools:listitem="@layout/single_record_row">
 
+        </androidx.recyclerview.widget.RecyclerView>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="20dp"
@@ -335,58 +335,56 @@
                 android:textAlignment="center"
                 android:text="10000"
                 android:paddingTop="2dp"
-                android:textColor="#FF9800"
+                android:textColor="#DD8503"
                 android:textStyle="bold"
                 android:textSize="12dp"
-                android:id="@+id/total_wages_tv"/>
+                android:id="@+id/blue_total_wages_tv"/>
             <TextView
                 android:layout_weight="2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
-                android:text="100"
                 android:paddingTop="2dp"
-                android:textColor="@color/white"
+                android:textColor="@color/black"
                 android:textStyle="bold"
                 android:background="#989796"
                 android:textSize="12dp"
-                android:id="@+id/totalm_tv"/>
+                android:id="@+id/blue_totalp1_tv"/>
             <TextView
                 android:layout_weight="2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
                 android:paddingTop="2dp"
-                android:text="100"
-                android:textColor="@color/white"
+                android:textColor="@color/black"
                 android:textStyle="bold"
                 android:textSize="12dp"
-                android:id="@+id/totall1_tv"/>
+                android:id="@+id/blue_totalp2_tv"/>
             <TextView
                 android:layout_weight="2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
                 android:paddingTop="2dp"
-                android:text="100"
-                android:textColor="@color/white"
+                android:textColor="@color/black"
                 android:textStyle="bold"
                 android:textSize="12dp"
-                android:id="@+id/totall2_tv"/>
+                android:id="@+id/blue_totalp3_tv"/>
 
             <TextView
-                android:id="@+id/totall3_tv"
+                android:id="@+id/blue_totalp4_tv"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
                 android:paddingTop="2dp"
-                android:text="100"
                 android:textAlignment="center"
-                android:textColor="@color/white"
+                android:textColor="@color/black"
                 android:textSize="12dp"
                 android:textStyle="bold" />
         </LinearLayout>
+
         <LinearLayout
+            android:layout_below="@+id/subtotal_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -394,7 +392,7 @@
             android:layout_marginRight="2dp"
             android:weightSum="8"
             android:background="@color/white"
-            android:id="@+id/mestre_calculation_layout">
+            android:id="@+id/p1_layout">
             <TextView
                 android:layout_weight="1"
                 android:layout_width="0dp"
@@ -403,7 +401,7 @@
                 android:textColor="@color/black"
                 android:textAlignment="textEnd"
                 android:textSize="13dp"
-                android:id="@+id/mestre_text_tv"/>
+                android:id="@+id/p1_text_tv"/>
             <LinearLayout
                 android:layout_weight="2"
                 android:layout_width="0dp"
@@ -412,7 +410,7 @@
                 android:weightSum="5">
 
                 <TextView
-                    android:id="@+id/total_mestre_count_tv"
+                    android:id="@+id/total_p1_count_tv"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="2"
@@ -435,32 +433,30 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:textAlignment="textStart"
-                    android:text="500"
+
                     android:textColor="@color/purple_700"
                     android:textStyle="bold"
                     android:textSize="13dp"
-                    android:id="@+id/mestre_rate_tv"/>
+                    android:id="@+id/p1_rate_tv"/>
             </LinearLayout>
             <TextView
                 android:layout_weight="5"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textAlignment="textStart"
-                android:text="= 50000"
+
                 android:background="#D6DADF"
                 android:textColor="@color/black"
                 android:textStyle="bold"
                 android:textSize="13dp"
-                android:id="@+id/total_mestre_amount_tv"/>
+                android:id="@+id/total_p1_amount_tv"/>
         </LinearLayout>
-        <androidx.coordinatorlayout.widget.CoordinatorLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-           <!--Below linear layout is mode to add floating action button link  https://stackoverflow.com/questions/24459352/how-can-i-add-the-new-floating-action-button-between-two-widgets-layouts-->
-        <LinearLayout
+            <LinearLayout
+            android:layout_below="@id/p1_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:id="@+id/two_layout_together">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -469,7 +465,7 @@
             android:layout_marginRight="2dp"
             android:weightSum="8"
             android:background="@color/white"
-            android:id="@+id/laber1_calculation_layout">
+            android:id="@+id/p2_layout">
             <TextView
                 android:layout_weight="1"
                 android:layout_width="0dp"
@@ -478,7 +474,7 @@
                 android:textColor="@color/black"
                 android:textAlignment="textEnd"
                 android:textSize="13dp"
-                android:id="@+id/laber1_text_tv"/>
+                android:id="@+id/p2_text_tv"/>
             <LinearLayout
                 android:layout_weight="2"
                 android:layout_width="0dp"
@@ -494,7 +490,7 @@
                     android:textColor="@color/black"
                     android:textStyle="bold"
                     android:textSize="13dp"
-                    android:id="@+id/total_laber1_count_tv"/>
+                    android:id="@+id/total_p2_count_tv"/>
                 <TextView
                     android:layout_weight="1"
                     android:layout_width="0dp"
@@ -514,7 +510,7 @@
                     android:textColor="@color/purple_700"
                     android:textStyle="bold"
                     android:textSize="13dp"
-                    android:id="@+id/laber1_rate_tv"/>
+                    android:id="@+id/p2_rate_tv"/>
             </LinearLayout>
             <TextView
                 android:layout_weight="5"
@@ -526,7 +522,7 @@
                 android:textColor="@color/black"
                 android:textStyle="bold"
                 android:textSize="13dp"
-                android:id="@+id/total_laber1_amount_tv"/>
+                android:id="@+id/total_p2_amount_tv"/>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
@@ -536,7 +532,7 @@
             android:layout_marginRight="2dp"
             android:weightSum="8"
             android:background="@color/white"
-            android:id="@+id/laber2_calculation_layout">
+            android:id="@+id/p3_layout">
             <TextView
                 android:layout_weight="1"
                 android:layout_width="0dp"
@@ -545,7 +541,7 @@
                 android:textColor="@color/black"
                 android:textAlignment="textEnd"
                 android:textSize="13dp"
-                android:id="@+id/laber2_text_tv"/>
+                android:id="@+id/p3_text_tv"/>
             <LinearLayout
                 android:layout_weight="2"
                 android:layout_width="0dp"
@@ -561,7 +557,7 @@
                     android:textColor="@color/black"
                     android:textStyle="bold"
                     android:textSize="13dp"
-                    android:id="@+id/total_laber2_count_tv"/>
+                    android:id="@+id/total_p3_count_tv"/>
                 <TextView
                     android:layout_weight="1"
                     android:layout_width="0dp"
@@ -581,7 +577,7 @@
                     android:textColor="@color/purple_700"
                     android:textStyle="bold"
                     android:textSize="13dp"
-                    android:id="@+id/laber2_rate_tv"/>
+                    android:id="@+id/p3_rate_tv"/>
             </LinearLayout>
             <TextView
                 android:layout_weight="5"
@@ -593,24 +589,14 @@
                 android:textColor="@color/black"
                 android:textStyle="bold"
                 android:textSize="13dp"
-                android:id="@+id/total_laber2_amount_tv"/>
+                android:id="@+id/total_p3_amount_tv"/>
         </LinearLayout>
         </LinearLayout>
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/fab"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:fabSize="mini"
-                android:src="@drawable/original_pencil_border_color_24"
-                app:layout_anchor="@id/laber2_calculation_layout"
-                app:layout_anchorGravity="bottom|right|end"
-                android:layout_marginRight="60dp"
-                app:rippleColor="#FDE300"
-                android:clickable="true"
-                />
-        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+
 
         <LinearLayout
+            android:layout_below="@id/two_layout_together"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -618,7 +604,7 @@
             android:layout_marginRight="2dp"
             android:weightSum="8"
             android:background="@color/white"
-            android:id="@+id/laber3_calculation_layout">
+            android:id="@+id/p4_layout">
             <TextView
                 android:layout_weight="1"
                 android:layout_width="0dp"
@@ -627,7 +613,7 @@
                 android:textColor="@color/black"
                 android:textAlignment="textEnd"
                 android:textSize="13dp"
-                android:id="@+id/laber3_text_tv"/>
+                android:id="@+id/p4_text_tv"/>
             <LinearLayout
                 android:layout_weight="2"
                 android:layout_width="0dp"
@@ -643,7 +629,7 @@
                     android:textColor="@color/black"
                     android:textStyle="bold"
                     android:textSize="13dp"
-                    android:id="@+id/total_laber3_count_tv"/>
+                    android:id="@+id/total_p4_count_tv"/>
                 <TextView
                     android:layout_weight="1"
                     android:layout_width="0dp"
@@ -662,7 +648,7 @@
                     android:textColor="@color/purple_700"
                     android:textStyle="bold"
                     android:textSize="13dp"
-                    android:id="@+id/laber3_rate_tv"/>
+                    android:id="@+id/p4_rate_tv"/>
             </LinearLayout>
             <TextView
                 android:layout_weight="5"
@@ -674,9 +660,10 @@
                 android:textStyle="bold"
                 android:background="#D6DADF"
                 android:textSize="13dp"
-                android:id="@+id/total_laber3_amount_tv"/>
+                android:id="@+id/total_p4_amount_tv"/>
         </LinearLayout>
         <LinearLayout
+            android:layout_below="@id/p4_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -698,14 +685,15 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textAlignment="textStart"
-                android:text="= 0"
                 android:textColor="@color/black"
                 android:textStyle="bold"
                 android:background="#D6DADF"
                 android:textSize="13dp"
-                android:id="@+id/toatl_deposit_amount_tv"/>
+                android:id="@+id/total_deposit_amount_tv"/>
         </LinearLayout>
+
         <LinearLayout
+            android:layout_below="@+id/total_deposit_amount_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -726,7 +714,7 @@
                 android:layout_weight="3"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="25999"
+
                 android:textStyle="bold"
                 android:textColor="#FF9800"
                 android:textAlignment="textEnd"
@@ -737,7 +725,7 @@
                 android:layout_weight="3"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text=" - 1000000"
+
                 android:textColor="@color/black"
                 android:background="#B5B3B0"
                 android:textStyle="bold"
@@ -748,33 +736,44 @@
                 android:layout_weight="6"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="= 1025999"
+
                 android:textStyle="bold"
                 android:textColor="#000000"
                 android:textAlignment="textStart"
                 android:textSize="15dp"
                 android:id="@+id/advance_or_balance_tv"/>
         </LinearLayout>
-        <Button
-            android:id="@+id/final_calculation_btn"
-            android:layout_width="290dp"
-            android:layout_height="40dp"
-            android:background="@drawable/dark_blue_buttonbg"
-            android:text="FINAL CALCULATION"
-            android:textColor="@color/white"
-            android:layout_gravity="center_horizontal"
-            android:drawableStart="@drawable/ic_round_calculate_24"
-            android:layout_marginTop="18dp"
-            android:layout_marginBottom="15dp"
-            android:paddingLeft="55dp"
-            android:paddingRight="30dp"
-            android:textStyle="bold"/>
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:fabSize="normal"
+                android:src="@drawable/original_pencil_border_color_24"
+                app:rippleColor="#FDE300"
+                android:clickable="true"
+                android:layout_below="@id/subtotal_layout"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="20dp"/>
+
+            <Button
+                android:id="@+id/final_calculation_btn"
+                android:layout_width="200dp"
+                android:layout_height="40dp"
+                android:layout_below="@+id/total_calculation_layout"
+                android:layout_centerInParent="true"
+                android:layout_marginTop="19dp"
+                android:layout_marginBottom="11dp"
+                android:background="@drawable/dark_blue_buttonbg"
+                android:drawableStart="@drawable/ic_round_calculate_24"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:text="FINAL TOTAL"
+                android:textColor="@color/white"
+                android:textStyle="bold" />
+        </RelativeLayout>
     </LinearLayout>
 </LinearLayout>
 </ScrollView>
-    <!--  app:rippleColor="#FDE300" it chanbe color when user click
-
-
-
+    <!--  app:rippleColor="#FDE300" it change color when user click button
 
         -->

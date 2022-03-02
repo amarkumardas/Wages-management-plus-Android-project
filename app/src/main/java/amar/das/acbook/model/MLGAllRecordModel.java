@@ -1,8 +1,7 @@
 package amar.das.acbook.model;
 
 public class MLGAllRecordModel {
-    String name,amount,id,active;
-
+   private String name,amount,id,active;
 
     public String getActive() {
         return active;
@@ -11,9 +10,6 @@ public class MLGAllRecordModel {
     public void setActive(String active) {
         this.active = active;
     }
-
-
-
 
     public String getId() {
         return id;
@@ -30,8 +26,6 @@ public class MLGAllRecordModel {
     public void setAmount(String amount) {
         this.amount = amount;
     }
-
-
 
     public String getName() {
         return name;

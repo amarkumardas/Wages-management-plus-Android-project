@@ -238,6 +238,7 @@
                 android:textStyle="bold"
                 android:singleLine="true"
                 android:textAlignment="center"
+                android:maxLength="9"
                 android:textColor="@color/black"
                 android:textSize="20dp"
                 android:inputType="numberDecimal"

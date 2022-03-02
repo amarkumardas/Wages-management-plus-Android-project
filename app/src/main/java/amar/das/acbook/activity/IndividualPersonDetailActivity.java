@@ -3,6 +3,7 @@ package amar.das.acbook.activity;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.Manifest;
 import android.app.DatePickerDialog;
@@ -33,11 +34,16 @@ import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 import amar.das.acbook.PersonRecordDatabase;
 import amar.das.acbook.R;
+import amar.das.acbook.adapters.SearchAdapter;
+import amar.das.acbook.adapters.WagesDetailsAdapter;
 import amar.das.acbook.databinding.ActivityIndividualPersonDetailBinding;
+import amar.das.acbook.model.SearchModel;
+import amar.das.acbook.model.WagesDetailsModel;
 
 public class IndividualPersonDetailActivity extends AppCompatActivity {
  ActivityIndividualPersonDetailBinding binding;
@@ -50,12 +56,12 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
     String fileName;
     MediaPlayer mediaPlayer;
 
-
     PersonRecordDatabase db;
     private String fromIntentPersonId;
     Boolean mStartRecording =false;
-
     int arr[]=new int[7];
+
+    ArrayList<WagesDetailsModel> dataList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,14 +70,113 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
         binding = ActivityIndividualPersonDetailBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        if (getIntent().hasExtra("ID")) {
+        if (getIntent().hasExtra("ID")) {//every operation will be perform based on id
             db = new PersonRecordDatabase(this);//on start only database should be create
-
             fromIntentPersonId = getIntent().getStringExtra("ID");//getting data from intent
+            //db.updateTable3("UPDATE "+db.TABLE_NAME3+" SET R1='10',R2='20',R3='30',R4='40' WHERE ID='"+fromIntentPersonId+"'");
 
+            //***********setting skill top of layout**********************************************
+            Cursor defaultSkillCursor=db.getData("SELECT TYPE FROM " + db.TABLE_NAME1 + " WHERE ID= '" + fromIntentPersonId +"'");//for sure it will return type or skill
+            defaultSkillCursor.moveToFirst();
+            binding.hardcodedM.setText(defaultSkillCursor.getString(0));
+            binding.p1TextTv.setText(defaultSkillCursor.getString(0)+"  =");//default calculation skill
+            defaultSkillCursor.close();
+
+
+             Cursor sumCursor=db.getData("SELECT SUM(WAGES),SUM(P1),SUM(P2),SUM(P3),SUM(P4),SUM(DEPOSIT) FROM "+db.TABLE_NAME2+" WHERE ID= '"+fromIntentPersonId +"'");
+             sumCursor.moveToFirst();
+
+             binding.blueTotalWagesTv.setText(sumCursor.getString(0));
+             binding.blueTotalp1Tv.setText(sumCursor.getString(1));
+             binding.totalP1CountTv.setText(sumCursor.getString(1));//default skill
+                    //sum deposit
+             if(sumCursor.getString(5) != null) {//if there is deposit then set visibility visible or else layout visibility GONE
+                 binding.totalDepositAmountTv.setText("= " + sumCursor.getString(5));
+             }else
+                 binding.totalDepositAmountLayout.setVisibility(View.GONE);
+
+            Cursor skillCursor=db.getData("SELECT SKILL1,SKILL2,SKILL3,R1,R2,R3,R4 FROM " + db.TABLE_NAME3 + " WHERE ID= '" + fromIntentPersonId +"'");
+            if(skillCursor != null) {
+                skillCursor.moveToFirst();
+                int indicate = get_indicator(fromIntentPersonId);
+                                //R1
+                if(skillCursor.getInt(3) != 0) {
+                                                    //R1
+                    binding.p1RateTv.setText(skillCursor.getString(3));//default skill
+                                                                       //    R1 * p1
+                    binding.totalP1AmountTv.setText("= "+skillCursor.getInt(3)*sumCursor.getInt(1));//default skill
+                }else
+                    binding.totalP1AmountTv.setText("= NO RATE PROVIDED");//default skill
+                               //total wages
+                if(sumCursor.getString(0) !=null) {//if total wages is not null then set total wages
+                    binding.wagesTotalAmountTv.setText(sumCursor.getString(0));//total wages set
+                }
+                     if(indicate==1) {
+                         Toast.makeText(this, "indicator: "+indicate, Toast.LENGTH_SHORT).show();
+
+                            initializeValues(sumCursor,skillCursor);
+                     }
+
+
+
+                binding.p2Layout.setVisibility(View.GONE);//initiall invisible according to indicator it will customize
+                binding.p3Layout.setVisibility(View.GONE);//initiall invisible according to indicator it will customize
+                binding.p4Layout.setVisibility(View.GONE);//initiall invisible according to indicator it will customize
+
+                if (indicate == 2) {
+                    binding.hardcodedL1.setText(skillCursor.getString(0));
+                    binding.blueTotalp2Tv.setText(sumCursor.getString(2));
+                    binding.p2Layout.setVisibility(View.VISIBLE);
+
+                } else if (indicate == 3) {
+                    binding.hardcodedL1.setText(skillCursor.getString(0));
+                    binding.blueTotalp2Tv.setText(sumCursor.getString(2));
+                    binding.hardcodedL2.setText(skillCursor.getString(1));
+                    binding.blueTotalp3Tv.setText(sumCursor.getString(3));
+                    binding.p2Layout.setVisibility(View.VISIBLE);
+                    binding.p3Layout.setVisibility(View.VISIBLE);
+
+                } else if (indicate == 4) {
+                    binding.hardcodedL1.setText(skillCursor.getString(0));
+                    binding.blueTotalp2Tv.setText(sumCursor.getString(2));
+                    binding.hardcodedL2.setText(skillCursor.getString(1));
+                    binding.blueTotalp3Tv.setText(sumCursor.getString(3));
+                    binding.hardcodedL3.setText(skillCursor.getString(2));
+                    binding.blueTotalp4Tv.setText(sumCursor.getString(4));
+                    binding.p2Layout.setVisibility(View.VISIBLE);
+                    binding.p3Layout.setVisibility(View.VISIBLE);
+                    binding.p4Layout.setVisibility(View.VISIBLE);
+
+                }
+            }
+            skillCursor.close();
+            sumCursor.close();
+            //***********Done setting skill**********************************************
+            //*******************Recycler view********************************************
+              Cursor allDataCursor=db.getData("SELECT DATE,MICPATH,DESCRIPTION,WAGES,DEPOSIT,P1,P2,P3,P4,ID FROM "+db.TABLE_NAME2+" WHERE ID='"+fromIntentPersonId+"'");
+              dataList=new ArrayList<>();
+            while(allDataCursor.moveToNext()){
+                WagesDetailsModel model=new WagesDetailsModel();
+                model.setDate(allDataCursor.getString(0));
+                model.setMicPath(allDataCursor.getString(1));
+                model.setDescription(allDataCursor.getString(2));
+                model.setWages(allDataCursor.getInt(3));
+                model.setDeposit(allDataCursor.getInt(4));
+                model.setP1(allDataCursor.getInt(5));
+                model.setP2(allDataCursor.getInt(6));
+                model.setP3(allDataCursor.getInt(7));
+                model.setP4(allDataCursor.getInt(8));
+                model.setId(allDataCursor.getString(9));
+                dataList.add(model);
+            }
+            allDataCursor.close();
+            WagesDetailsAdapter wagesDetailsAdapter=new WagesDetailsAdapter(this,dataList);
+
+            binding.singleRecordRecy.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
+            binding.singleRecordRecy.setAdapter(wagesDetailsAdapter);
+            //*******************done Recycler view********************************************
             //retrieving data from db
             Cursor cursor = db.getData("SELECT NAME,BANKACCOUNT,IFSCCODE,BANKNAME,AADHARCARD,PHONE,TYPE,FATHERNAME,IMAGE,ACHOLDER,ID FROM " + db.TABLE_NAME1 + " WHERE ID='" + fromIntentPersonId + "'");
-
             if (cursor != null) {
                 cursor.moveToFirst();
                 binding.nameTv.setText(cursor.getString(0));
@@ -95,67 +200,145 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                 binding.acHolderTv.setText("A/C Holder: " + cursor.getString(9));
                 binding.idTv.setText("ID: " + cursor.getString(10));
             } else {
-                Toast.makeText(this, "No data in cursor", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "NO DATA IN CURSOR", Toast.LENGTH_SHORT).show();
             }
 
             //to open dialpaid
-            binding.callTv.setOnClickListener(new View.OnClickListener() {
+            binding.callTv.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
-                public void onClick(View view) {
+                public boolean onLongClick(View view) {
                     if (cursor.getString(5).length() == 10) {
                         Intent callingIntent = new Intent(Intent.ACTION_DIAL);
                         callingIntent.setData(Uri.parse("tel:+91" + cursor.getString(5)));
                         startActivity(callingIntent);
                     } else
-                        Toast.makeText(IndividualPersonDetailActivity.this, "No Phone number added", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(IndividualPersonDetailActivity.this, "NO PHONE NUMBER ADDED", Toast.LENGTH_SHORT).show();
+                    return false;
                 }
             });
-
             binding.editTv.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View view) {
                     Intent intent = new Intent(getBaseContext(), InsertDataActivity.class);
                     intent.putExtra("ID", fromIntentPersonId);
                     startActivity(intent);
-                    finish();//while going to other activity so destryo  this current activity so that while coming back we will see refresh activity
+                    finish();//while going to other activity so destroy  this current activity so that while coming back we will see refresh activity
                     return false;
                 }
             });
-
             // cursor.close(); it should not be close because of call action to perform then we need cursor
         } else
-            Toast.makeText(this, "No ID from other Intent", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "NO ID FROM OTHER INTENT", Toast.LENGTH_SHORT).show();
 
         //to insert data in recyclerview
         binding.fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 arr=new int[7];//so that when again enter data fresh array will be created
-                Toast.makeText(IndividualPersonDetailActivity.this, "Fresh array: "+arr[0]+arr[1]+arr[2]+arr[3]+arr[4]+arr[5]+arr[6], Toast.LENGTH_SHORT).show();
-                insertDataToRecyclerView_ALertDialogBox( get_indicator(fromIntentPersonId) );
+                 insertDataToRecyclerView_ALertDialogBox(get_indicator(fromIntentPersonId) );
             }
         });
     }
+    private void initializeValues(Cursor sumCursor,Cursor skillCursor){
+        Toast.makeText(this, "inside", Toast.LENGTH_SHORT).show();
+        //deposit                              rate                                wages
+        if(sumCursor.getString(5) != null && skillCursor.getInt(3) != 0 && sumCursor.getInt(0) !=0) {
+            Toast.makeText(this, "deposit and rate and wages", Toast.LENGTH_SHORT).show();
+            //                                                       deposit+                       (R1*SUMP1)
+            binding.workTotalAmountTv.setText("- " + (sumCursor.getInt(5) + (skillCursor.getInt(3) * sumCursor.getInt(1))));
+            //                   deposit+                       (R1*SUMP1)                     total wages
+            if ((sumCursor.getInt(5) + (skillCursor.getInt(3) * sumCursor.getInt(1))) < sumCursor.getInt(0)) {
+                binding.advanceOrBalanceTv.setTextColor(Color.RED);
+                //                                                   total wages -                  deposit+                       (R1*SUMP1)
+                binding.advanceOrBalanceTv.setText("= " + (sumCursor.getInt(0) - (sumCursor.getInt(5) + (skillCursor.getInt(3) * sumCursor.getInt(1)))));
+                //deposit+                      (R1*SUMP1)                     total wages
+            } else if ((sumCursor.getInt(5) + (skillCursor.getInt(3) * sumCursor.getInt(1))) >= sumCursor.getInt(0)) {//>= is given because of green color
+                binding.advanceOrBalanceTv.setTextColor(Color.GREEN);
+                //                                                    deposit+                     (R1*SUMP1)                     -total wages
+                binding.advanceOrBalanceTv.setText("= " + ((sumCursor.getInt(5) + (skillCursor.getInt(3) * sumCursor.getInt(1))) - sumCursor.getInt(0)));
+            }
+            //no deposit                              rate                                   wages
+        } else if (sumCursor.getString(5) == null && skillCursor.getInt(3) != 0 && sumCursor.getInt(0) !=0 ) {
+            Toast.makeText(this, "no deposit and rate and wages", Toast.LENGTH_SHORT).show();
+            //                                                             (R1*SUMP1)
+            binding.workTotalAmountTv.setText("- " + (skillCursor.getInt(3) * sumCursor.getInt(1)));
+            //             (R1*SUMP1)                                     total wages
+            if ( ((skillCursor.getInt(3) * sumCursor.getInt(1))) < sumCursor.getInt(0)) {
+                binding.advanceOrBalanceTv.setTextColor(Color.RED);
+                //                                                   total wages -                        (R1*SUMP1)
+                binding.advanceOrBalanceTv.setText("= " + (sumCursor.getInt(0) - ((skillCursor.getInt(3) * sumCursor.getInt(1)))));
+                //                            (R1*SUMP1)                     total wages
+            } else if (((skillCursor.getInt(3) * sumCursor.getInt(1))) >= sumCursor.getInt(0)) {//equal is given because of green color
+                binding.advanceOrBalanceTv.setTextColor(Color.GREEN);
+                //                                                                (R1*SUMP1)                    -total wages
+                binding.advanceOrBalanceTv.setText("= " + (((skillCursor.getInt(3) * sumCursor.getInt(1))) - sumCursor.getInt(0)));
 
+           }
+
+            //deposit                            no  R1                                   no wage
+        }else if(sumCursor.getString(5) != null && skillCursor.getInt(3) == 0 && sumCursor.getInt(0)== 0){
+            Toast.makeText(this, "deposit and no rate no wages", Toast.LENGTH_SHORT).show();
+            //                                           deposit
+            binding.workTotalAmountTv.setText(" - "+sumCursor.getString(5));
+            //                                               deposit
+            binding.advanceOrBalanceTv.setText("= " +sumCursor.getString(5));
+            binding.advanceOrBalanceTv.setTextColor(Color.GREEN);
+            //deposit                            no  R1                                     wages
+        }else if(sumCursor.getString(5) != null && skillCursor.getInt(3) == 0 && sumCursor.getInt(0)!= 0){
+            Toast.makeText(this, "deposit and no rate and wages", Toast.LENGTH_SHORT).show();
+
+            binding.workTotalAmountTv.setText(" - "+sumCursor.getInt(5));
+            //             deposit              total wages
+            if ( (sumCursor.getInt(5) ) < sumCursor.getInt(0)) {
+                binding.advanceOrBalanceTv.setTextColor(Color.RED);
+                //                                                   total wages -    deposit
+                binding.advanceOrBalanceTv.setText("= " + (sumCursor.getInt(0) - ( sumCursor.getInt(5))));
+                //             deposit              total wages
+            } else if ( (sumCursor.getInt(5) ) > sumCursor.getInt(0)) {
+                binding.advanceOrBalanceTv.setTextColor(Color.GREEN);
+                //                                                   deposit      -total wages
+                binding.advanceOrBalanceTv.setText("= " + (sumCursor.getInt(5) - sumCursor.getInt(0)));
+                //             deposit              total wages
+            }else if((sumCursor.getInt(5) ) == sumCursor.getInt(0)){
+                binding.advanceOrBalanceTv.setTextColor(Color.GREEN);
+                binding.advanceOrBalanceTv.setText("= 0");
+            }
+            //no deposit                            no  R1                                     wages
+        }else if(sumCursor.getString(5) == null && skillCursor.getInt(3) == 0 && sumCursor.getInt(0)!= 0){
+            Toast.makeText(this, "no deposit and no rate and wages", Toast.LENGTH_SHORT).show();
+                binding.advanceOrBalanceTv.setTextColor(Color.RED);
+                binding.advanceOrBalanceTv.setText("= " + sumCursor.getInt(0));
+               //no deposit                             R1                                    no wages
+        }else if(sumCursor.getString(5) == null && skillCursor.getInt(3) != 0 && sumCursor.getInt(0)== 0){
+            Toast.makeText(this, "no deposit and  rate and no wages", Toast.LENGTH_SHORT).show();
+                                                           //      (SUMP1)*R1
+            binding.workTotalAmountTv.setText(" - "+(sumCursor.getInt(1)*skillCursor.getInt(3)));
+                                                                       //  R1*(SUMP1)
+            binding.advanceOrBalanceTv.setText("= "+(skillCursor.getInt(3)*sumCursor.getInt(1)));
+            binding.advanceOrBalanceTv.setTextColor(Color.GREEN);
+                   //deposit                              rate                               no wages
+        }else if(sumCursor.getString(5) != null && skillCursor.getInt(3) != 0 && sumCursor.getInt(0) ==0){
+            Toast.makeText(this, "  deposit and  rate and no wages", Toast.LENGTH_SHORT).show();
+            //                                                       deposit+                       (R1*SUMP1)
+            binding.workTotalAmountTv.setText(" - "+((sumCursor.getInt(5) + (skillCursor.getInt(3) * sumCursor.getInt(1)))));
+            binding.advanceOrBalanceTv.setText("= "+((sumCursor.getInt(5) + (skillCursor.getInt(3) * sumCursor.getInt(1)))));
+            binding.advanceOrBalanceTv.setTextColor(Color.GREEN);
+        }
+    }
     private int get_indicator(String PersonId) {
          Cursor cursor=db.getData("SELECT INDICATOR FROM " + db.TABLE_NAME3 + " WHERE ID= '" + fromIntentPersonId +"'");//for sure it will return type or skill
          String type="";
          if(cursor != null){
              cursor.moveToFirst();
-             type=cursor.getString(0);
-              if(type == null)
-                  return 1;//first person
-              else if(type.equals(1))
-                  return 2;//second person
-              else if(type.equals(2))
-                  return 3;//third person
-              else if(type.equals(3))
-                  return 4;//fourth person
+                if(cursor.getString(0) == null) {
+                     return 1;
+                } else
+                     return Integer.parseInt(cursor.getString(0));
          }else
              Toast.makeText(this, "No indicator: "+type, Toast.LENGTH_SHORT).show();
-        return 1;
-    }
 
+        return 1;//by default 1
+    }
     private void insertDataToRecyclerView_ALertDialogBox(int indicator) {
         AlertDialog.Builder mycustomDialog=new AlertDialog.Builder(IndividualPersonDetailActivity.this);
         LayoutInflater inflater=LayoutInflater.from(IndividualPersonDetailActivity.this);
@@ -193,8 +376,9 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
             public boolean onLongClick(View view) {
                 Intent intent=new Intent(IndividualPersonDetailActivity.this,CustomizeLayoutOrDepositAmount.class);
                 intent.putExtra("ID",fromIntentPersonId);
+                dialog.dismiss();//while going to other activity dismiss dialog otherwise window leak
+                finish();//while going to other activity so destroy  this current activity so that while coming back we will see refresh activity
                 startActivity(intent);
-                finish();//while going to other activity so destryo  this current activity so that while coming back we will see refresh activity
                 return false;
             }
         });
@@ -220,85 +404,67 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
             }
         });
 
-        //initially every field will be invisible based in indicator others fields will be visible
+        //initially every field will be invisible based on indicator others fields will be visible
         hardcodedP2.setVisibility(View.GONE);
         inputP2.setVisibility(View.GONE);
         hardcodedP3.setVisibility(View.GONE);
         inputP3.setVisibility(View.GONE);
         hardcodedP4.setVisibility(View.GONE);
         inputP4.setVisibility(View.GONE);
+
+        //**************************************Setting skills*******************************************
         //CUSTOMIZATION: initially in person skill or type is M,L or G then according to that layout will be customised
-        if(indicator == 1) {//only 1 person
-            //hardcodedP1,inputP1 by default visible so no need to mention
-            Cursor cursor1=db.getData("SELECT TYPE FROM " + db.TABLE_NAME1 + " WHERE ID= '" + fromIntentPersonId +"'");//for sure it will return type or skill
-            cursor1.moveToFirst();
-            hardcodedP1.setText(cursor1.getString(0));
-        }else if(indicator == 2) {//two person
-            // hardcodedP1,inputP1 by default visible so no need to mention
-            Cursor cursor=db.getData("SELECT SKILL1 FROM " + db.TABLE_NAME3 + " WHERE ID= '" + fromIntentPersonId +"'");//for sure it will return type or skill
-            cursor.moveToFirst();
-            hardcodedP2.setVisibility(View.VISIBLE);
-            inputP2.setVisibility(View.VISIBLE);
-            hardcodedP2.setText(cursor.getString(0));
+        //hardcodedP1,inputP1 by default visible so no need to mention if(indicator == 1) {
+        Cursor cursordefault=db.getData("SELECT TYPE FROM " + db.TABLE_NAME1 + " WHERE ID= '" + fromIntentPersonId +"'");//for sure it will return type or skill
+        cursordefault.moveToFirst();//no need to check  cursordefault !=null because for sure TYPE data is present
+        hardcodedP1.setText(cursordefault.getString(0));
+        cursordefault.close();
+
+        Cursor skillsCursor=db.getData("SELECT SKILL1,SKILL2,SKILL3 FROM " + db.TABLE_NAME3 + " WHERE ID= '" + fromIntentPersonId +"'");
+        if(skillsCursor != null) {
+            skillsCursor.moveToFirst();
+            if (indicator == 2) {//two person
+                // hardcodedP1,inputP1 by default visible so no need to mention
+                hardcodedP2.setVisibility(View.VISIBLE);
+                inputP2.setVisibility(View.VISIBLE);
+                hardcodedP2.setText(skillsCursor.getString(0));
+            } else if (indicator == 3) {//three person
+                //hardcodedP1,inputP1 by default visible so no need to mention
+                hardcodedP2.setVisibility(View.VISIBLE);
+                inputP2.setVisibility(View.VISIBLE);
+                hardcodedP2.setText(skillsCursor.getString(0));
+
+                hardcodedP3.setVisibility(View.VISIBLE);
+                hardcodedP3.setText(skillsCursor.getString(1));
+                inputP3.setVisibility(View.VISIBLE);
+            } else if (indicator == 4) {////two person
+                //hardcodedP1,inputP1 by default visible so no need to mention
+                hardcodedP2.setVisibility(View.VISIBLE);
+                inputP2.setVisibility(View.VISIBLE);
+                hardcodedP2.setText(skillsCursor.getString(0));
+
+                hardcodedP3.setVisibility(View.VISIBLE);
+                hardcodedP3.setText(skillsCursor.getString(1));
+                inputP3.setVisibility(View.VISIBLE);
+
+                hardcodedP4.setVisibility(View.VISIBLE);
+                hardcodedP4.setText(skillsCursor.getString(2));
+                inputP4.setVisibility(View.VISIBLE);
+            }
         }
-        else if(indicator == 3) {//three person
-            //hardcodedP1,inputP1 by default visible so no need to mention
-            Cursor cursor1=db.getData("SELECT SKILL1 FROM " + db.TABLE_NAME3 + " WHERE ID= '" + fromIntentPersonId +"'");//for sure it will return type or skill
-            cursor1.moveToFirst();
-            hardcodedP2.setVisibility(View.VISIBLE);
-            inputP2.setVisibility(View.VISIBLE);
-            hardcodedP2.setText(cursor1.getString(0));
-
-            Cursor cursor2=db.getData("SELECT SKILL2 FROM " + db.TABLE_NAME3 + " WHERE ID= '" + fromIntentPersonId +"'");//for sure it will return type or skill
-            cursor2.moveToFirst();
-            hardcodedP3.setVisibility(View.VISIBLE);
-            hardcodedP3.setText(cursor2.getString(0));
-            inputP3.setVisibility(View.VISIBLE);
-        }else if(indicator == 4) {////two person
-            //hardcodedP1,inputP1 by default visible so no need to mention
-            Cursor cursor1=db.getData("SELECT SKILL1 FROM " + db.TABLE_NAME3 + " WHERE ID= '" + fromIntentPersonId +"'");//for sure it will return type or skill
-            cursor1.moveToFirst();
-            hardcodedP2.setVisibility(View.VISIBLE);
-            inputP2.setVisibility(View.VISIBLE);
-            hardcodedP2.setText(cursor1.getString(0));
-
-            Cursor cursor2=db.getData("SELECT SKILL2 FROM " + db.TABLE_NAME3 + " WHERE ID= '" + fromIntentPersonId +"'");//for sure it will return type or skill
-            cursor2.moveToFirst();
-            hardcodedP3.setVisibility(View.VISIBLE);
-            hardcodedP3.setText(cursor2.getString(0));
-            inputP3.setVisibility(View.VISIBLE);
-
-            Cursor cursor3=db.getData("SELECT SKILL3 FROM " + db.TABLE_NAME3 + " WHERE ID= '" + fromIntentPersonId +"'");//for sure it will return type or skill
-            cursor3.moveToFirst();
-            hardcodedP4.setVisibility(View.VISIBLE);
-            hardcodedP4.setText(cursor3.getString(0));
-            inputP4.setVisibility(View.VISIBLE);
-        }
-
+        skillsCursor.close();
+        //**************************************done setting skills*******************************************
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(IndividualPersonDetailActivity.this, "on save: "+arr[0]+arr[1]+arr[2]+arr[3]+arr[4]+arr[5]+arr[6], Toast.LENGTH_SHORT).show();
-
                 //*********************************common to all indicator 1,2,3,4*******************
-                float p1,p2,p3,p4;//this default value is taken when user do enter date to fileds
+                int p1,p2,p3,p4;//this default value is taken when user do enter date to fileds
                 p1=p2=p3=p4=0;
                 int wages=0;
                 String remarks=null;
                 String micPath=null;
                 String date=inputDate.getText().toString();//date will be inserted automatically
 
-                Boolean isWrongData= isEnterDataIsWrong(arr);
-                Boolean isDataPresent= isDataPresent(arr);
-                if(isDataPresent==true && isWrongData==false ) {//means if data is present then check is it right data or not
-                    if (toGive_Amount.getText().toString().length() >= 1) {//to prevent nullpointer exception
-                        wages = Integer.parseInt(toGive_Amount.getText().toString().trim());
-                    }
-                    //>= if user enter only one digit then >= is important otherwise default value will be set
-                    if(inputP1.getText().toString().length() >=1) {//to prevent nullpointer exception
-                        p1 = Float.parseFloat(inputP1.getText().toString().trim());//converted to float and stored
-                    }
-                }
                 if(file !=null){//if file is not null then only it execute otherwise nothing will be inserted
                     micPath=file.getAbsolutePath();
                     arr[5]=1;
@@ -313,34 +479,42 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                 }
                 else
                     arr[6]=0;
+
+                Boolean isWrongData= isEnterDataIsWrong(arr);
+                Boolean isDataPresent= isDataPresent(arr);
+                if(isDataPresent==true && isWrongData==false ) {//means if data is present then check is it right data or not .if condition is false then default value will be taken
+                    if (toGive_Amount.getText().toString().length() >= 1) {//to prevent nullpointer exception
+                        wages = Integer.parseInt(toGive_Amount.getText().toString().trim());
+                    }
+                    //>= if user enter only one digit then >= is important otherwise default value will be set
+                    if(inputP1.getText().toString().length() >=1) {//to prevent nullpointer exception
+                        p1 = Integer.parseInt(inputP1.getText().toString().trim());//converted to float and stored
+                    }
+                }
                 //*********************************  all the upper code are common to all indicator 1,2,3,4*******************
 
-                if(indicator==1){
-                      isWrongData= isEnterDataIsWrong(arr);
-                      isDataPresent= isDataPresent(arr);
-                    //Toast.makeText(IndividualPersonDetailActivity.this, "indicator: "+arr[0]+arr[1]+arr[2]+arr[3]+arr[4]+arr[5]+arr[6], Toast.LENGTH_LONG).show();
-                    if(isDataPresent==true && isWrongData==false ) {//means if data is present then check is it right data or not
+                if(indicator==1) {
+                    if (isDataPresent == true && isWrongData == false) {//it is important means if data is present then check is it right data or not.if condition is false then this message will be displayed "Correct the Data or Cancel and Enter again"
                         //insert to database
-
                         Boolean success = db.insert_1_Person_WithWagesTable2(fromIntentPersonId, date, micPath, remarks, wages, p1, "0");
                         if (success == true) {
-                            displResult(wages+"          "+p1,"\n\nDATE: "+date+"\n\n"+"REMARKS: "+remarks);
+                            displResult(wages + "          " + p1, "\nDATE: " + date + "\n\n" + "REMARKS: " + remarks + "\n\nMICPATH: " + micPath);
                             dialog.dismiss();//dialog will be dismiss after saved automatically
                         } else
                             Toast.makeText(IndividualPersonDetailActivity.this, "Failed to Inserted", Toast.LENGTH_LONG).show();
-                    }else//once user enter wrong data and left blank then user wound be able to save because array value would not be change it will be 2 so  user have to "Cancel and enter again" if use dont leave blank then it will save successfully
+                    } else//once user enter wrong data and left blank then user wound be able to save because array value would not be change it will be 2 so  user have to "Cancel and enter again" if use dont leave blank then it will save successfully
                         Toast.makeText(IndividualPersonDetailActivity.this, "Correct the Data or Cancel and Enter again", Toast.LENGTH_LONG).show();
 
-                }else if(indicator==2){
+                } else if(indicator==2){
                     //p1 is automatically added
                     if(isDataPresent==true && isWrongData==false ) {
                         if (inputP2.getText().toString().length() >= 1) {//to prevent nullpointer exception
-                            p2 = Float.parseFloat(inputP2.getText().toString().trim());//converted to float and stored
+                            p2 = Integer.parseInt(inputP2.getText().toString().trim());//converted to float and stored
                         }
                         //insert to database
                         Boolean success = db.insert_2_Person_WithWagesTable2(fromIntentPersonId, date, micPath, remarks, wages, p1, p2, "0");
                         if (success == true) {
-                            displResult(wages+"          "+p1+"     "+p2,"\n\nDATE: "+date+"\n\n"+"REMARKS: "+remarks);
+                            displResult(wages+"          "+p1+"     "+p2,"\nDATE: "+date+"\n\n"+"REMARKS: "+remarks+"\n\nMICPATH: "+micPath);
                             dialog.dismiss();//dialog will be dismiss after saved automatically
                         } else
                             Toast.makeText(IndividualPersonDetailActivity.this, "Failed to Inserted", Toast.LENGTH_SHORT).show();
@@ -350,15 +524,15 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                 }else if(indicator==3){
                     if(isDataPresent==true && isWrongData==false ) {
                         if (inputP2.getText().toString().length() >= 1) {//to prevent nullpointer exception
-                            p2 = Float.parseFloat(inputP2.getText().toString().trim());//converted to float and stored
+                            p2 = Integer.parseInt(inputP2.getText().toString().trim());//converted to float and stored
                         }
                         if (inputP3.getText().toString().length() >= 1) {//to prevent nullpointer exception
-                            p3 = Float.parseFloat(inputP3.getText().toString().trim());//converted to float and stored
+                            p3 = Integer.parseInt(inputP3.getText().toString().trim());//converted to float and stored
                         }
                         //insert to database
                         Boolean success = db.insert_3_Person_WithWagesTable2(fromIntentPersonId, date, micPath, remarks, wages, p1, p2, p3, "0");
                         if (success == true) {
-                            displResult(wages+"          "+p1+"     "+p2+"     "+p3,"\n\nDATE: "+date+"\n\n"+"REMARKS: "+remarks);
+                            displResult(wages+"          "+p1+"     "+p2+"     "+p3,"\nDATE: "+date+"\n\n"+"REMARKS: "+remarks+"\n\nMICPATH: "+micPath);
                             dialog.dismiss();//dialog will be dismiss after saved automatically
                         } else
                             Toast.makeText(IndividualPersonDetailActivity.this, "Failed to Inserted", Toast.LENGTH_SHORT).show();
@@ -368,19 +542,19 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
 
                 }else if(indicator==4) {
                     if (isDataPresent == true && isWrongData == false) {
-                        if (inputP2.getText().toString().length() >= 1) {//to prevent nullpointer exception
-                            p2 = Float.parseFloat(inputP2.getText().toString().trim());//converted to float and stored
+                        if (inputP2.getText().toString().length() >= 1) {//to prevent nullpointer exception.If user do not enter any data then that time it will save from crashing app.So due to this condition if field is empty then default value will be taken
+                            p2 = Integer.parseInt(inputP2.getText().toString().trim());//converted to float and stored
                         }
                         if (inputP3.getText().toString().length() >= 1) {//to prevent nullpointer exception
-                            p3 = Float.parseFloat(inputP3.getText().toString().trim());//converted to float and stored
+                            p3 = Integer.parseInt(inputP3.getText().toString().trim());//converted to float and stored
                         }
                         if (inputP4.getText().toString().length() >= 1) {//to prevent nullpointer exception
-                            p4 = Float.parseFloat(inputP4.getText().toString().trim());//converted to float and stored
+                            p4 = Integer.parseInt(inputP4.getText().toString().trim());//converted to float and stored
                         }
                         //insert to database
                         Boolean success = db.insert_4_Person_WithWagesTable2(fromIntentPersonId, date, micPath, remarks, wages, p1, p2, p3, p4, "0");
                         if (success == true) {
-                            displResult(wages+"          "+p1+"     "+p2+"     "+p3+"     "+p4,"\n\nDATE: "+date+"\n\n"+"REMARKS: "+remarks);
+                            displResult(wages+"          "+p1+"     "+p2+"     "+p3+"     "+p4,"\nDATE: "+date+"\n\n"+"REMARKS: "+remarks+"\n\nMICPATH: "+micPath);
                             dialog.dismiss();//dialog will be dismiss after saved automatically
                         } else
                             Toast.makeText(IndividualPersonDetailActivity.this, "Failed to Inserted", Toast.LENGTH_SHORT).show();
@@ -393,9 +567,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //checking for permission
-
                 if(checkPermission()==true){
-
                     if (mStartRecording) {//initially false
                         //while recording user should not perform other task like entering date while recording because app will crash so set all field to setEnabled(false);
                         inputP1.setEnabled(false);
@@ -419,10 +591,10 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                         Toast.makeText(IndividualPersonDetailActivity.this, "Recording Started", Toast.LENGTH_SHORT).show();
 
                         //be carefull take only getExternalFilesDir( null ) https://stackoverflow.com/questions/59017202/mediarecorder-stop-failed
-                        File folder = new File(getExternalFilesDir(null) + "/acBookMicRecord");//Creating File directory in phone
+                        File folder = new File(getExternalFilesDir(null) + "/acBookMicRecording");//Creating File directory in phone
 
                         if (!folder.exists()) {//if folder not exist
-                            Toast.makeText(IndividualPersonDetailActivity.this, "Creating acBookMicRecord folder to store audios", Toast.LENGTH_LONG).show();
+                            Toast.makeText(IndividualPersonDetailActivity.this, "Creating acBookMicRecording folder to store audios", Toast.LENGTH_LONG).show();
                             folder.mkdir();//create folder
                         }
 
@@ -519,11 +691,11 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                 inputP1.setTextColor(Color.BLACK);
                 save.setEnabled(true);
                 arr[0]=1;//means data is inserted
-                if(!p11.matches("[.]?[0-9]+[.]?[0-9]*")){//space or , or -
+                if(!p11.matches("[0-9]+")){//"[.]?[0-9]+[.]?[0-9]*" for float
                     inputP1.setTextColor(Color.RED);
                     save.setEnabled(false);
                     arr[0]=2;//means wrong data
-                     Toast.makeText(IndividualPersonDetailActivity.this, "NOT ALLOWED(space  ,  -)\nPlease Correct", Toast.LENGTH_LONG).show();
+                     Toast.makeText(IndividualPersonDetailActivity.this, "NOT ALLOWED(space  .  ,  -)\nPlease Correct", Toast.LENGTH_LONG).show();
                 }
             }
             @Override
@@ -538,11 +710,11 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                 inputP2.setTextColor(Color.BLACK);
                 save.setEnabled(true);
                 arr[1]=1;//means data is inserted
-                if(!p11.matches("[.]?[0-9]+[.]?[0-9]*")){//space or , or - is restricted
+                if(!p11.matches("[0-9]+")){// "[.]?[0-9]+[.]?[0-9]*"
                     inputP2.setTextColor(Color.RED);
                     save.setEnabled(false);
                     arr[1]=2;//means wrong data
-                    Toast.makeText(IndividualPersonDetailActivity.this, "NOT ALLOWED(space  ,  -)\nPlease Correct", Toast.LENGTH_LONG).show();
+                    Toast.makeText(IndividualPersonDetailActivity.this, "NOT ALLOWED(space  .  ,  -)\nPlease Correct", Toast.LENGTH_LONG).show();
                 }
             }
             @Override
@@ -557,11 +729,11 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                 inputP3.setTextColor(Color.BLACK);
                 save.setEnabled(true);
                 arr[2]=1;//means data is inserted
-                if(!p11.matches("[.]?[0-9]+[.]?[0-9]*")){//space or , or - is restricted
+                if(!p11.matches("[0-9]+")){//space or , or - is restricted
                     inputP3.setTextColor(Color.RED);
                     save.setEnabled(false);
                     arr[2]=2;//means wrong data
-                    Toast.makeText(IndividualPersonDetailActivity.this, "NOT ALLOWED(space  ,  -)\nPlease Correct", Toast.LENGTH_LONG).show();
+                    Toast.makeText(IndividualPersonDetailActivity.this, "NOT ALLOWED(space  .  ,  -)\nPlease Correct", Toast.LENGTH_LONG).show();
                 }
             }
             @Override
@@ -576,18 +748,17 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                 inputP4.setTextColor(Color.BLACK);
                 save.setEnabled(true);
                 arr[3]=1;//means data is inserted
-                if(!p11.matches("[.]?[0-9]+[.]?[0-9]*")){//space or , or - is restricted
+                if(!p11.matches("[0-9]+")){//space or , or - is restricted
                     inputP4.setTextColor(Color.RED);
                     save.setEnabled(false);
                     arr[3]=2;//means wrong data
-                    Toast.makeText(IndividualPersonDetailActivity.this, "NOT ALLOWED(space  ,  -)\nPlease Correct", Toast.LENGTH_LONG).show();
+                    Toast.makeText(IndividualPersonDetailActivity.this, "NOT ALLOWED(space  .  ,  -)\nPlease Correct", Toast.LENGTH_LONG).show();
                 }
             }
             @Override
             public void afterTextChanged(Editable editable) { }
         });
     }
-
     private Boolean isEnterDataIsWrong(int[] arr) {
         Boolean bool=true;
         int two=0;
@@ -599,7 +770,6 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                 bool=true;
             else
                 bool=false;//data is right
-
             return bool;
     }
     private Boolean isDataPresent(int[] arr){
@@ -618,7 +788,6 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
             bool= false;
         else if((one >= 1))//data is present
             bool= true;
-       // Toast.makeText(this, "present: "+bool, Toast.LENGTH_SHORT).show();
         return bool;
     }
     private boolean checkPermission() {//checking for permission of mic and external storage
@@ -633,7 +802,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
         Long  tsLong=System.currentTimeMillis()/1000;//folder name should be unique so taking time as name of mic record so every record name will be different
         String ts=tsLong.toString();
         fileName="audio_"+ts;//file name
-        file=new File(getExternalFilesDir( null )+"/acBookMicRecord/"+fileName+".mp3");//path of audio where it is saved in device
+        file=new File(getExternalFilesDir( null )+"/acBookMicRecording/"+fileName+".mp3");//path of audio where it is saved in device
 
         //https://developer.android.com/reference/android/media/MediaRecorder
         mediaRecorder=new MediaRecorder();
@@ -650,14 +819,14 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
         }catch (IOException e){
             e.printStackTrace();
         }
-        Toast.makeText(IndividualPersonDetailActivity.this, "Recording", Toast.LENGTH_SHORT).show();
+        Toast.makeText(IndividualPersonDetailActivity.this, "RECORDING", Toast.LENGTH_SHORT).show();
     }
     private  void stopAndSaveRecordingPathToDB(){
         mediaRecorder.stop();
         mElapsedMillis=(System.currentTimeMillis()-mstartingTimeMillis);
         mediaRecorder.release();
         mediaRecorder=null;
-         Toast.makeText(this, "Recording SAVED "+file.getAbsolutePath(), Toast.LENGTH_SHORT).show();
+        // Toast.makeText(this, "Recording SAVED "+file.getAbsolutePath(), Toast.LENGTH_SHORT).show();
     }
     private void displResult(String title,String message) {
         AlertDialog.Builder showDataFromDataBase=new AlertDialog.Builder(IndividualPersonDetailActivity.this);
@@ -667,7 +836,11 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
         showDataFromDataBase.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.dismiss();
+                dialogInterface.dismiss();//close current dialog
+                Intent intent=new Intent(IndividualPersonDetailActivity.this,IndividualPersonDetailActivity.class);
+                intent.putExtra("ID",fromIntentPersonId);
+                finish();//while going to other activity so destroy  this current activity so that while coming back we will see refresh activity
+                startActivity(intent);
             }
         });
         showDataFromDataBase.create().show();

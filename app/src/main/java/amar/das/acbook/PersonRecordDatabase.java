@@ -11,8 +11,8 @@ import android.widget.Toast;
 
 public class PersonRecordDatabase extends SQLiteOpenHelper {
     public final static int Database_Version=1;
-
     public final static String DATABASE_NAME="person_db";
+
     //table 1
     public final static String TABLE_NAME1="person_details_table";
     public final static String COL_1="ID";
@@ -63,7 +63,7 @@ public class PersonRecordDatabase extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase sqLiteDatabase) {//it will execute only once        //NOT NULL OR DEFAULT NOT WORKING AND VARCHAR GIVEN VALUE NOT WORKING HOLDING MORE THAN GIVEN VALUE
      try {//if some error occur it will handle
          sqLiteDatabase.execSQL("CREATE TABLE " + TABLE_NAME1 + " (ID INTEGER PRIMARY KEY AUTOINCREMENT,NAME VARCHAR(100) DEFAULT NULL,BANKACCOUNT VARCHAR(20) DEFAULT NULL,IFSCCODE VARCHAR(11) DEFAULT NULL,BANKNAME VARCHAR(38) DEFAULT NULL,AADHARCARD VARCHAR(12) DEFAULT NULL,PHONE VARCHAR(10) DEFAULT NULL,TYPE CHAR(1) DEFAULT NULL,FATHERNAME VARCHAR(100) DEFAULT NULL,IMAGE BLOB DEFAULT NULL,ACHOLDER VARCHAR(100) DEFAULT NULL,ACTIVE CHAR(1) DEFAULT 1);");
-         sqLiteDatabase.execSQL("CREATE TABLE " + TABLE_NAME2 + " (ID INTEGER ,DATE TEXT DEFAULT NULL,MICPATH TEXT DEFAULT NULL,DESCRIPTION TEXT DEFAULT NULL,WAGES NUMERIC DEFAULT NULL,DEPOSIT NUMERIC DEFAULT NULL,P1 FLOAT DEFAULT NULL,P2 FLOAT DEFAULT NULL,P3 FLOAT DEFAULT NULL,P4 FLOAT DEFAULT NULL,ISDEPOSITED CHAR(1) DEFAULT NULL);");
+         sqLiteDatabase.execSQL("CREATE TABLE " + TABLE_NAME2 + " (ID INTEGER ,DATE TEXT DEFAULT NULL,MICPATH TEXT DEFAULT NULL,DESCRIPTION TEXT DEFAULT NULL,WAGES NUMERIC DEFAULT NULL,DEPOSIT NUMERIC DEFAULT NULL,P1 INTEGER DEFAULT NULL,P2 INTEGER DEFAULT NULL,P3 INTEGER DEFAULT NULL,P4 INTEGER DEFAULT NULL,ISDEPOSITED CHAR(1) DEFAULT NULL);");
          sqLiteDatabase.execSQL("CREATE TABLE " + TABLE_NAME3 + " (ID INTEGER PRIMARY KEY NOT NULL ,R1 INTEGER DEFAULT NULL,R2 INTEGER DEFAULT NULL,R3 INTEGER DEFAULT NULL,R4 INTEGER DEFAULT NULL,SKILL1 CHAR(1) DEFAULT NULL,SKILL2 CHAR(1) DEFAULT NULL,SKILL3 CHAR(1) DEFAULT NULL,INDICATOR CHAR(1) DEFAULT NULL);");//id is primary key because according to id only data is stored in table 3 so no duplicate
      }catch(Exception e){
          e.printStackTrace();
@@ -94,7 +94,6 @@ public class PersonRecordDatabase extends SQLiteOpenHelper {
             cv.put(COL_9, fathername);
             cv.put(COL_10, image);
             cv.put(COL_11, acholder);
-
             //-1 is returned if error occurred. .insert(...) returns the row id of the new inserted record
             long rowid = db.insert(TABLE_NAME1, null, cv);
             db.close();//closing db after operation performed
@@ -136,7 +135,6 @@ public class PersonRecordDatabase extends SQLiteOpenHelper {
             cv.put(COL_9, fathername);
             cv.put(COL_10, image);
             cv.put(COL_11, acholder);
-
             //0 is returned if no record updated and it return number of rows updated
             long rowid = db.update(TABLE_NAME1, cv, "ID=?", new String[]{Id});
             db.close();//closing db after operation performed
@@ -175,9 +173,8 @@ public class PersonRecordDatabase extends SQLiteOpenHelper {
             return false;
         }
     }
-
     //insertdata TO table 2
-    public boolean insert_1_Person_WithWagesTable2(String id, String date, String micPath, String description, int wages, float p1, String isDeposited) {
+    public boolean insert_1_Person_WithWagesTable2(String id, String date, String micPath, String description, int wages, int p1, String isDeposited) {
         try {
             db = this.getWritableDatabase();//getting permission
             ContentValues cv = new ContentValues();//to enter data at once it is like hash map
@@ -200,7 +197,7 @@ public class PersonRecordDatabase extends SQLiteOpenHelper {
             return false;
         }
     }
-    public boolean insert_2_Person_WithWagesTable2(String id, String date, String micPath, String description, int wages, float p1,float p2, String isDeposited) {
+    public boolean insert_2_Person_WithWagesTable2(String id, String date, String micPath, String description, int wages, int p1,int p2, String isDeposited) {
         try {
             db = this.getWritableDatabase();//getting permission
             ContentValues cv = new ContentValues();//to enter data at once it is like hash map
@@ -228,18 +225,15 @@ public class PersonRecordDatabase extends SQLiteOpenHelper {
             return false;
         }
     }
-    public boolean insert_3_Person_WithWagesTable2(String id, String date, String micPath, String description, int wages, float p1,float p2,float p3, String isDeposited) {
+    public boolean insert_3_Person_WithWagesTable2(String id, String date, String micPath, String description, int wages, int p1,int p2,int p3, String isDeposited) {
         try {
             db = this.getWritableDatabase();//getting permission
             ContentValues cv = new ContentValues();//to enter data at once it is like hash map
             cv.put(COL_21, id);
             cv.put(COL_22, date);
-
             cv.put(COL_24, micPath);
-
             cv.put(COL_26, description);
             cv.put(COL_27, wages);
-
             cv.put(COL_29, p1);
             cv.put(COL_221, p2);
             cv.put(COL_222, p3);
@@ -256,23 +250,19 @@ public class PersonRecordDatabase extends SQLiteOpenHelper {
             return false;
         }
     }
-    public boolean insert_4_Person_WithWagesTable2(String id, String date, String micPath, String description, int wages, float p1,float p2,float p3,float p4, String isDeposited) {
+    public boolean insert_4_Person_WithWagesTable2(String id, String date, String micPath, String description, int wages, int p1,int p2,int p3,int p4, String isDeposited) {
         try {
             db = this.getWritableDatabase();//getting permission
             ContentValues cv = new ContentValues();//to enter data at once it is like hash map
             cv.put(COL_21, id);
             cv.put(COL_22, date);
-
             cv.put(COL_24, micPath);
-
             cv.put(COL_26, description);
             cv.put(COL_27, wages);
-
             cv.put(COL_29, p1);
             cv.put(COL_221, p2);
             cv.put(COL_222, p3);
             cv.put(COL_223, p4);
-
             cv.put(COL_224, isDeposited);
             //-1 is returned if error occurred. .insert(...) returns the row id of the new inserted record
             long rowid = db.insert(TABLE_NAME2, null, cv);
@@ -286,23 +276,15 @@ public class PersonRecordDatabase extends SQLiteOpenHelper {
             return false;
         }
     }
-    public boolean insert_Deposit_Table2(String id, String date, String micPath, String description, int wages,int deposite, float p1,float p2,float p3,float p4, String isDeposited) {
+    public boolean insert_Deposit_Table2(String id, String date, String micPath, String description,int deposite,String isDeposited) {
         try {
             db = this.getWritableDatabase();//getting permission
             ContentValues cv = new ContentValues();//to enter data at once it is like hash map
             cv.put(COL_21, id);
             cv.put(COL_22, date);
-
             cv.put(COL_24, micPath);
-
             cv.put(COL_26, description);
-            cv.put(COL_27, wages);
             cv.put(COL_28, deposite);
-            cv.put(COL_29, p1);
-            cv.put(COL_221, p2);
-            cv.put(COL_222, p3);
-            cv.put(COL_223, p4);
-
             cv.put(COL_224, isDeposited);
             //-1 is returned if error occurred. .insert(...) returns the row id of the new inserted record
             long rowid = db.insert(TABLE_NAME2, null, cv);
@@ -316,4 +298,19 @@ public class PersonRecordDatabase extends SQLiteOpenHelper {
             return false;
         }
     }
+
+
+    public boolean updateTable3(String query){
+        try{
+            db=this.getWritableDatabase();
+            db.execSQL(query);
+            db.close();
+            return true;
+        }catch(Exception e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
 }

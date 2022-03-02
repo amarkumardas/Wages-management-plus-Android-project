@@ -1,9 +1,7 @@
 package amar.das.acbook.model;
 
-
-
 public class SearchModel {
-    String name,id,account,aadhar,father;
+   private String name,id,account,aadhar,father;
 
     public String getName() {
         return name;

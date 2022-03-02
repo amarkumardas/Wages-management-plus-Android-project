@@ -428,9 +428,7 @@ public class InsertDataActivity extends AppCompatActivity {
 
     private void insertDataToTable3(String id) {
         Boolean bool=personDb.insertDataTable3( id,0,0,0,0,null,null,null,null);
-        if(bool== true)
-            Toast.makeText(this, "Inserted to table 3", Toast.LENGTH_SHORT).show();
-        else
+        if(bool== false)
             Toast.makeText(this, "Not Inserted to table 3", Toast.LENGTH_SHORT).show();
     }
 

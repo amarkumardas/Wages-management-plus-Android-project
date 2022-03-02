@@ -14,18 +14,20 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginTop="20dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginLeft="10dp">
+            android:weightSum="20">
             <TextView
-                android:layout_width="190dp"
+                android:layout_weight="12"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="SETTING TO ADD M L G"
+                android:text="SETTING TO ADD/REMOVE M L G"
                 android:layout_gravity="center"
-                android:paddingLeft="15dp"/>
+                android:paddingLeft="10dp"/>
             <Spinner
-                android:layout_width="130dp"
+                android:layout_weight="8"
+                android:layout_width="0dp"
                 android:layout_height="45dp"
                 android:background="#535050"
+                android:layout_marginRight="10dp"
                 android:layout_gravity="center_horizontal"
                 android:id="@+id/custom_spinner_setting"/>
 
@@ -61,6 +63,7 @@
                 android:singleLine="true"
                 android:textAlignment="center"
                 android:textColor="#2C980F"
+                android:maxLength="9"
                 android:textSize="20dp"
                 android:inputType="numberDecimal"
                 android:id="@+id/custom_deposit_et">
@@ -109,7 +112,7 @@
             android:id="@+id/custom_chronometer"
             android:layout_marginLeft="40dp"/>
         <TextView
-            android:id="@+id/custom_mic_tv"
+            android:id="@+id/custom_mic_icon_tv"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="3"
@@ -121,7 +124,7 @@
             android:layout_marginRight="2dp"
             android:layout_gravity="center_vertical"
             android:background="@drawable/ic_black_sharp_tick_done_20"
-            android:id="@+id/custom_save_audio_tv"/>
+            android:id="@+id/custom_save_audio_icon_tv"/>
 
 
     </LinearLayout>

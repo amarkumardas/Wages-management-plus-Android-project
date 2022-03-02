@@ -18,29 +18,22 @@
     <string name="insert_data">ADD</string>
     <string name="father_name">FATHER NAME</string>
 
-    <string-array name="district">
-    <item>default</item>
-    <item>M</item>
-    <item>L</item>
-    <item>M   L</item>
-    <item>M   L   L</item>
-    <item>L   L</item>
-    <item>L   L   L </item>
-    <item>M   M</item>
-    <item>M   M   L</item>
-    <item>M  L  L  L</item>
-    <item>M  M  L  L</item>
-    <item>M  M  M  L</item>
-    <item>M  M  M</item>
-    <item>L  L  L  L</item>
-    <item>M  M  M  M</item>
-    </string-array>
 
-    <string-array name="districts">
-        <item>default</item>
+
+    <string-array name="addOrRemoveMlG">
+        <item>SELECT</item>
         <item>ADD M</item>
         <item>ADD L</item>
-        <item>ADD GL</item>
+        <item>ADD G</item>
+        <item>REMOVE M</item>
+        <item>REMOVE L</item>
+        <item>REMOVE G</item>
+    </string-array>
+
+    <string-array name="audioAndDescription">
+        <item>SELECT</item>
+        <item>AUDIO</item>
+        <item>REMARKS</item>
     </string-array>
 
     <string-array name="indian_bank_names">

@@ -19,19 +19,18 @@
         android:textColor="@color/black"
         android:textStyle="bold"
         android:textSize="15dp"
-        android:id="@+id/date_time_tv"
+        android:layout_gravity="center_vertical"
+        android:id="@+id/date_in_recycler_tv"
         />
-    <TextView
+    <Spinner
         android:layout_weight="2"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="20dp"
         android:background="@drawable/black_sharp_mic_24"
         android:textColor="@color/black"
         android:textStyle="bold"
-        android:text=" "
-        android:textAlignment="center"
-        android:textSize="15dp"
-        android:id="@+id/description_tv"
+        android:layout_gravity="center_vertical"
+        android:id="@+id/spinner_in_recycler_tv"
         />
 
     <TextView
@@ -39,11 +38,12 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textAlignment="center"
+        android:layout_gravity="center_horizontal"
         android:text="10000"
         android:textColor="@color/black"
         android:textStyle="bold"
         android:textSize="15dp"
-        android:id="@+id/amount_tv"
+        android:id="@+id/wages_in_recycler_tv"
         />
     <TextView
         android:layout_weight="2"
@@ -55,7 +55,7 @@
         android:textStyle="bold"
         android:background="#B5B3B0"
         android:textSize="15dp"
-        android:id="@+id/mestre_tv"
+        android:id="@+id/p1_in_recycler_tv"
         />
     <TextView
         android:layout_weight="2"
@@ -66,7 +66,7 @@
         android:textColor="@color/black"
         android:textStyle="bold"
         android:textSize="15dp"
-        android:id="@+id/laber1_tv"
+        android:id="@+id/p2_in_recycler_tv"
         />
     <TextView
         android:layout_weight="2"
@@ -77,7 +77,7 @@
         android:textColor="@color/black"
         android:textStyle="bold"
         android:textSize="15dp"
-        android:id="@+id/laber2_tv"
+        android:id="@+id/p3_in_recycler_tv"
         />
     <TextView
         android:layout_weight="2"
@@ -88,6 +88,6 @@
         android:textColor="@color/black"
         android:textStyle="bold"
         android:textSize="15dp"
-        android:id="@+id/laber3_tv"
+        android:id="@+id/p4_in_recycler_tv"
         />
 </LinearLayout>
