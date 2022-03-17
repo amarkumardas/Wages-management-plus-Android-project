@@ -62,16 +62,16 @@
                 android:textStyle="bold"
                 android:singleLine="true"
                 android:textAlignment="center"
-                android:textColor="#2C980F"
+                android:textColor="#0DAF07"
                 android:maxLength="9"
                 android:textSize="20dp"
-                android:inputType="numberDecimal"
+                android:inputType="number"
                 android:id="@+id/custom_deposit_et">
                 <requestFocus></requestFocus><!--cursor will focus here when this activity is open and to open keyboard code is written in manifest file writing focus here is important otherwise keyboard will not open-->
             </EditText>
         </LinearLayout>
     <LinearLayout
-        android:id="@+id/date_mic_desc_layout"
+        android:id="@+id/date_mic_chronometer_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
@@ -89,6 +89,13 @@
             android:textColor="@color/black"
             android:textSize="20dp"
             android:background="@drawable/ic_round_edit_calendar_20"/>
+        <TextView
+            android:id="@+id/custom_time_tv"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="0"
+            android:textSize="0dp" />
         <TextView
             android:layout_weight="10"
             android:layout_width="0dp"

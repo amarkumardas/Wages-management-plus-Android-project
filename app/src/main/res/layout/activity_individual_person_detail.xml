@@ -245,7 +245,7 @@
             android:layout_weight="2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="5"
+            android:text="10"
             android:textSize="13dp"
             android:textAlignment="center"
             android:id="@+id/rating"/>
@@ -266,7 +266,7 @@
             android:textStyle="bold"
             android:background="#B5B3B0"
             android:textSize="13dp"
-            android:id="@+id/hardcodedM"/>
+            android:id="@+id/default_hardcoded_tv"/>
         <TextView
             android:layout_weight="2"
             android:layout_width="0dp"
@@ -275,7 +275,7 @@
             android:textColor="@color/black"
             android:textStyle="bold"
             android:textSize="13dp"
-            android:id="@+id/hardcodedL1"/>
+            android:id="@+id/hardcoded_1_tv"/>
         <TextView
             android:layout_weight="2"
             android:layout_width="0dp"
@@ -284,7 +284,7 @@
             android:textColor="@color/black"
             android:textStyle="bold"
             android:textSize="13dp"
-            android:id="@+id/hardcodedL2"/>
+            android:id="@+id/hardcoded_2_tv"/>
         <TextView
             android:layout_weight="2"
             android:layout_width="0dp"
@@ -293,7 +293,7 @@
             android:textColor="@color/black"
             android:textStyle="bold"
             android:textSize="13dp"
-            android:id="@+id/hardcodedL3"/>
+            android:id="@+id/hardcoded_3_tv"/>
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
@@ -334,7 +334,7 @@
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
                 android:text="10000"
-                android:paddingTop="2dp"
+                android:paddingTop="1dp"
                 android:textColor="#DD8503"
                 android:textStyle="bold"
                 android:textSize="12dp"
@@ -344,10 +344,11 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
-                android:paddingTop="2dp"
+                android:paddingTop="1dp"
                 android:textColor="@color/black"
+                android:layout_marginTop="1dp"
                 android:textStyle="bold"
-                android:background="#989796"
+                android:background="#D6DADF"
                 android:textSize="12dp"
                 android:id="@+id/blue_totalp1_tv"/>
             <TextView
@@ -355,7 +356,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
-                android:paddingTop="2dp"
+                android:paddingTop="1dp"
                 android:textColor="@color/black"
                 android:textStyle="bold"
                 android:textSize="12dp"
@@ -365,7 +366,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
-                android:paddingTop="2dp"
+                android:paddingTop="1dp"
                 android:textColor="@color/black"
                 android:textStyle="bold"
                 android:textSize="12dp"
@@ -376,7 +377,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
-                android:paddingTop="2dp"
+                android:paddingTop="1dp"
                 android:textAlignment="center"
                 android:textColor="@color/black"
                 android:textSize="12dp"
@@ -397,11 +398,11 @@
                 android:layout_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="M  ="
+                android:background="@color/white"
                 android:textColor="@color/black"
                 android:textAlignment="textEnd"
                 android:textSize="13dp"
-                android:id="@+id/p1_text_tv"/>
+                android:id="@+id/default_skill_text_tv"/>
             <LinearLayout
                 android:layout_weight="2"
                 android:layout_width="0dp"
@@ -414,7 +415,6 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="2"
-                    android:text="99"
                     android:textAlignment="textEnd"
                     android:textColor="@color/black"
                     android:textSize="13dp"
@@ -433,7 +433,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:textAlignment="textStart"
-
+                    android:background="@color/white"
                     android:textColor="@color/purple_700"
                     android:textStyle="bold"
                     android:textSize="13dp"
@@ -444,8 +444,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textAlignment="textStart"
-
-                android:background="#D6DADF"
+                android:background="@drawable/grey_line_bg_forlayout"
                 android:textColor="@color/black"
                 android:textStyle="bold"
                 android:textSize="13dp"
@@ -470,11 +469,10 @@
                 android:layout_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="L  ="
                 android:textColor="@color/black"
                 android:textAlignment="textEnd"
                 android:textSize="13dp"
-                android:id="@+id/p2_text_tv"/>
+                android:id="@+id/skill1_text_tv"/>
             <LinearLayout
                 android:layout_weight="2"
                 android:layout_width="0dp"
@@ -486,7 +484,6 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:textAlignment="textEnd"
-                    android:text="200000"
                     android:textColor="@color/black"
                     android:textStyle="bold"
                     android:textSize="13dp"
@@ -505,8 +502,6 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:textAlignment="textStart"
-                    android:text="5000"
-
                     android:textColor="@color/purple_700"
                     android:textStyle="bold"
                     android:textSize="13dp"
@@ -517,8 +512,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textAlignment="textStart"
-                android:text="= 10000"
-                android:background="#D6DADF"
+                android:background="@drawable/grey_line_bg_forlayout"
                 android:textColor="@color/black"
                 android:textStyle="bold"
                 android:textSize="13dp"
@@ -537,11 +531,10 @@
                 android:layout_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="L  ="
                 android:textColor="@color/black"
                 android:textAlignment="textEnd"
                 android:textSize="13dp"
-                android:id="@+id/p3_text_tv"/>
+                android:id="@+id/skill2_text_tv"/>
             <LinearLayout
                 android:layout_weight="2"
                 android:layout_width="0dp"
@@ -553,7 +546,6 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:textAlignment="textEnd"
-                    android:text="20"
                     android:textColor="@color/black"
                     android:textStyle="bold"
                     android:textSize="13dp"
@@ -572,8 +564,6 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:textAlignment="textStart"
-                    android:text="530"
-
                     android:textColor="@color/purple_700"
                     android:textStyle="bold"
                     android:textSize="13dp"
@@ -584,8 +574,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textAlignment="textStart"
-                android:text="= 500"
-                android:background="#D6DADF"
+                android:background="@drawable/grey_line_bg_forlayout"
                 android:textColor="@color/black"
                 android:textStyle="bold"
                 android:textSize="13dp"
@@ -609,11 +598,10 @@
                 android:layout_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="L  ="
                 android:textColor="@color/black"
                 android:textAlignment="textEnd"
                 android:textSize="13dp"
-                android:id="@+id/p4_text_tv"/>
+                android:id="@+id/skill3_text_tv"/>
             <LinearLayout
                 android:layout_weight="2"
                 android:layout_width="0dp"
@@ -625,7 +613,6 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:textAlignment="textEnd"
-                    android:text="100"
                     android:textColor="@color/black"
                     android:textStyle="bold"
                     android:textSize="13dp"
@@ -644,7 +631,6 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:textAlignment="textStart"
-                    android:text="370"
                     android:textColor="@color/purple_700"
                     android:textStyle="bold"
                     android:textSize="13dp"
@@ -655,10 +641,9 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textAlignment="textStart"
-                android:text="= 1972"
                 android:textColor="@color/black"
                 android:textStyle="bold"
-                android:background="#D6DADF"
+                android:background="@drawable/grey_line_bg_forlayout"
                 android:textSize="13dp"
                 android:id="@+id/total_p4_amount_tv"/>
         </LinearLayout>
@@ -687,62 +672,62 @@
                 android:textAlignment="textStart"
                 android:textColor="@color/black"
                 android:textStyle="bold"
-                android:background="#D6DADF"
+                android:background="@drawable/grey_line_bg_forlayout"
                 android:textSize="13dp"
                 android:id="@+id/total_deposit_amount_tv"/>
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_below="@+id/total_deposit_amount_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginLeft="2dp"
-            android:layout_marginRight="2dp"
-            android:weightSum="14"
-            android:padding="2dp"
-            android:background="@color/white"
-            android:id="@+id/total_calculation_layout">
-            <TextView
-                android:layout_weight="2"
-                android:layout_width="0dp"
+            <LinearLayout
+                android:id="@+id/total_calculation_layout"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="TOTAL =  "
-                android:textAlignment="textEnd"
-                android:textSize="12dp" />
-            <TextView
-                android:layout_weight="3"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_below="@+id/total_deposit_amount_layout"
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="2dp"
+                android:background="@color/white"
+                android:orientation="horizontal"
+                android:padding="2dp"
+                android:weightSum="14">
 
-                android:textStyle="bold"
-                android:textColor="#FF9800"
-                android:textAlignment="textEnd"
-                android:background="#B5B3B0"
-                android:textSize="13dp"
-                android:id="@+id/wages_total_amount_tv"/>
-            <TextView
-                android:layout_weight="3"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:text="TOTAL =  "
+                    android:textAlignment="textEnd"
+                    android:textSize="12dp" />
 
-                android:textColor="@color/black"
-                android:background="#B5B3B0"
-                android:textStyle="bold"
-                android:textAlignment="textStart"
-                android:textSize="13dp"
-                android:id="@+id/work_total_amount_tv"/>
-            <TextView
-                android:layout_weight="6"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                <TextView
+                    android:id="@+id/wages_total_amount_tv"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:background="#D6DADF"
+                    android:textAlignment="textEnd"
+                    android:textColor="#FF9800"
+                    android:textSize="15dp"
+                    android:textStyle="bold" />
 
-                android:textStyle="bold"
-                android:textColor="#000000"
-                android:textAlignment="textStart"
-                android:textSize="15dp"
-                android:id="@+id/advance_or_balance_tv"/>
-        </LinearLayout>
+                <TextView
+                    android:id="@+id/work_total_amount_tv"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:background="#D6DADF"
+                    android:textAlignment="textStart"
+                    android:textColor="@color/black"
+                    android:textSize="15dp"
+                    android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/advance_or_balance_tv"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="6"
+                    android:textAlignment="textStart"
+                    android:textColor="#000000"
+                    android:textSize="17dp"
+                    android:textStyle="bold" />
+            </LinearLayout>
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/fab"
                 android:layout_width="wrap_content"

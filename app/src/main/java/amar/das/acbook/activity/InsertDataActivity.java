@@ -136,7 +136,7 @@ public class InsertDataActivity extends AppCompatActivity {
             }
         });
 
-        //after getting all the ids setting all data accoring to id
+        //after getting all the ids setting all data according to id
         if(getIntent().hasExtra("ID")){
             fromIntentPersonId=getIntent().getStringExtra("ID");//getting id from intent
             //retrieving data from db
@@ -210,8 +210,6 @@ public class InsertDataActivity extends AppCompatActivity {
     @NonNull
     private Boolean checkStoragePermission() {
         boolean result = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == (PackageManager.PERMISSION_GRANTED);
-
-
         Toast.makeText(this, ""+result, Toast.LENGTH_SHORT).show();
         return result;
     }

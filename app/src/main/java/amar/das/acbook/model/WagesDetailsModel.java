@@ -1,8 +1,22 @@
 package amar.das.acbook.model;
 
 public class WagesDetailsModel {
-    private String date,micPath,description,id;
+    private String date;
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
+
+    private String time;
+    private String micPath;
+    private String description;
+    private String id;
     private int p1,p2,p3,p4,wages,deposit;
+
     public  void setId(String id){
           this.id=id;
     }

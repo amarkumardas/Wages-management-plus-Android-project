@@ -26,14 +26,16 @@ import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 import amar.das.acbook.PersonRecordDatabase;
 import amar.das.acbook.R;
 import amar.das.acbook.databinding.ActivityCustomizeLayoutOrDepositAmountBinding;
 
 public class CustomizeLayoutOrDepositAmount extends AppCompatActivity {
- ActivityCustomizeLayoutOrDepositAmountBinding binding;
+  ActivityCustomizeLayoutOrDepositAmountBinding binding;
     PersonRecordDatabase db;
     private  String fromIntentPersonId;
     //for recording variable declaration
@@ -155,7 +157,7 @@ public class CustomizeLayoutOrDepositAmount extends AppCompatActivity {
                                         Cursor result=db.getData("SELECT SUM(P2) FROM "+db.TABLE_NAME2+" WHERE ID= '"+fromIntentPersonId +"'");
                                         result.moveToFirst();
                                         if(result.getInt(0) == 0){//Means no data IN P2
-                                            db.updateTable3("UPDATE "+db.TABLE_NAME3+" SET SKILL1= "+null+" , INDICATOR="+1+" WHERE ID= "+fromIntentPersonId);
+                                            db.updateTable("UPDATE "+db.TABLE_NAME3+" SET SKILL1= "+null+" , INDICATOR="+1+" WHERE ID= "+fromIntentPersonId);
                                             displResult("NO DATA PRESENT REMOVED ","STATUS: SUCCESS");
                                         }else if(result.getInt(0) >= 1){
                                             displResult("CAN'T REMOVE","BECAUSE DATA IS PRESENT.SUM = "+result.getInt(0));
@@ -165,7 +167,7 @@ public class CustomizeLayoutOrDepositAmount extends AppCompatActivity {
                                         Cursor result=db.getData("SELECT SUM(P3) FROM "+db.TABLE_NAME2+" WHERE ID= '"+fromIntentPersonId +"'");
                                         result.moveToFirst();
                                         if(result.getInt(0) == 0){//Means no data IN P2
-                                            db.updateTable3("UPDATE "+db.TABLE_NAME3+" SET SKILL2= "+null+" , INDICATOR="+2+" WHERE ID= "+fromIntentPersonId);
+                                            db.updateTable("UPDATE "+db.TABLE_NAME3+" SET SKILL2= "+null+" , INDICATOR="+2+" WHERE ID= "+fromIntentPersonId);
                                             displResult("NO DATA PRESENT REMOVED ","STATUS: SUCCESS");
                                         }else if(result.getInt(0) >= 1){
                                             displResult("CAN'T REMOVE","BECAUSE DATA IS PRESENT.SUM= "+result.getInt(0));
@@ -174,7 +176,7 @@ public class CustomizeLayoutOrDepositAmount extends AppCompatActivity {
                                         Cursor result=db.getData("SELECT SUM(P4) FROM "+db.TABLE_NAME2+" WHERE ID= '"+fromIntentPersonId +"'");
                                         result.moveToFirst();
                                         if(result.getInt(0) == 0){//Means no data IN P2
-                                            db.updateTable3("UPDATE "+db.TABLE_NAME3+" SET SKILL3= "+null+" , INDICATOR="+3+" WHERE ID= "+fromIntentPersonId);
+                                            db.updateTable("UPDATE "+db.TABLE_NAME3+" SET SKILL3= "+null+" , INDICATOR="+3+" WHERE ID= "+fromIntentPersonId);
                                             displResult("NO DATA PRESENT REMOVED ","STATUS: SUCCESS");
                                         }else if(result.getInt(0) >= 1){
                                             displResult("CAN'T REMOVE","BECAUSE DATA IS PRESENT.SUM= "+result.getInt(0));
@@ -194,6 +196,13 @@ public class CustomizeLayoutOrDepositAmount extends AppCompatActivity {
             int cYear=current.get(Calendar.YEAR);
             int cMonth=current.get(Calendar.MONTH);
             int cDayOfMonth=current.get(Calendar.DAY_OF_MONTH);
+
+            //Time
+            Date d=Calendar.getInstance().getTime();
+            SimpleDateFormat sdf=new SimpleDateFormat("hh:mm:ss a");//a stands for is AM or PM
+            String onlyTime = sdf.format(d);
+            binding.customTimeTv.setText(onlyTime);//setting time to take time and store in db
+
             binding.customDateTv.setText(cDayOfMonth+"-"+(cMonth+1)+"-"+cYear);
             binding.customDateIconTv.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -216,7 +225,7 @@ public class CustomizeLayoutOrDepositAmount extends AppCompatActivity {
                 @Override
                 public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                     String p11 = binding.customDepositEt.getText().toString().trim();
-                    binding.customDepositEt.setTextColor(Color.BLACK);
+                    binding.customDepositEt.setTextColor(getResources().getColor(R.color.green));
                     binding.customSaveBtn.setEnabled(true);
                     arr[0]=1;//means data is inserted
                     if (!p11.matches("[0-9]+")) {//space or , or - is restricted"[.]?[0-9]+[.]?[0-9]*"
@@ -236,6 +245,12 @@ public class CustomizeLayoutOrDepositAmount extends AppCompatActivity {
                     String remarks=null;
                     String micPath=null;
 
+                    //To get exact time so write code in save button
+                    Date d=Calendar.getInstance().getTime();
+                    SimpleDateFormat sdf=new SimpleDateFormat("hh:mm:ss a");//a stands for is AM or PM
+                    String onlyTime = sdf.format(d);
+                    binding.customTimeTv.setText(onlyTime);//setting time to take time and store in db
+
                     if(file !=null){//if file is not null then only it execute otherwise nothing will be inserted
                         micPath=file.getAbsolutePath();
                         arr[1]=1;
@@ -243,7 +258,7 @@ public class CustomizeLayoutOrDepositAmount extends AppCompatActivity {
                     else
                         arr[1]=0;
                     if(binding.customDescriptionEt.getText().toString().length() >=1){//to prevent nullpointer exception
-                        remarks=binding.customDescriptionEt.getText().toString().trim();
+                        remarks="["+binding.customTimeTv.getText().toString()+"]-[ENTERED]\n\n"+binding.customDescriptionEt.getText().toString().trim();//time is set automatically to remarks if user enter any remarks
                         arr[2]=1;
                     }
                     else
@@ -256,11 +271,11 @@ public class CustomizeLayoutOrDepositAmount extends AppCompatActivity {
                             depositAmount = Integer.parseInt(binding.customDepositEt.getText().toString().trim());
                         }
 
-                        Boolean success = db.insert_Deposit_Table2(fromIntentPersonId,binding.customDateTv.getText().toString(),micPath,remarks,depositAmount,"1");
+                        Boolean success = db.insert_Deposit_Table2(fromIntentPersonId,binding.customDateTv.getText().toString(),binding.customTimeTv.getText().toString(),micPath,remarks,depositAmount,"1");
                         if (success == true) {
                             displResult("DEPOSIT : "+depositAmount,"\nDATE:  "+binding.customDateTv.getText().toString()+"\n\nREMARKS: "+remarks+"\n\nMICPATH: "+micPath);
                         } else
-                            Toast.makeText(CustomizeLayoutOrDepositAmount.this, "Failed to Inserted", Toast.LENGTH_LONG).show();
+                            Toast.makeText(CustomizeLayoutOrDepositAmount.this, "FAILED TO INSERT", Toast.LENGTH_LONG).show();
 
                     }else
                         Toast.makeText(CustomizeLayoutOrDepositAmount.this, "Correct the Data or Cancel and Enter again", Toast.LENGTH_LONG).show();
@@ -289,6 +304,7 @@ public class CustomizeLayoutOrDepositAmount extends AppCompatActivity {
                             binding.customCancelBtn.setEnabled(false);
                             binding.customSpinnerSetting.setEnabled(false);
 
+
                             binding.customChronometer.setBase(SystemClock.elapsedRealtime());//In Android, Chronometer is a class that implements a simple timer. Chronometer is a subclass of TextView. This class helps us to add a timer in our app.
                             binding.customChronometer.start();
                             binding.customChronometer.setEnabled(false);//when user press save button then set to true playAudioChronometer.setEnabled(true);
@@ -296,7 +312,7 @@ public class CustomizeLayoutOrDepositAmount extends AppCompatActivity {
                             binding.customMicIconTv.setEnabled(false);
                             binding.customMicIconTv.setBackgroundResource(R.drawable.black_sharp_mic_24);//change color when user click
 
-                            Toast.makeText(CustomizeLayoutOrDepositAmount.this, "Recording Started", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(CustomizeLayoutOrDepositAmount.this, "RECORDING STARTED", Toast.LENGTH_SHORT).show();
 
                             //be carefull take only getExternalFilesDir( null ) https://stackoverflow.com/questions/59017202/mediarecorder-stop-failed
                             File folder = new File(getExternalFilesDir(null) + "/acBookMicRecording");//Creating File directory in phone
@@ -322,13 +338,13 @@ public class CustomizeLayoutOrDepositAmount extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     if(file != null) {//checking for null pointer Exception
-                        Toast.makeText(CustomizeLayoutOrDepositAmount.this, "Audio Playing", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(CustomizeLayoutOrDepositAmount.this, "AUDIO PLAYING", Toast.LENGTH_SHORT).show();
                         mediaPlayer = new MediaPlayer();
                         try {
                             mediaPlayer.setDataSource(file.getAbsolutePath());//passing the path where this audio is saved
                             mediaPlayer.prepare();
                             mediaPlayer.start();
-                            Toast.makeText(CustomizeLayoutOrDepositAmount.this, "Audio Playing", Toast.LENGTH_LONG).show();
+                            Toast.makeText(CustomizeLayoutOrDepositAmount.this, "AUDIO PLAYING", Toast.LENGTH_LONG).show();
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -365,7 +381,7 @@ public class CustomizeLayoutOrDepositAmount extends AppCompatActivity {
             Toast.makeText(this, "No ID from other Intent", Toast.LENGTH_SHORT).show();
     }
     public void showDialogAsMessage( String query,String iftitle,String ifmessage,String elsetitle,String elsemessage){
-        if(db.updateTable3(query)){
+        if(db.updateTable(query)){
             displResult(iftitle,ifmessage);
         }else{
             displResult(elsetitle, elsemessage);
@@ -392,7 +408,7 @@ public class CustomizeLayoutOrDepositAmount extends AppCompatActivity {
         }catch (IOException e){
             e.printStackTrace();
         }
-        Toast.makeText(CustomizeLayoutOrDepositAmount.this, "Recording", Toast.LENGTH_SHORT).show();
+        Toast.makeText(CustomizeLayoutOrDepositAmount.this, "RECORDING", Toast.LENGTH_SHORT).show();
     }
     private  void stopAndSaveRecordingPathToDB(){
         mediaRecorder.stop();

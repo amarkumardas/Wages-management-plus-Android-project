@@ -21,11 +21,12 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="25dp"
-                android:text="TO DEPOSIT"
+                android:text="LONG PRESS TO DEPOSIT"
                 android:paddingLeft="2dp"
                 android:paddingRight="2dp"
                 android:paddingTop="2dp"
                 android:textColor="@color/black"
+
                 android:layout_gravity="end"
                 android:background="@drawable/green_color_bg"
                 android:id="@+id/to_deposit_tv"/>
@@ -37,7 +38,8 @@
         android:orientation="horizontal"
         android:layout_marginTop="8dp"
         android:weightSum="4"
-        android:background="#D6DADF">
+        android:background="#D6DADF"
+        android:id="@+id/hardcode_layout">
         <TextView
             android:layout_weight="1"
             android:layout_width="0dp"
@@ -87,7 +89,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_marginTop="4dp"
-
+        android:id="@+id/input_layout"
         android:weightSum="4"
         android:background="#D6DADF">
         <EditText
@@ -100,7 +102,7 @@
             android:layout_marginRight="2dp"
             android:layout_marginLeft="2dp"
             android:singleLine="true"
-            android:maxLength="4"
+            android:maxLength="3"
             android:textAlignment="center"
             android:textColor="@color/black"
             android:textSize="20dp"
@@ -176,7 +178,8 @@
                 android:text="Days required to work  ="
                 android:textColor="@color/purple_700"
                 android:layout_gravity="center_vertical"
-                android:textSize="13dp"
+                android:textSize="13sp"
+                android:id="@+id/only_used_while_updating"
                 />
 
             <TextView
@@ -184,26 +187,23 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="4"
-                android:text="1000"
-                android:background="#D6DADF"
                 android:layout_gravity="center_vertical"
                 android:textSize="14dp" />
 
             <TextView
-                android:id="@+id/advance_or_balance_amount_tv"
+                android:id="@+id/advance_or_balance_amount_warring_tv"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="7"
-                android:text="-1000000"
                 android:textAlignment="center"
                 android:textColor="@color/black"
                 android:textSize="20dp"
-                android:background="#D6DADF"/>
+                />
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
+            android:id="@+id/this_week_work_amount_layout"
             android:layout_marginTop="10dp"
             android:background="@drawable/border_outline_while_bg"
             android:orientation="horizontal"
@@ -217,14 +217,14 @@
                 android:text="This week work amount ="
                 android:layout_gravity="center_vertical"
                 android:textColor="@color/purple_700"
-                android:textSize="13dp" />
+                android:textSize="13sp"
+
+                />
 
             <TextView
                 android:layout_weight="3"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:text="35000"
                 android:textColor="#0DAF07"
                 android:textStyle="bold"
                 android:textSize="20dp"
@@ -246,7 +246,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/date_mic_desc_layout"
+            android:id="@+id/date_mic_chronometer_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
@@ -264,6 +264,14 @@
                 android:textColor="@color/black"
                 android:textSize="20dp"
                 android:background="@drawable/ic_round_edit_calendar_20"/>
+
+            <TextView
+                android:id="@+id/input_time_tv"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="0"
+                android:textSize="0dp" />
             <TextView
                 android:layout_weight="10"
                 android:layout_width="0dp"
@@ -284,7 +292,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:textSize="10dp"
+                android:textSize="10sp"
                 android:textColor="@color/black"
                 android:id="@+id/chronometer"
                  android:layout_marginLeft="40dp"/>
