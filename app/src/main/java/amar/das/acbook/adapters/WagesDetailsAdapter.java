@@ -65,9 +65,15 @@ public class WagesDetailsAdapter extends RecyclerView.Adapter<WagesDetailsAdapte
     long mElapsedMillis=0;
     File file;
     String fileName;
-
     boolean mStartRecording =false;
 
+    final Calendar current=Calendar.getInstance();//to get current date
+    String currentDate =current.get(Calendar.DAY_OF_MONTH)+"-"+(current.get(Calendar.MONTH)+1)+"-"+current.get(Calendar.YEAR);
+
+    //OR to get current date
+//    final Calendar currentDate=Calendar.getInstance();//to get current date
+//    SimpleDateFormat dateFormat1=new SimpleDateFormat("dd-MM-yyyy");//formatting in like 19-03-2022
+//    String currentDate=dateFormat1.format(current.getTimeInMillis());
     public WagesDetailsAdapter(Context context, ArrayList<WagesDetailsModel> arrayList) {
         this.context = context;
         this.arrayList = arrayList;
@@ -86,8 +92,8 @@ public class WagesDetailsAdapter extends RecyclerView.Adapter<WagesDetailsAdapte
        if(data.getWages() !=0 && data.getDeposit() == 0) {//if wages is there and deposit not there then set wages
            holder.wages.setText(""+data.getWages());
            holder.wages.setTextColor(Color.BLACK);
-
-       } else if( data.getWages() == 0 && data.getDeposit() != 0 && data.getP1() == 0){//if wages is not there and deposit there then set wages and color to green
+                 //if we put data.getIsdeposited().equals("1") then unwanted 0 will be set if not data is present so not using it.
+       } else if( data.getDeposit() != 0 && data.getWages() == 0  && data.getP1() == 0){//if wages is not there and deposit there then set wages and color to green
            holder.wages.setText(""+data.getDeposit());//while entering deposit then there will be no p1 or p2p3p4 so checking data.getP1() == 0
            holder.wages.setTextColor(context.getResources().getColor(R.color.green));
 
@@ -177,6 +183,16 @@ public class WagesDetailsAdapter extends RecyclerView.Adapter<WagesDetailsAdapte
                 holder.p4.setText("" + data.getP4());
             }
         }
+
+         //************************SETTING BACKGROUND COLOR ACCORDING TO PREVIOUS AND TODAYS DATE*******************************
+   if (data.getDate().equals(getPreviousDate())) //if data has enterded yesterday then set background to gray
+       holder.singleRecordLayout.setBackgroundColor(context.getResources().getColor(R.color.background));
+   else if(currentDate.equals(data.getDate()))//if data has enterded today then set background to yellow
+       holder.singleRecordLayout.setBackgroundColor(context.getResources().getColor(R.color.yellow));
+    else//if we dont put else statement then other layout also color get change so else is important
+       holder.singleRecordLayout.setBackgroundColor(Color.WHITE);
+        //************************ DONE SETTING BACKGROUND COLOR ACCORDING TO PREVIOUS AND TODAYS DATE*******************************
+
          holder.singleRecordLayout.setOnLongClickListener(new View.OnLongClickListener() {//for updating
              @Override
              public boolean onLongClick(View view) {
@@ -190,18 +206,7 @@ public class WagesDetailsAdapter extends RecyclerView.Adapter<WagesDetailsAdapte
                  final AlertDialog dialog = updateCustomDialog.create();//mycustomDialog varialble cannot be use in inner class so creating another final varialbe  to use in inner class
 
                  TextView deposit_btn_tv = myView.findViewById(R.id.to_deposit_tv);
-                 deposit_btn_tv.setVisibility(View.GONE);//initially no deposit button because we are updating only wages etc
-                 deposit_btn_tv.setOnLongClickListener(new View.OnLongClickListener() {
-                     @Override
-                     public boolean onLongClick(View view) {
-                         Intent intent=new Intent(context,CustomizeLayoutOrDepositAmount.class);
-                         intent.putExtra("ID",data.getId());
-                         dialog.dismiss();//while going to other activity dismiss dialog otherwise window leak
-                         ((Activity)context).finish();//while going to other activity so destroy  this current activity so that while coming back we will see refresh activity
-                         context.startActivity(intent);
-                         return false;
-                     }
-                 });
+                 deposit_btn_tv.setVisibility(View.GONE);//initially no deposit button because we are updating only wages p1,p2...etc
                  TextView hardcodedP1 = myView.findViewById(R.id.hardcoded_p1_tv);
                  TextView hardcodedP2 = myView.findViewById(R.id.hardcoded_p2_tv);
                  TextView hardcodedP3 = myView.findViewById(R.id.hardcoded_p3_tv);
@@ -233,8 +238,7 @@ public class WagesDetailsAdapter extends RecyclerView.Adapter<WagesDetailsAdapte
                      }
                  });
 
-
-                 if (data.getDeposit() == 0) {//if wages is there and deposit not there then execute.If wages is 0 then this will not execute so important to set condition data.getDeposit() == 0
+                 if (data.getIsdeposited().equals("0")) {// 0 means not deposited it is important because it will open window to enter deposit or wages.wrong window should not be opened.
                  message_tv.setText("You are updating");
                  save.setText("LONG PRESS TO UPDATE");
 
@@ -716,7 +720,7 @@ public class WagesDetailsAdapter extends RecyclerView.Adapter<WagesDetailsAdapte
                          }
                      });
 
-             }else{//this will execute only user want to update only deposit
+             }else if(data.getIsdeposited().equals("1")){//this will execute only user want to update only deposit
                      description.setVisibility(View.GONE);
                      save.setVisibility(View.GONE);
                      LinearLayout l1=myView.findViewById(R.id.hardcode_layout);
@@ -730,13 +734,15 @@ public class WagesDetailsAdapter extends RecyclerView.Adapter<WagesDetailsAdapte
                      l4.setVisibility(View.GONE);
                      l5.setVisibility(View.GONE);
 
-                     deposit_btn_tv.setVisibility(View.VISIBLE);
+                      deposit_btn_tv.setVisibility(View.VISIBLE);
                       deposit_btn_tv.setText("CLICK TO UPDATE DEPOSIT");
                       deposit_btn_tv.setOnClickListener(new View.OnClickListener() {//not opening directly because user sometime click on wages instead of deposit so to let user think he has click on right filed then only he can update
                          @Override
-                         public void onClick(View view) {
+                         public void onClick(View view) {//sending date,time and id to update deposit
                              Intent intent=new Intent(context,CustomizeLayoutOrDepositAmount.class);
                              intent.putExtra("ID",data.getId());
+                             intent.putExtra("DATE",data.getDate());
+                             intent.putExtra("TIME",data.getTime());
                              dialog.dismiss();//while going to other activity dismiss dialog otherwise window leak
                              ((Activity)context).finish();//while going to other activity so destroy  this current activity so that while coming back we will see refresh activity
                             context.startActivity(intent);
@@ -876,12 +882,12 @@ public class WagesDetailsAdapter extends RecyclerView.Adapter<WagesDetailsAdapte
 
     private int extractData(int i,String date) {
         int data=0;
-        String[] str=date.split("-");////converting using String.split() method with "-" as a delimiter
-        if(i==0){
+        String[] str=date.split("-");//converting using String.split() method with "-" as a delimiter
+        if(i==0){//0 is for day of month
          return Integer.parseInt(str[0]);
-        }else if(i==1){
+        }else if(i==1){//1 is for month
             return (Integer.parseInt(str[1])-1);//month-1 to get right result
-        }else if(i==2){
+        }else if(i==2){//2 is for year
             return Integer.parseInt(str[2]);
         }
         return data;
@@ -989,5 +995,12 @@ public class WagesDetailsAdapter extends RecyclerView.Adapter<WagesDetailsAdapte
         mediaRecorder.release();
         mediaRecorder=null;
         // Toast.makeText(this, "Recording SAVED "+file.getAbsolutePath(), Toast.LENGTH_SHORT).show();
+    }
+    public String getPreviousDate(){
+        //to get previous date
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DATE, -1);//-1 to get previous date
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-M-yyyy");//dd-M-yyyy to get date as 19-3-2022 by lefting 0. 19-03-2022
+         return dateFormat.format(calendar.getTimeInMillis());
     }
 }

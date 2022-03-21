@@ -10,6 +10,7 @@
 
 
         <LinearLayout
+            android:id="@+id/custom_setting_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -50,7 +51,8 @@
                 android:textColor="#1AA30A"
                 android:layout_gravity="center_vertical"
                 android:paddingLeft="15dp"
-                android:textSize="14dp" />
+                android:textSize="14dp"
+                android:id="@+id/custom_deposit_amount_tv"/>
 
 
             <EditText

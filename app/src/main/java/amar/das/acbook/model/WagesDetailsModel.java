@@ -3,6 +3,16 @@ package amar.das.acbook.model;
 public class WagesDetailsModel {
     private String date;
 
+    public String getIsdeposited() {
+        return isdeposited;
+    }
+
+    public void setIsdeposited(String isdeposited) {
+        this.isdeposited = isdeposited;
+    }
+
+    private String isdeposited;
+
     public String getTime() {
         return time;
     }

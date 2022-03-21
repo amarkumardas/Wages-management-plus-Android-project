@@ -153,11 +153,11 @@ Boolean aboolean=false;
             allMLGList.add(model);
         }
         cursor2.close();
-        //sorting according to name IN accending order by default
-        allMLGList.sort(new Comparator<MLGAllRecordModel>() {
+        //sorting according to name IN accending order by default or natural sorting order
+        allMLGList.sort(new Comparator<MLGAllRecordModel>() {//anonymous inner class
             @Override
             public int compare(MLGAllRecordModel mlgAllRecordModel, MLGAllRecordModel t1) {
-                return mlgAllRecordModel.getName().compareTo(t1.getName());
+                return mlgAllRecordModel.getName().compareTo(t1.getName());//ascending order
             }
         });
 
@@ -166,7 +166,7 @@ Boolean aboolean=false;
         searchRecycler.setAdapter(allMLGRecordAdapter);
         aboolean=true;//to set adapter recycler view on onQueryTextChange method
         db.close();//closing database to prevent dataleak
-        Toast.makeText(FindActivity.this, "Total size: "+allMLGRecordAdapter.getItemCount(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(FindActivity.this, "TOTAL: "+allMLGRecordAdapter.getItemCount(), Toast.LENGTH_SHORT).show();
     }
 
     public void goto_back(View view) {

@@ -86,6 +86,9 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
              Cursor sumCursor=db.getData("SELECT SUM(WAGES),SUM(P1),SUM(P2),SUM(P3),SUM(P4),SUM(DEPOSIT) FROM "+db.TABLE_NAME2+" WHERE ID= '"+fromIntentPersonId +"'");
              sumCursor.moveToFirst();
 
+             if( sumCursor.getInt(0) < 0 )//if total wages amount cross the  range of int the this message will be shown
+                 Toast.makeText(this, "INCORRECT CALCULATION PLEACE CHECK TOTAL WAGES", Toast.LENGTH_LONG).show();
+
              binding.blueTotalWagesTv.setText(sumCursor.getString(0));
              binding.blueTotalp1Tv.setText(sumCursor.getString(1));
              binding.totalP1CountTv.setText(sumCursor.getString(1));//default skill
@@ -213,7 +216,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
             sumCursor.close();
             //***********Done setting skill**********************************************
             //*******************Recycler view********************************************
-              Cursor allDataCursor=db.getData("SELECT DATE,MICPATH,DESCRIPTION,WAGES,DEPOSIT,P1,P2,P3,P4,ID,TIME FROM "+db.TABLE_NAME2+" WHERE ID='"+fromIntentPersonId+"'");
+              Cursor allDataCursor=db.getData("SELECT DATE,MICPATH,DESCRIPTION,WAGES,DEPOSIT,P1,P2,P3,P4,ID,TIME,ISDEPOSITED FROM "+db.TABLE_NAME2+" WHERE ID='"+fromIntentPersonId+"'");
               dataList=new ArrayList<>();
             while(allDataCursor.moveToNext()){
                 WagesDetailsModel model=new WagesDetailsModel();
@@ -228,6 +231,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                 model.setP4(allDataCursor.getInt(8));
                 model.setId(allDataCursor.getString(9));
                 model.setTime(allDataCursor.getString(10));
+                model.setIsdeposited((allDataCursor.getString(11)));
                 dataList.add(model);
             }
             allDataCursor.close();
@@ -235,6 +239,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
 
             binding.singleRecordRecy.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
             binding.singleRecordRecy.setAdapter(wagesDetailsAdapter);
+            binding.singleRecordRecy.scrollToPosition(dataList.size()-1);//this will scroll recycler view to last position automatically
             //*******************done Recycler view********************************************
             //retrieving data from db
             Cursor cursor = db.getData("SELECT NAME,BANKACCOUNT,IFSCCODE,BANKNAME,AADHARCARD,PHONE,TYPE,FATHERNAME,IMAGE,ACHOLDER,ID FROM " + db.TABLE_NAME1 + " WHERE ID='" + fromIntentPersonId + "'");
@@ -323,7 +328,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
             binding.workTotalAmountTv.setText(" - " + (totalDeposit + (totalr1r2r3r4sum1sum2sum3sum4)));
 
             if((totalDeposit + (totalr1r2r3r4sum1sum2sum3sum4)) < 0) {//user cant enter negative number so when (totalDeposit + (totalr1r2r3r4sum1sum2sum3sum4)) is negative that means int range is exceeds so wrong result will be shown
-                Toast.makeText(this, "INCORRECT CALCULATION PLEACE CHECK", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "INCORRECT CALCULATION PLEACE CHECK TOTAL WORK AMOUNT", Toast.LENGTH_LONG).show();
             }
 
 
@@ -368,7 +373,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
             binding.workTotalAmountTv.setText("  - " + (totalr1r2r3r4sum1sum2sum3sum4));
 
             if((totalr1r2r3r4sum1sum2sum3sum4) < 0) {//user cant enter negative number so when totalr1r2r3r4sum1sum2sum3sum4 is negative that means int range is exceeds so wrong result will be shown
-                Toast.makeText(this, "INCORRECT CALCULATION PLEACE CHECK", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "INCORRECT CALCULATION PLEACE CHECK TOTAL WORK AMOUNT", Toast.LENGTH_LONG).show();
             }
 
 
@@ -410,7 +415,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
             binding.workTotalAmountTv.setText(" - " + totalDeposit);
 
             if(totalDeposit < 0) {//user cant enter negative number so when (totalDeposit) is negative that means int range is exceeds so wrong result will be shown
-                Toast.makeText(this, "INCORRECT CALCULATION PLEACE CHECK", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "INCORRECT CALCULATION PLEACE CHECK TOTAL WORK AMOUNT", Toast.LENGTH_LONG).show();
             }
 
             //                                               totalDeposit
@@ -434,7 +439,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
             binding.workTotalAmountTv.setText("  - " + totalDeposit);
 
             if(totalDeposit < 0) {//user cant enter negative number so when (totalDeposit) is negative that means int range is exceeds so wrong result will be shown
-                Toast.makeText(this, "INCORRECT CALCULATION PLEACE CHECK", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "INCORRECT CALCULATION PLEACE CHECK TOTAL WORK AMOUNT", Toast.LENGTH_LONG).show();
             }
 
             //    totalDeposit < total wages
@@ -495,7 +500,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
             binding.workTotalAmountTv.setText("  - " + (totalr1r2r3r4sum1sum2sum3sum4));
 
             if((totalr1r2r3r4sum1sum2sum3sum4) < 0) {//user cant enter negative number so when (totalr1r2r3r4sum1sum2sum3sum4) is negative that means int range is exceeds so wrong result will be shown
-                Toast.makeText(this, "INCORRECT CALCULATION PLEACE CHECK", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "INCORRECT CALCULATION PLEACE CHECK TOTAL WORK AMOUNT", Toast.LENGTH_LONG).show();
             }
 
 
@@ -519,7 +524,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
             binding.workTotalAmountTv.setText("  - " + ((totalDeposit +  (totalr1r2r3r4sum1sum2sum3sum4))));
 
             if(((totalDeposit +  (totalr1r2r3r4sum1sum2sum3sum4))) < 0) {//user cant enter negative number so when ((totalDeposit +  (totalr1r2r3r4sum1sum2sum3sum4))) is negative that means int range is exceeds so wrong result will be shown
-                Toast.makeText(this, "INCORRECT CALCULATION PLEACE CHECK", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "INCORRECT CALCULATION PLEACE CHECK TOTAL WORK AMOUNT", Toast.LENGTH_LONG).show();
             }
 
 
@@ -537,14 +542,14 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
         }
     }
     private void indicatorDefaultCalculationAndUpdate(Cursor sumCursor, Cursor skillCursor){
-         Boolean bool;
+         boolean bool;
         //deposit                              rate                                wages
         if(sumCursor.getString(5) != null && skillCursor.getInt(3) != 0 && sumCursor.getInt(0) !=0) {
              //                                                       deposit+                       (R1*SUMP1)
             binding.workTotalAmountTv.setText("  - " + (sumCursor.getInt(5) + (skillCursor.getInt(3) * sumCursor.getInt(1))));
 
             if((sumCursor.getInt(5) + (skillCursor.getInt(3) * sumCursor.getInt(1))) < 0) {//user cant enter negative number so when (sumCursor.getInt(5) + (skillCursor.getInt(3) * sumCursor.getInt(1))) is negative that means int range is exceeds so wrong result will be shown
-                Toast.makeText(this, "INCORRECT CALCULATION PLEACE CHECK", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "INCORRECT CALCULATION PLEACE CHECK TOTAL WORK AMOUNT", Toast.LENGTH_LONG).show();
             }
 
             //                   deposit+                       (R1*SUMP1)                     total wages
@@ -586,7 +591,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
             binding.workTotalAmountTv.setText("  - " + (skillCursor.getInt(3) * sumCursor.getInt(1)));
 
             if((skillCursor.getInt(3) * sumCursor.getInt(1)) < 0) {//user cant enter negative number so when (skillCursor.getInt(3) * sumCursor.getInt(1)) is negative that means int range is exceeds so wrong result will be shown
-                Toast.makeText(this, "INCORRECT CALCULATION PLEACE CHECK", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "INCORRECT CALCULATION PLEACE CHECK TOTAL WORK AMOUNT", Toast.LENGTH_LONG).show();
             }
 
             //             (R1*SUMP1)                                     total wages
@@ -627,7 +632,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
             binding.workTotalAmountTv.setText(" - "+sumCursor.getInt(5));
 
             if(sumCursor.getInt(5) < 0) {//user cant enter negative number so when sumCursor.getInt(5) is negative that means int range is exceeds so wrong result will be shown
-                Toast.makeText(this, "INCORRECT CALCULATION PLEACE CHECK", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "INCORRECT CALCULATION PLEACE CHECK TOTAL WORK AMOUNT", Toast.LENGTH_LONG).show();
             }
             //                                               deposit
             binding.advanceOrBalanceTv.setText("= " +sumCursor.getInt(5));
@@ -647,7 +652,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
             binding.workTotalAmountTv.setText(" - "+sumCursor.getInt(5));
 
             if(sumCursor.getInt(5) < 0) {//user cant enter negative number so when sumCursor.getInt(5) is negative that means int range is exceeds so wrong result will be shown
-                Toast.makeText(this, "INCORRECT CALCULATION PLEACE CHECK", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "INCORRECT CALCULATION PLEACE CHECK TOTAL WORK AMOUNT", Toast.LENGTH_LONG).show();
             }
 
             //             deposit              total wages
@@ -700,7 +705,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
             binding.workTotalAmountTv.setText("  - "+(sumCursor.getInt(1)*skillCursor.getInt(3)));
 
             if((sumCursor.getInt(1)*skillCursor.getInt(3)) < 0) {//user cant enter negative number so when (sumCursor.getInt(1)*skillCursor.getInt(3)) is negative that means int range is exceeds so wrong result will be shown
-                Toast.makeText(this, "INCORRECT CALCULATION PLEACE CHECK", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "INCORRECT CALCULATION PLEACE CHECK TOTAL WORK AMOUNT", Toast.LENGTH_LONG).show();
             }
 
                                                                        //  R1*(SUMP1)
@@ -724,7 +729,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
             binding.workTotalAmountTv.setText("  - "+((sumCursor.getInt(5) + (skillCursor.getInt(3) * sumCursor.getInt(1)))));
 
             if(((sumCursor.getInt(5) + (skillCursor.getInt(3) * sumCursor.getInt(1)))) < 0) {//user cant enter negative number so when ((sumCursor.getInt(5) + (skillCursor.getInt(3) * sumCursor.getInt(1)))) is negative that means int range is exceeds so wrong result will be shown
-                Toast.makeText(this, "INCORRECT CALCULATION PLEACE CHECK", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "INCORRECT CALCULATION PLEACE CHECK TOTAL WORK AMOUNT", Toast.LENGTH_LONG).show();
             }
 
 
