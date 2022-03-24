@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -45,8 +47,16 @@ public class MestreLaberGAdapter extends RecyclerView.Adapter<MestreLaberGAdapte
         Bitmap bitmap= BitmapFactory.decodeByteArray(image,0, image.length);
         holder.name.setText(data.getName());
         holder.profileimg.setImageBitmap(bitmap);
-        holder.amountAdvance.setText(data.getAdvanceAmount());
-
+        if(data.getAdvanceAmount() > 0 ){//no need to give >= because wastage of time
+            holder.amountAdvance.setText(""+data.getAdvanceAmount());
+            holder.amountAdvance.setTextColor(Color.RED);
+        }else if(data.getBalanceAmount() > 0 ){
+            holder.amountAdvance.setText(""+data.getBalanceAmount());
+            holder.amountAdvance.setTextColor(contex.getResources().getColor(R.color.green));
+        }else {
+            holder.amountAdvance.setText("0");//if no advance or balance then set to zero
+            holder.amountAdvance.setTextColor(contex.getResources().getColor(R.color.green));
+        }
         holder.profileimg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

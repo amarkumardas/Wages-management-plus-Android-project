@@ -40,7 +40,6 @@
                 android:layout_height="wrap_content"
                 android:text="1234567890"
                 android:textAlignment="center"
-                android:textColor="#0B48FF"
                 android:layout_marginTop="1dp"
                 android:id="@+id/advance_amount_tv"/>
         </LinearLayout>

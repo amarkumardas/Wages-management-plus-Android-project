@@ -28,7 +28,6 @@ import amar.das.acbook.databinding.FragmentInactiveBinding;
 
 public class InactiveFragment extends Fragment {
     private FragmentInactiveBinding binding;
-    static int amountad=1;
     ArrayList<MestreLaberGModel> arrayList1_6000;
     ArrayList<MestreLaberGModel> arrayList6001_above;
 
@@ -56,21 +55,17 @@ public class InactiveFragment extends Fragment {
         //mestreRecyclerView.setHasFixedSize(true);//telling to recycler view that dont calculate item size every time when added and remove from recyclerview
         recyclerView6001_above =root.findViewById(R.id.recycle6001_above);
 
-        //1-6000
-        Cursor cursormestre=db.getData("SELECT IMAGE,ID,NAME FROM "+db.TABLE_NAME1 +" WHERE TYPE='M' AND ACTIVE='1' LIMIT 14 ");//getting image from database
+        //1-6000                                                                                                            // ACTIVE='0'
+        Cursor cursormestre=db.getData("SELECT IMAGE,ID,NAME,ADVANCE,BALANCE FROM "+db.TABLE_NAME1 +" WHERE TYPE='M' AND ACTIVE='1' ORDER BY ADVANCE DESC LIMIT 14 ");
         // Cursor cursorinactive=db.getImage("SELECT IMAGE,ADVANCEAMOUNT FROM "+db.TABLE_NAME+" WHERE ADVANCEAMOUNT  BETWEEN 0 AND 3000 AND ACTIVE='0' ORDER BY ADVANCEAMOUNT DESC");//this query will fetch image and advanceamount between 0 to 3000 and is not active ie;0 in decending order
         arrayList1_6000 =new ArrayList<>();
-        byte[] image;
-        String id,name;
         while(cursormestre.moveToNext()){
             MestreLaberGModel data=new MestreLaberGModel();
-            image=cursormestre.getBlob(0);
-            id=cursormestre.getString(1);
-            name=cursormestre.getString(2);
-            data.setName(name);
-            data.setPerson_img(image);
-            data.setAdvanceAmount("0000000000");
-            data.setId(id);
+            data.setPerson_img(cursormestre.getBlob(0));
+            data.setId(cursormestre.getString(1));
+            data.setName(cursormestre.getString(2));
+            data.setAdvanceAmount(cursormestre.getInt(3));
+            data.setBalanceAmount(cursormestre.getInt(4));
             arrayList1_6000.add(data);
         }
         cursormestre.close();
@@ -101,27 +96,25 @@ public class InactiveFragment extends Fragment {
                 if(isScrolling1 && (currentItem1 + scrollOutItems1 == totalItem1)){
                     isScrolling1 =false;
                     Toast.makeText(getContext(), "Please Wait Loading", Toast.LENGTH_SHORT).show();
-                    fetchData("SELECT IMAGE,ID,NAME FROM " + db.TABLE_NAME1 + " WHERE TYPE='M' OR TYPE='L' OR TYPE='G' AND ACTIVE='1'",arrayList1_6000);
+                    fetchData("SELECT IMAGE,ID,NAME,ADVANCE,BALANCE FROM " + db.TABLE_NAME1 + " WHERE TYPE='M' AND ACTIVE='1' ORDER BY ADVANCE DESC",arrayList1_6000);
                     recyclerView1_6000.clearOnScrollListeners();//this will remove scrollListener so we wont be able to scroll after loading all data and finished scrolling to last
                 }
             }
         });
 
 
-        //6001-ABOVE
-        Cursor cursorinactive=db.getData("SELECT IMAGE,ID,NAME FROM " + db.TABLE_NAME1 + " WHERE TYPE='M' OR TYPE='L' OR TYPE='G' AND ACTIVE='1' LIMIT 14 ");//getting image from database
+        //6001-ABOVE                                                                                                                   ACTIVE='0' change
+        Cursor cursorinactive=db.getData("SELECT IMAGE,ID,NAME,ADVANCE,BALANCE FROM " + db.TABLE_NAME1 + " WHERE  TYPE='L' OR TYPE='G' AND ACTIVE='1' ORDER BY ADVANCE DESC LIMIT 14 ");//getting image from database
         // Cursor cursorinactive=db.getImage("SELECT IMAGE,ADVANCEAMOUNT FROM "+db.TABLE_NAME+" WHERE ADVANCEAMOUNT  BETWEEN 10001 AND 1000000 AND ACTIVE='0' ORDER BY ADVANCEAMOUNT DESC");
 
         arrayList6001_above =new ArrayList<>();
         while(cursorinactive.moveToNext()){
             MestreLaberGModel data=new MestreLaberGModel();
-            image=cursorinactive.getBlob(0);
-            id=cursorinactive.getString(1);
-            name=cursorinactive.getString(2);
-            data.setName(name);
-            data.setPerson_img(image);
-            data.setAdvanceAmount("0000000000");
-            data.setId(id);
+            data.setId(cursorinactive.getString(1));
+            data.setName(cursorinactive.getString(2));
+            data.setPerson_img(cursorinactive.getBlob(0));
+            data.setAdvanceAmount(cursorinactive.getInt(3));
+            data.setBalanceAmount(cursorinactive.getInt(4));
             arrayList6001_above.add(data);
         }
         cursorinactive.close();
@@ -153,7 +146,7 @@ public class InactiveFragment extends Fragment {
                 if(isScrolling2 && (currentItem2 + scrollOutItems2 == totalItem2)){
                      isScrolling2 =false;
                     Toast.makeText(getContext(), "Please Wait Loading", Toast.LENGTH_SHORT).show();
-                    fetchData("SELECT IMAGE,ID,NAME FROM " + db.TABLE_NAME1 + " WHERE TYPE='M' OR TYPE='L' OR TYPE='G' AND ACTIVE='1'",arrayList6001_above); //LIMIT 14 OFFSET 50 NOT working
+                    fetchData("SELECT IMAGE,ID,NAME,ADVANCE,BALANCE FROM " + db.TABLE_NAME1 + " WHERE  TYPE='L' OR TYPE='G' AND ACTIVE='1' ORDER BY ADVANCE DESC",arrayList6001_above);
                     recyclerView6001_above.clearOnScrollListeners();//this will remove scrollListener so we wont be able to scroll after loading all data and finished scrolling to last
                 }
             }
@@ -173,19 +166,15 @@ public class InactiveFragment extends Fragment {
 
     private void dataLoad(String querys,ArrayList<MestreLaberGModel> arraylist){
         Cursor cursormestre = db.getData(querys);//getting image from database
-        byte[] image;
-        String id,name;
         //Toast.makeText(getContext(), ""+arraylist.size(), Toast.LENGTH_SHORT).show(); error null pointer exception
         arraylist.clear();//clearing the previous object which is there ie.14 object
         while (cursormestre.moveToNext()) {
             MestreLaberGModel data = new MestreLaberGModel();
-             image = cursormestre.getBlob(0);
-             id=cursormestre.getString(1);
-             name=cursormestre.getString(2);
-             data.setName(name);
-             data.setPerson_img(image);
-             data.setAdvanceAmount(""+amountad++);
-             data.setId(id);
+             data.setName(cursormestre.getString(2));
+             data.setPerson_img(cursormestre.getBlob(0));
+             data.setAdvanceAmount(cursormestre.getInt(3));
+             data.setBalanceAmount(cursormestre.getInt(4));
+             data.setId(cursormestre.getString(1));
              arraylist.add(data);
              madapter.notifyDataSetChanged();//Use the notifyDataSetChanged() every time the list is updated,or inserted or deleted
         }

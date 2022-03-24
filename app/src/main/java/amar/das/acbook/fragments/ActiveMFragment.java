@@ -27,7 +27,6 @@ public class ActiveMFragment extends Fragment {
     RecyclerView mestreRecyclerView;
     MestreLaberGAdapter madapter;
     PersonRecordDatabase db;
-    int amountad=1;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -39,28 +38,23 @@ public class ActiveMFragment extends Fragment {
          mestreRecyclerView=root.findViewById(R.id.recycle_active_mestre);
 
          //mestre
-        Cursor cursormestre=db.getData("SELECT IMAGE,ID,NAME FROM "+db.TABLE_NAME1 +" WHERE TYPE='M' AND ACTIVE='1' LIMIT 100");//getting only mestre image from database
+        Cursor cursormestre=db.getData("SELECT IMAGE,ID,NAME,ADVANCE,BALANCE FROM "+db.TABLE_NAME1 +" WHERE TYPE='M' AND ACTIVE='1' ORDER BY ADVANCE DESC LIMIT 100");//getting only mestre image from database
         mestreactiveArrayList =new ArrayList<>();
-        String id,name;
         while(cursormestre.moveToNext()){
             MestreLaberGModel data=new MestreLaberGModel();
-            byte[] image=cursormestre.getBlob(0);
-            id=cursormestre.getString(1);
-            name=cursormestre.getString(2);
-            data.setName(name);
-            data.setPerson_img(image);
-            data.setId(id);
-            data.setAdvanceAmount(""+amountad++);
+            data.setName(cursormestre.getString(2));
+            data.setPerson_img(cursormestre.getBlob(0));
+            data.setId(cursormestre.getString(1));
+            data.setAdvanceAmount(cursormestre.getInt(3));
+            data.setBalanceAmount(cursormestre.getInt(4));
             mestreactiveArrayList.add(data);//adding data to mestrearraylist
         }
         cursormestre.close();//closing cursor after finish
         madapter=new MestreLaberGAdapter(getContext(), mestreactiveArrayList);
-        //activeMestreCount.setText(""+madapter.getItemCount());
         mestreRecyclerView.setAdapter(madapter);
         mestreRecyclerView.setHasFixedSize(true);
         mestreRecyclerView.setLayoutManager(new GridLayoutManager(getContext(),4));//spancount is number of rows
         db.close();//closing database to prevent dataleak
-
 
         return root;
     }

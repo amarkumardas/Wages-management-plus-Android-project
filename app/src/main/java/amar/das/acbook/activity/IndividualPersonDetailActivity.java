@@ -937,8 +937,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                 if(file !=null){//if file is not null then only it execute otherwise nothing will be inserted
                     micPath=file.getAbsolutePath();
                     arr[5]=1;
-                    file=null;//after path is saved then file=null so that next time while entering data it should not take default value ie micPath=null
-                }
+                 }
                 else
                     arr[5]=0;
 
@@ -1109,7 +1108,11 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                     toGive_Amount.setEnabled(true);
                     description.setEnabled(true);
                     dateIcon.setEnabled(true);
-                    save.setEnabled(true);
+
+                    if(!isEnterDataIsWrong(arr)) {//this is important if in field data is wrong then save button will not enabled until data is right.if save button is enabled with wrong data then if user has record audio then it will not be saved it will store null so to check right or wrong data this condition is important
+                        save.setEnabled(true);
+                     }
+
                     cancel.setEnabled(true);
                     deposit_btn_tv.setEnabled(true);
 
@@ -1138,8 +1141,15 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 String amount=toGive_Amount.getText().toString().trim();
                 toGive_Amount.setTextColor(Color.BLACK);
-                save.setEnabled(true);
-                arr[4]=1;//means data is inserted
+                arr[4]=1;//means data is inserted.This line should be here because when user enter wrong data and again enter right data then it should update array to 1 which indicate write data
+
+
+                //this will check if other data is right or wrong
+                if(!isEnterDataIsWrong(arr)) {//this is important if in field data is wrong then save button will not enabled until data is right.if save button is enabled with wrong data then if user has record audio then it will not be saved it will store null so to check right or wrong data this condition is important
+                    save.setEnabled(true);
+                }
+
+
                 if(!amount.matches("[0-9]+")){//no space or . or ,
                     Toast.makeText(IndividualPersonDetailActivity.this, "NOT ALLOWED(space  .  ,  -)\nPlease Correct", Toast.LENGTH_LONG).show();
                     toGive_Amount.setTextColor(Color.RED);
@@ -1158,8 +1168,12 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 String p11= inputP1.getText().toString().trim();
                 inputP1.setTextColor(Color.BLACK);
-                save.setEnabled(true);
-                arr[0]=1;//means data is inserted
+                arr[0]=1;//means data is inserted.This line should be here because when user enter wrong data and again enter right data then it should update array to 1 which indicate write data
+
+                //this will check if other data is right or wrong
+                if(!isEnterDataIsWrong(arr)) {//this is important if in field data is wrong then save button will not enabled until data is right.if save button is enabled with wrong data then if user has record audio then it will not be saved it will store null so to check right or wrong data this condition is important
+                    save.setEnabled(true);
+                }
                 if(!p11.matches("[0-9]+")){//"[.]?[0-9]+[.]?[0-9]*" for float
                     inputP1.setTextColor(Color.RED);
                     save.setEnabled(false);
@@ -1181,8 +1195,13 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 String p11= inputP2.getText().toString().trim();
                 inputP2.setTextColor(Color.BLACK);
-                save.setEnabled(true);
-                arr[1]=1;//means data is inserted
+                arr[1]=1;//means data is inserted.This line should be here because when user enter wrong data and again enter right data then it should update array to 1 which indicate write data
+
+                //this will check if other data is right or wrong
+                if(!isEnterDataIsWrong(arr)) {//this is important if in field data is wrong then save button will not enabled until data is right.if save button is enabled with wrong data then if user has record audio then it will not be saved it will store null so to check right or wrong data this condition is important
+                    save.setEnabled(true);
+                }
+
                 if(!p11.matches("[0-9]+")){// "[.]?[0-9]+[.]?[0-9]*"
                     inputP2.setTextColor(Color.RED);
                     save.setEnabled(false);
@@ -1204,8 +1223,15 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 String p11= inputP3.getText().toString().trim();
                 inputP3.setTextColor(Color.BLACK);
-                save.setEnabled(true);
-                arr[2]=1;//means data is inserted
+                arr[2]=1;//means data is inserted.This line should be here because when user enter wrong data and again enter right data then it should update array to 1 which indicate write data
+
+
+                //this will check if other data is right or wrong
+                if(!isEnterDataIsWrong(arr)) {//this is important if in field data is wrong then save button will not enabled until data is right.if save button is enabled with wrong data then if user has record audio then it will not be saved it will store null so to check right or wrong data this condition is important
+                    save.setEnabled(true);
+                }
+
+
                 if(!p11.matches("[0-9]+")){//space or , or - is restricted
                     inputP3.setTextColor(Color.RED);
                     save.setEnabled(false);
@@ -1227,8 +1253,14 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 String p11= inputP4.getText().toString().trim();
                 inputP4.setTextColor(Color.BLACK);
-                save.setEnabled(true);
-                arr[3]=1;//means data is inserted
+                arr[3]=1;//means data is inserted.This line should be here because when user enter wrong data and again enter right data then it should update array to 1 which indicate write data
+
+
+                //this will check if other data is right or wrong
+                if(!isEnterDataIsWrong(arr)) {//this is important if in field data is wrong then save button will not enabled until data is right.if save button is enabled with wrong data then if user has record audio then it will not be saved it will store null so to check right or wrong data this condition is important
+                    save.setEnabled(true);
+                }
+
                 if(!p11.matches("[0-9]+")){//space or , or - is restricted
                     inputP4.setTextColor(Color.RED);
                     save.setEnabled(false);

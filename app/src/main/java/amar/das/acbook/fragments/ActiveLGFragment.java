@@ -27,7 +27,7 @@ public class ActiveLGFragment extends Fragment {
     RecyclerView lGRecyclerView;
     MestreLaberGAdapter madapter;
     PersonRecordDatabase db;
-    int amountad=1;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -38,19 +38,17 @@ public class ActiveLGFragment extends Fragment {
         //ids
         lGRecyclerView=root.findViewById(R.id.recycle_active_l_g);
 
-        //mestre
-        Cursor cursorGL=db.getData("SELECT IMAGE,ID,NAME FROM "+db.TABLE_NAME1 +" WHERE TYPE='L' OR TYPE='G' AND ACTIVE='1' LIMIT 150");//getting only mestre image from database
+
+        Cursor cursorGL=db.getData("SELECT IMAGE,ID,NAME,ADVANCE,BALANCE FROM "+db.TABLE_NAME1 +" WHERE TYPE='L' OR TYPE='G' AND ACTIVE='1' ORDER BY ADVANCE DESC LIMIT 150");
         lGArrayList =new ArrayList<>();
-        String id,name;
+
         while(cursorGL.moveToNext()){
             MestreLaberGModel data=new MestreLaberGModel();
-            byte[] image=cursorGL.getBlob(0);
-            id=cursorGL.getString(1);
-            name=cursorGL.getString(2);
-            data.setName(name);
-            data.setPerson_img(image);
-            data.setId(id);
-            data.setAdvanceAmount(""+amountad++);
+            data.setName(cursorGL.getString(2));
+            data.setPerson_img(cursorGL.getBlob(0));
+            data.setId(cursorGL.getString(1));
+            data.setAdvanceAmount(cursorGL.getInt(3));
+            data.setBalanceAmount(cursorGL.getInt(4));
             lGArrayList.add(data);//adding data to mestrearraylist
         }
         cursorGL.close();//closing cursor after finish

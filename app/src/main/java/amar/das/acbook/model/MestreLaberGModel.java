@@ -1,7 +1,24 @@
 package amar.das.acbook.model;
 
 public class MestreLaberGModel {
-    private String advanceAmount,name,id;
+    public int getAdvanceAmount() {
+        return advanceAmount;
+    }
+
+    public void setAdvanceAmount(int advanceAmount) {
+        this.advanceAmount = advanceAmount;
+    }
+
+    public int getBalanceAmount() {
+        return balanceAmount;
+    }
+
+    public void setBalanceAmount(int balanceAmount) {
+        this.balanceAmount = balanceAmount;
+    }
+
+    private int advanceAmount,balanceAmount;
+    private String name,id;
     private byte[] person_img;
 
     public String getName() {
@@ -18,12 +35,8 @@ public class MestreLaberGModel {
         this.id = id;
     }
                 //default constructed is created here
-    public String getAdvanceAmount() {
-        return advanceAmount;
-    }
-    public void setAdvanceAmount(String advanceAmount) {
-        this.advanceAmount = advanceAmount;
-    }
+
+
     public byte[] getPerson_img() {
         return person_img;
     }

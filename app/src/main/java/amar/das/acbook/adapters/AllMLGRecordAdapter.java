@@ -62,7 +62,6 @@ public class AllMLGRecordAdapter extends RecyclerView.Adapter<AllMLGRecordAdapte
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView name,amount;
-
         LinearLayout layout;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);

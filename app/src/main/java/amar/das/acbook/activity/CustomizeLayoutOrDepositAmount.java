@@ -78,8 +78,11 @@ public class CustomizeLayoutOrDepositAmount extends AppCompatActivity {
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 String p11 = binding.customDepositEt.getText().toString().trim();
                 binding.customDepositEt.setTextColor(getResources().getColor(R.color.green));
-                binding.customSaveBtn.setEnabled(true);
-                arr[0]=1;//means data is inserted
+                arr[0]=1;//means data is inserted.This line should be here because when user enter wrong data and again enter right data then it should update array to 1 which indicate write data
+                //this will check if other data is right or wrong
+                if(!isEnterDataIsWrong(arr)) {//this is important if in field data is wrong then save button will not enabled until data is right.if save button is enabled with wrong data then if user has record audio then it will not be saved it will store null so to check right or wrong data this condition is important
+                    binding.customSaveBtn.setEnabled(true);
+                }
                 if (!p11.matches("[0-9]+")) {//space or , or - is restricted"[.]?[0-9]+[.]?[0-9]*"
                     binding.customDepositEt.setTextColor(Color.RED);
                     binding.customSaveBtn.setEnabled(false);
@@ -142,7 +145,12 @@ public class CustomizeLayoutOrDepositAmount extends AppCompatActivity {
                     binding.customDepositEt.setEnabled(true);
                     binding.customDescriptionEt.setEnabled(true);
                     binding.customDateIconTv.setEnabled(true);
-                    binding.customSaveBtn.setEnabled(true);
+
+                    //this will check if other data is right or wrong
+                    if(!isEnterDataIsWrong(arr)) {//this is important if in field data is wrong then save button will not enabled until data is right.if save button is enabled with wrong data then if user has record audio then it will not be saved it will store null so to check right or wrong data this condition is important
+                        binding.customSaveBtn.setEnabled(true);
+                    }
+
                     binding.customCancelBtn.setEnabled(true);
                     binding.customSpinnerSetting.setEnabled(true);
 
@@ -310,53 +318,7 @@ public class CustomizeLayoutOrDepositAmount extends AppCompatActivity {
                         public void onNothingSelected(AdapterView<?> adapterView) { }
                     });
 
-
-//            //Time
-//            Date d=Calendar.getInstance().getTime();
-//            SimpleDateFormat sdf=new SimpleDateFormat("hh:mm:ss a");//a stands for is AM or PM
-//            String onlyTime = sdf.format(d);
-//            binding.customTimeTv.setText(onlyTime);//setting time to take time and store in db
-
-//            //to automatically set date to textView
-//            final Calendar current=Calendar.getInstance();//to get current date and time
-//            int cYear=current.get(Calendar.YEAR);
-//            int cMonth=current.get(Calendar.MONTH);
-//            int cDayOfMonth=current.get(Calendar.DAY_OF_MONTH);
             binding.customDateTv.setText(cDayOfMonth+"-"+(cMonth+1)+"-"+cYear);
-//            binding.customDateIconTv.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//
-//                    //To show calendar dialog
-//                    DatePickerDialog datePickerDialog=new DatePickerDialog(CustomizeLayoutOrDepositAmount.this, new DatePickerDialog.OnDateSetListener() {
-//                        @Override
-//                        public void onDateSet(DatePicker datePicker, int year, int month, int dayOfMonth) {
-//                            binding.customDateTv.setText(dayOfMonth+"-"+(month+1)+"-"+year);//month start from 0 so 1 is added to get right month like 12
-//                        }
-//                    },cYear,cMonth,cDayOfMonth);//This variable should be ordered this variable will set date day month to calendar to datePickerDialog so passing it
-//                    datePickerDialog.show();
-//                }
-//            });
-
-//            binding.customDepositEt.addTextChangedListener(new TextWatcher() {
-//                @Override
-//                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
-//                @Override
-//                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//                    String p11 = binding.customDepositEt.getText().toString().trim();
-//                    binding.customDepositEt.setTextColor(getResources().getColor(R.color.green));
-//                    binding.customSaveBtn.setEnabled(true);
-//                    arr[0]=1;//means data is inserted
-//                    if (!p11.matches("[0-9]+")) {//space or , or - is restricted"[.]?[0-9]+[.]?[0-9]*"
-//                        binding.customDepositEt.setTextColor(Color.RED);
-//                        binding.customSaveBtn.setEnabled(false);
-//                        arr[0]=2;//means data is inserted
-//                        Toast.makeText(CustomizeLayoutOrDepositAmount.this, "NOT ALLOWED(space  .  ,  -)\nPLEASE CORRECT", Toast.LENGTH_LONG).show();
-//                    }
-//                }
-//                @Override
-//                public void afterTextChanged(Editable editable) { }
-//            });
             binding.customSaveBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -400,49 +362,6 @@ public class CustomizeLayoutOrDepositAmount extends AppCompatActivity {
                         Toast.makeText(CustomizeLayoutOrDepositAmount.this, "CORRECT THE DATA or CANCEL AND ENTER AGAIN", Toast.LENGTH_LONG).show();
                 }
             });
-//            binding.customMicIconTv.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    //checking for permission
-//                    if(checkPermission()==true){
-//                        if (mStartRecording) {//initially false
-//                            //while recording user should not perform other task like entering date while recording because app will crash so set all field to setEnabled(false);
-//                            binding.customDescriptionEt.setEnabled(false);
-//                            binding.customDepositEt.setEnabled(false);
-//                            binding.customDateIconTv.setEnabled(false);
-//                            binding.customSaveBtn.setEnabled(false);
-//                            binding.customCancelBtn.setEnabled(false);
-//                            binding.customSpinnerSetting.setEnabled(false);
-//
-//                            binding.customChronometer.setBase(SystemClock.elapsedRealtime());//In Android, Chronometer is a class that implements a simple timer. Chronometer is a subclass of TextView. This class helps us to add a timer in our app.
-//                            binding.customChronometer.start();
-//                            binding.customChronometer.setEnabled(false);//when user press save button then set to true playAudioChronometer.setEnabled(true);
-//                            binding.customSaveAudioIconTv.setBackgroundResource(R.drawable.ic_green_sharp_done_sharp_tick_20);//changing tick color to green so that user can feel to press to save
-//                            binding.customMicIconTv.setEnabled(false);
-//                            binding.customMicIconTv.setBackgroundResource(R.drawable.black_sharp_mic_24);//change color when user click
-//
-//                            Toast.makeText(CustomizeLayoutOrDepositAmount.this, "RECORDING STARTED", Toast.LENGTH_SHORT).show();
-//
-//                            //be carefull take only getExternalFilesDir( null ) https://stackoverflow.com/questions/59017202/mediarecorder-stop-failed
-//                            File folder = new File(getExternalFilesDir(null) + "/acBookMicRecording");//Creating File directory in phone
-//
-//                            if (!folder.exists()) {//if folder not exist
-//                                Toast.makeText(CustomizeLayoutOrDepositAmount.this, "Creating acBookMicRecord folder to store audios", Toast.LENGTH_LONG).show();
-//                                folder.mkdir();//create folder
-//                            }
-//
-//                            startRecordingVoice();
-//                            CustomizeLayoutOrDepositAmount.this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON); //while the user is recording screen should be on. it should not close
-//
-//                        } else {//if recording is not started then stop
-//                            Toast.makeText(CustomizeLayoutOrDepositAmount.this, "AGAIN TAB ON MIC TO START RECORDING", Toast.LENGTH_SHORT).show();
-//                        }
-//                        mStartRecording = !mStartRecording;//so that user should click 2 times to start recording
-//
-//                    }else//request for permission
-//                        ActivityCompat.requestPermissions(CustomizeLayoutOrDepositAmount.this,new String[]{Manifest.permission.RECORD_AUDIO,Manifest.permission.WRITE_EXTERNAL_STORAGE},21);
-//                }
-//            });
             binding.customChronometer.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -461,30 +380,6 @@ public class CustomizeLayoutOrDepositAmount extends AppCompatActivity {
                         Toast.makeText(CustomizeLayoutOrDepositAmount.this, "TAB ON MIC TO START RECORDING", Toast.LENGTH_SHORT).show();
                 }
             });
-//            binding.customSaveAudioIconTv.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    if(mediaRecorder !=null){
-//                        //after clicking save audion then setEnabled to true so that user can enter data to fields
-//
-//                        binding.customDepositEt.setEnabled(true);
-//                        binding.customDescriptionEt.setEnabled(true);
-//                        binding.customDateIconTv.setEnabled(true);
-//                        binding.customSaveBtn.setEnabled(true);
-//                        binding.customCancelBtn.setEnabled(true);
-//                        binding.customSpinnerSetting.setEnabled(true);
-//
-//                        binding.customChronometer.setTextColor(getResources().getColor(R.color.green));//changind text color to green to give feel that is saved
-//                        binding.customMicIconTv.setBackgroundResource(R.drawable.ic_green_sharp_mic_20);//set background image to cancel
-//                        stopAndSaveRecordingPathToDB();
-//                        binding.customChronometer.stop();//stopping chronometer
-//                        binding.customMicIconTv.setEnabled(false);//so that user cannot press again this button
-//                        binding.customSaveAudioIconTv.setEnabled(false);//even this button user should not click again
-//                        binding.customChronometer.setEnabled(true);//when audio is save then user will be able to play
-//                    }else
-//                        Toast.makeText(CustomizeLayoutOrDepositAmount.this, "TAB ON MIC TO START RECORDING", Toast.LENGTH_SHORT).show();
-//                }
-//            });
 
             //while updating this will execute
         }else if( getIntent().hasExtra("ID") &&  getIntent().hasExtra("DATE") &&  getIntent().hasExtra("TIME") ){
