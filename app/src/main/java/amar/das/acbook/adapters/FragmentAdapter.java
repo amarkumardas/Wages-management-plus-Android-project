@@ -19,9 +19,9 @@ public class FragmentAdapter extends FragmentPagerAdapter {//this adapter will h
     @Override
     public Fragment getItem(int position) {
         switch (position){
-            case 0: return new InactiveFragment();
-            case 1: return new ActiveMFragment();
-            case 2: return new ActiveLGFragment();
+            case 0: return new ActiveMFragment();//default fragment is 0 index
+            case 1: return new ActiveLGFragment();
+            case 2: return new InactiveFragment();
             default:return new ActiveMFragment();
         }
     }
@@ -37,11 +37,11 @@ public class FragmentAdapter extends FragmentPagerAdapter {//this adapter will h
     public CharSequence getPageTitle(int position) {
         String title=null;
         if(position==0)
-            title="INACTIVE";
+          title="M";
         if(position==1)
-            title="M";
+            title="L";
         if(position==2)
-            title="L G";
+            title="INACTIVE";
         return title;
     }
 }

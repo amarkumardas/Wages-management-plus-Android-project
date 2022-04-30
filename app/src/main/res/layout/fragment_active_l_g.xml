@@ -6,6 +6,33 @@
     tools:context=".fragments.ActiveLGFragment"
     android:orientation="vertical"
     android:background="#D6DADF">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="4"
+        android:background="#FFFFFF">
+        <TextView
+            android:layout_weight="2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:textColor="#FF0000"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:id="@+id/active_l_g_advance"
+            />
+        <TextView
+            android:layout_weight="2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:textColor="@color/green"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:id="@+id/active_l_g_balance"
+            />
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"

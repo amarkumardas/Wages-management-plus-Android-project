@@ -29,6 +29,7 @@ public class PersonRecordDatabase extends SQLiteOpenHelper {
     public final static String COL_12="ACTIVE";
     public final static String COL_13="ADVANCE";
     public final static String COL_14="BALANCE";
+    public final static String COL_15="LATESTDATE";
 
     //table 2
     public final static String TABLE_NAME2="wages_table";
@@ -56,6 +57,9 @@ public class PersonRecordDatabase extends SQLiteOpenHelper {
     public final static String COL_37="SKILL2";
     public final static String COL_38="SKILL3";
     public final static String COL_39="INDICATOR";
+    public final static String COL_325="RATING";
+    public final static String COL_326="LEAVINGDATE";
+    public final static String COL_327="REFFERAL";
 
 
     SQLiteDatabase db;
@@ -67,9 +71,9 @@ public class PersonRecordDatabase extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {//it will execute only once        //NOT NULL OR DEFAULT NOT WORKING AND VARCHAR GIVEN VALUE NOT WORKING HOLDING MORE THAN GIVEN VALUE
      try {//if some error occur it will handle
-         sqLiteDatabase.execSQL("CREATE TABLE " + TABLE_NAME1 + " (ID INTEGER PRIMARY KEY AUTOINCREMENT,NAME VARCHAR(100) DEFAULT NULL,BANKACCOUNT VARCHAR(20) DEFAULT NULL,IFSCCODE VARCHAR(11) DEFAULT NULL,BANKNAME VARCHAR(38) DEFAULT NULL,AADHARCARD VARCHAR(12) DEFAULT NULL,PHONE VARCHAR(10) DEFAULT NULL,TYPE CHAR(1) DEFAULT NULL,FATHERNAME VARCHAR(100) DEFAULT NULL,IMAGE BLOB DEFAULT NULL,ACHOLDER VARCHAR(100) DEFAULT NULL,ACTIVE CHAR(1) DEFAULT 1,ADVANCE NUMERIC DEFAULT NULL,BALANCE NUMERIC DEFAULT NULL);");
+         sqLiteDatabase.execSQL("CREATE TABLE " + TABLE_NAME1 + " (ID INTEGER PRIMARY KEY AUTOINCREMENT,NAME VARCHAR(100) DEFAULT NULL,BANKACCOUNT VARCHAR(20) DEFAULT NULL,IFSCCODE VARCHAR(11) DEFAULT NULL,BANKNAME VARCHAR(38) DEFAULT NULL,AADHARCARD VARCHAR(12) DEFAULT NULL,PHONE VARCHAR(10) DEFAULT NULL,TYPE CHAR(1) DEFAULT NULL,FATHERNAME VARCHAR(100) DEFAULT NULL,IMAGE BLOB DEFAULT NULL,ACHOLDER VARCHAR(100) DEFAULT NULL,ACTIVE CHAR(1) DEFAULT 1,ADVANCE NUMERIC DEFAULT NULL,BALANCE NUMERIC DEFAULT NULL,LATESTDATE TEXT DEFAULT NULL);");
          sqLiteDatabase.execSQL("CREATE TABLE " + TABLE_NAME2 + " (ID INTEGER ,DATE TEXT DEFAULT NULL,TIME TEXT DEFAULT NULL,MICPATH TEXT DEFAULT NULL,DESCRIPTION TEXT DEFAULT NULL,WAGES NUMERIC DEFAULT NULL,DEPOSIT NUMERIC DEFAULT NULL,P1 INTEGER DEFAULT NULL,P2 INTEGER DEFAULT NULL,P3 INTEGER DEFAULT NULL,P4 INTEGER DEFAULT NULL,ISDEPOSITED CHAR(1) DEFAULT NULL);");
-         sqLiteDatabase.execSQL("CREATE TABLE " + TABLE_NAME3 + " (ID INTEGER PRIMARY KEY NOT NULL ,R1 INTEGER DEFAULT NULL,R2 INTEGER DEFAULT NULL,R3 INTEGER DEFAULT NULL,R4 INTEGER DEFAULT NULL,SKILL1 CHAR(1) DEFAULT NULL,SKILL2 CHAR(1) DEFAULT NULL,SKILL3 CHAR(1) DEFAULT NULL,INDICATOR CHAR(1) DEFAULT NULL);");//id is primary key because according to id only data is stored in table 3 so no duplicate
+         sqLiteDatabase.execSQL("CREATE TABLE " + TABLE_NAME3 + " (ID INTEGER PRIMARY KEY NOT NULL ,R1 INTEGER DEFAULT NULL,R2 INTEGER DEFAULT NULL,R3 INTEGER DEFAULT NULL,R4 INTEGER DEFAULT NULL,SKILL1 CHAR(1) DEFAULT NULL,SKILL2 CHAR(1) DEFAULT NULL,SKILL3 CHAR(1) DEFAULT NULL,INDICATOR CHAR(1) DEFAULT NULL,RATING CHAR(1) DEFAULT NULL,LEAVINGDATE VARCHAR(10) DEFAULT NULL,REFFERAL TEXT DEFAULT NULL);");//id is primary key because according to id only data is stored in table 3 so no duplicate
      }catch(Exception e){
          e.printStackTrace();
      }
@@ -99,6 +103,7 @@ public class PersonRecordDatabase extends SQLiteOpenHelper {
             cv.put(COL_9, fathername);
             cv.put(COL_10, image);
             cv.put(COL_11, acholder);
+            cv.put(COL_12,"1");//when new user added then it will be active
             //-1 is returned if error occurred. .insert(...) returns the row id of the new inserted record
             long rowid = db.insert(TABLE_NAME1, null, cv);
             db.close();//closing db after operation performed
@@ -140,6 +145,7 @@ public class PersonRecordDatabase extends SQLiteOpenHelper {
             cv.put(COL_9, fathername);
             cv.put(COL_10, image);
             cv.put(COL_11, acholder);
+            cv.put(COL_12, "1");//when ever user update that usere will become active
             //0 is returned if no record updated and it return number of rows updated
             long rowid = db.update(TABLE_NAME1, cv, "ID=?", new String[]{Id});
             db.close();//closing db after operation performed

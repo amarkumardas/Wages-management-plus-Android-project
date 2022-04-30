@@ -21,7 +21,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textSize="15dp"
-            android:text="AMAR KUMAR DAS"
+
             android:background="#415EFB"
             android:textStyle="bold"
             android:textColor="@color/white"
@@ -32,10 +32,10 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textSize="15dp"
-            android:text="M"
+
             android:background="@color/white"
             android:gravity="center"
-            android:id="@+id/skill_tv"/>
+            android:id="@+id/star_rating_tv"/>
     </LinearLayout>
 
     <LinearLayout
@@ -60,7 +60,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="FATHER: RAJA RAM DAS"
+
                 android:singleLine="true"
                 android:textSize="12dp"
                 android:gravity="start"
@@ -77,7 +77,7 @@
                     android:layout_weight="8"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="PHONE: 7005422685"
+
                     android:singleLine="true"
                     android:textSize="12dp"
                     android:layout_marginLeft="1dp"
@@ -95,7 +95,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="A/C:  12345678912345678"
+
                 android:singleLine="true"
                 android:textSize="13dp"
                 android:textColor="@color/black"
@@ -106,7 +106,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="IFSC: GFDGFD354678FJ"
+
                 android:singleLine="true"
                 android:textSize="12dp"
                 android:gravity="start"
@@ -116,7 +116,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="BANK: STATE BANK OF INDIA"
+
                 android:singleLine="true"
                 android:textSize="12dp"
                 android:gravity="start"
@@ -126,7 +126,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="A/C HOLDER: AMAR KUMAR DAS"
+
                 android:singleLine="true"
                 android:textSize="12dp"
                 android:gravity="start"
@@ -136,7 +136,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="AADHAR CARD: 1234567890"
+
                 android:singleLine="true"
                 android:textSize="13dp"
                 android:textColor="@color/black"
@@ -155,7 +155,7 @@
         <TextView
             android:layout_width="108dp"
             android:layout_height="wrap_content"
-            android:text="ID: 12345678901"
+
             android:textStyle="bold"
             android:textColor="@color/black"
             android:textSize="13dp"
@@ -241,14 +241,14 @@
             android:textColor="@color/black"
             android:textAlignment="center"
             android:textSize="13dp" />
+
         <TextView
-            android:layout_weight="2"
+            android:id="@+id/rating"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="10"
-            android:textSize="13dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
             android:textAlignment="center"
-            android:id="@+id/rating"/>
+            android:textSize="13dp" />
         <TextView
             android:layout_weight="6"
             android:layout_width="0dp"
@@ -333,7 +333,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
-                android:text="10000"
+
                 android:paddingTop="1dp"
                 android:textColor="#DD8503"
                 android:textStyle="bold"
@@ -435,7 +435,6 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:textAlignment="textStart"
-                    android:background="@color/white"
                     android:textColor="@color/purple_700"
                     android:textStyle="bold"
                     android:textSize="13dp"

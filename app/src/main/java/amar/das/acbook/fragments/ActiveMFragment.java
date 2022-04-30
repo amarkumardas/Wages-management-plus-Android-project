@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -26,6 +27,7 @@ public class ActiveMFragment extends Fragment {
     ArrayList<MestreLaberGModel> mestreactiveArrayList;
     RecyclerView mestreRecyclerView;
     MestreLaberGAdapter madapter;
+    TextView advance,balance;
     PersonRecordDatabase db;
 
     @Override
@@ -36,9 +38,16 @@ public class ActiveMFragment extends Fragment {
          db=new PersonRecordDatabase(getContext());
          //ids
          mestreRecyclerView=root.findViewById(R.id.recycle_active_mestre);
+         advance=root.findViewById(R.id.active_m_advance);
+         balance=root.findViewById(R.id.active_m_balance);
+         Cursor advanceBalanceCursor=db.getData("SELECT SUM(ADVANCE),SUM(BALANCE) FROM "+db.TABLE_NAME1+" WHERE TYPE='M' AND ACTIVE='1'");
+         advanceBalanceCursor.moveToFirst();
+         advance.setText("ADVANCE: "+advanceBalanceCursor.getInt(0));
+         balance.setText("BALANCE: "+advanceBalanceCursor.getInt(1));
+         advanceBalanceCursor.close();
 
          //mestre
-        Cursor cursormestre=db.getData("SELECT IMAGE,ID,NAME,ADVANCE,BALANCE FROM "+db.TABLE_NAME1 +" WHERE TYPE='M' AND ACTIVE='1' ORDER BY ADVANCE DESC LIMIT 100");//getting only mestre image from database
+        Cursor cursormestre=db.getData("SELECT IMAGE,ID,NAME,ADVANCE,BALANCE,LATESTDATE FROM "+db.TABLE_NAME1 +" WHERE TYPE='M' AND ACTIVE='1' ORDER BY ADVANCE DESC LIMIT 100");//getting only mestre image from database
         mestreactiveArrayList =new ArrayList<>();
         while(cursormestre.moveToNext()){
             MestreLaberGModel data=new MestreLaberGModel();
@@ -47,6 +56,7 @@ public class ActiveMFragment extends Fragment {
             data.setId(cursormestre.getString(1));
             data.setAdvanceAmount(cursormestre.getInt(3));
             data.setBalanceAmount(cursormestre.getInt(4));
+            data.setLatestDate(cursormestre.getString(5));
             mestreactiveArrayList.add(data);//adding data to mestrearraylist
         }
         cursormestre.close();//closing cursor after finish

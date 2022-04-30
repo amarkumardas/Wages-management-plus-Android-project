@@ -163,9 +163,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:textStyle="bold"
-                android:paddingLeft="25dp"
-                android:drawableStart="@drawable/cancel_sharp_clear_24"
+
+                android:text="X"
+                android:textSize="15dp"
+                android:textColor="#FF0000"
+                android:textAlignment="center"
                 android:background="@drawable/graycolor_bg"
                 android:id="@+id/custom_cancel_btn"/>
             <Button

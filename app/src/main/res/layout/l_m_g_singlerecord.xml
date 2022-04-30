@@ -15,7 +15,6 @@
         android:layout_weight="15"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="AMAR KUMAR DAS AMAR KUMAR DAS"
         android:textColor="@color/black"
         android:textStyle="bold"
         android:textSize="15dp"
@@ -24,11 +23,10 @@
         android:layout_weight="5"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="12345678901"
-        android:textStyle="bold"
-        android:background="#86C6CADF"
+        android:background="@color/background"
         android:textColor="@color/black"
-        android:textSize="15dp"
-        android:id="@+id/advance_money_tv"/>
+        android:textSize="13dp"
+        android:textAlignment="center"
+        android:id="@+id/inactive_duration_tv"/>
 
 </LinearLayout>

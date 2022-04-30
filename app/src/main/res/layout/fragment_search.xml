@@ -45,9 +45,9 @@
         android:layout_height="40dp"
         android:background="@color/purple_700"
         android:elevation="12dp"
-        app:tabTextColor="#FFFFFF"
-        app:tabIndicatorColor="#FFB240"
-        app:tabSelectedTextColor="#FFB240"
+        app:tabTextColor="#000000"
+        app:tabIndicatorColor="#FFFFFF"
+        app:tabSelectedTextColor="#FFFFFF"
         app:tabMaxWidth="0dp"
         app:tabGravity="fill"
         app:tabMode="fixed" />

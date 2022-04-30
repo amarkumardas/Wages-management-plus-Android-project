@@ -1,7 +1,7 @@
 package amar.das.acbook.model;
 
 public class MLGAllRecordModel {
-   private String name,amount,id,active;
+   private String name, latestDate,id,active;
 
     public String getActive() {
         return active;
@@ -19,12 +19,12 @@ public class MLGAllRecordModel {
         this.id = id;
     }
 
-    public String getAmount() {
-        return amount;
+    public String getLatestDate() {
+        return latestDate;
     }
 
-    public void setAmount(String amount) {
-        this.amount = amount;
+    public void setLatestDate(String latestDate) {
+        this.latestDate = latestDate;
     }
 
     public String getName() {

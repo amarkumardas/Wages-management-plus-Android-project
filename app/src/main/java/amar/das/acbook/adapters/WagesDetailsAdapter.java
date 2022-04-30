@@ -56,6 +56,7 @@ public class WagesDetailsAdapter extends RecyclerView.Adapter<WagesDetailsAdapte
     int indicator;
     boolean bool;
     int arr[]=new int[6];
+    String datearray[]=new String[3];
     String previousDataHold[]=new String[8];
     String fromIntentPersonId;
 
@@ -183,11 +184,10 @@ public class WagesDetailsAdapter extends RecyclerView.Adapter<WagesDetailsAdapte
                 holder.p4.setText("" + data.getP4());
             }
         }
-
          //************************SETTING BACKGROUND COLOR ACCORDING TO PREVIOUS AND TODAYS DATE*******************************
-   if (data.getDate().equals(getPreviousDate())) //if data has enterded yesterday then set background to gray
+         if (data.getDate().equals(getPreviousDate()))//if data has enterded yesterday then set background to gray
        holder.singleRecordLayout.setBackgroundColor(context.getResources().getColor(R.color.background));
-   else if(currentDate.equals(data.getDate()))//if data has enterded today then set background to yellow
+       else if(currentDate.equals(data.getDate()))//if data has enterded today then set background to yellow
        holder.singleRecordLayout.setBackgroundColor(context.getResources().getColor(R.color.yellow));
     else//if we dont put else statement then other layout also color get change so else is important
        holder.singleRecordLayout.setBackgroundColor(Color.WHITE);
@@ -318,11 +318,11 @@ public class WagesDetailsAdapter extends RecyclerView.Adapter<WagesDetailsAdapte
                  previousDataHold[6] = "TIME: " + cursorData.getString(2);//time to write previous record in description
                  previousDataHold[7] = "REMARKS: " + cursorData.getString(3);//descriprion or remarks
 
-                 int cDayOfMonth = extractData(0, cursorData.getString(1));
-                 int cMonth = extractData(1, cursorData.getString(1));
-                 int cYear = extractData(2, cursorData.getString(1));
-
-                 inputDate.setText(cDayOfMonth + "-" + (cMonth + 1) + "-" + cYear);
+                     datearray=cursorData.getString(1).split("-");
+                     int cDayOfMonth=Integer.parseInt(datearray[0]);
+                     int cMonth=Integer.parseInt(datearray[1]);
+                     int cYear=Integer.parseInt(datearray[2]);
+                 inputDate.setText(cDayOfMonth + "-" + (cMonth) + "-" + cYear);
                  dateIcon.setOnClickListener(new View.OnClickListener() {
                      @Override
                      public void onClick(View view) {
@@ -332,7 +332,7 @@ public class WagesDetailsAdapter extends RecyclerView.Adapter<WagesDetailsAdapte
                              public void onDateSet(DatePicker datePicker, int year, int month, int dayOfMonth) {
                                  inputDate.setText(dayOfMonth + "-" + (month + 1) + "-" + year);//month start from 0 so 1 is added to get right month like 12
                              }
-                         }, cYear, cMonth, cDayOfMonth);//This variable should be ordered this variable will set date day month to calendar to datePickerDialog so passing it
+                         }, cYear, (cMonth-1), cDayOfMonth);//This variable should be ordered this variable will set date day month to calendar to datePickerDialog so passing it
                          datePickerDialog.show();
                      }
                  });
@@ -365,10 +365,16 @@ public class WagesDetailsAdapter extends RecyclerView.Adapter<WagesDetailsAdapte
 
                          String date = inputDate.getText().toString();//date will be inserted automatically
 
+                         //this will store latest date in db if that date is current date
+                         final Calendar current=Calendar.getInstance();//to get current date
+                         String currentDate =current.get(Calendar.DAY_OF_MONTH)+"-"+(current.get(Calendar.MONTH)+1)+"-"+current.get(Calendar.YEAR);
+                         if(date.equals(currentDate)) {//if it is true then store
+                             db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET  LATESTDATE='" + date + "'" + " WHERE ID='" + data.getId() + "'");
+                         }
+
                          if(file !=null){//if file is not null then only it execute otherwise nothing will be inserted
                              micPath=file.getAbsolutePath();
                           }
-
 
                          boolean success, isWrongData, isDataPresent;
                          isWrongData = isEnterDataIsWrong(arr);
@@ -385,7 +391,7 @@ public class WagesDetailsAdapter extends RecyclerView.Adapter<WagesDetailsAdapte
                              Toast.makeText(context, "CORRECT THE DATA or CANCEL AND ENTER AGAIN", Toast.LENGTH_LONG).show();
 
                          //*********************************  all the upper code are common to all indicator 1,2,3,4*******************
-
+                         db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET ACTIVE='" + 1 + "'" +" WHERE ID='" +  data.getId() + "'");//when ever user update then that person will become active.This will work for all indicators
                          if (indicator == 1) {
                              if (isDataPresent == true && isWrongData == false) {//it is important means if data is present then check is it right data or not.if condition is false then this message will be displayed "Correct the Data or Cancel and Enter again"
                                  //UPDATE to database
@@ -393,7 +399,6 @@ public class WagesDetailsAdapter extends RecyclerView.Adapter<WagesDetailsAdapte
                                      success = db.updateTable("UPDATE " + db.TABLE_NAME2 + " SET DATE='" + date + "',TIME='" + time + "',DESCRIPTION='" + remarks +"',MICPATH='"+micPath+ "',WAGES='" + wages + "',P1='" + p1 + "'" + " WHERE ID= '" + data.getId() + "'" + " AND DATE= '" + data.getDate() + "'" + " AND TIME='" + data.getTime() + "'");
                                  }else //if micPath == null then we are not updating because null in text will be set to micpath and give wroing result like it will indicate that audio is present but actually audio is not present
                                      success = db.updateTable("UPDATE " + db.TABLE_NAME2 + " SET DATE='" + date + "',TIME='" + time + "',DESCRIPTION='" + remarks +"',WAGES='" + wages + "',P1='" + p1 + "'" + " WHERE ID= '" + data.getId() + "'" + " AND DATE= '" + data.getDate() + "'" + " AND TIME='" + data.getTime() + "'");
-
 
                                  if (success == true) {
                                      displResultAndRefresh(wages + "          " + p1, "\nDATE: " + date + "\n\n" + "REMARKS: " + remarks+"\n"+"MICPATH: "+micPath);
@@ -403,7 +408,7 @@ public class WagesDetailsAdapter extends RecyclerView.Adapter<WagesDetailsAdapte
                                  } else
                                      Toast.makeText(context, "FAILED TO UPDATE", Toast.LENGTH_LONG).show();
                              } else//once user enter wrong data and left blank then user wound be able to save because array value would not be change it will be 2 so  user have to "Cancel and enter again" if use dont leave blank then it will save successfully
-                                 Toast.makeText(context, "Correct the Data or Cancel and Enter again", Toast.LENGTH_LONG).show();
+                                 Toast.makeText(context, "CORRECT THE DATA or CANCEL AND ENTER AGAIN", Toast.LENGTH_LONG).show();
 
                          } else if (indicator == 2) {
                              //p1 is automatically added
@@ -424,7 +429,7 @@ public class WagesDetailsAdapter extends RecyclerView.Adapter<WagesDetailsAdapte
                                  } else
                                      Toast.makeText(context, "FAILED TO UPDATE", Toast.LENGTH_LONG).show();
                              } else
-                                 Toast.makeText(context, "Correct the Data or Cancel and Enter again", Toast.LENGTH_LONG).show();
+                                 Toast.makeText(context, "CORRECT THE DATA or CANCEL AND ENTER AGAIN", Toast.LENGTH_LONG).show();
 
                          } else if (indicator == 3) {
                              if (isDataPresent == true && isWrongData == false) {
@@ -448,7 +453,7 @@ public class WagesDetailsAdapter extends RecyclerView.Adapter<WagesDetailsAdapte
                                  } else
                                      Toast.makeText(context, "FAILED TO UPDATE", Toast.LENGTH_LONG).show();
                              } else
-                                 Toast.makeText(context, "Correct the Data or Cancel and Enter again", Toast.LENGTH_LONG).show();
+                                 Toast.makeText(context, "CORRECT THE DATA or CANCEL AND ENTER AGAIN", Toast.LENGTH_LONG).show();
 
                          } else if (indicator == 4) {
                              if (isDataPresent == true && isWrongData == false) {
@@ -475,7 +480,7 @@ public class WagesDetailsAdapter extends RecyclerView.Adapter<WagesDetailsAdapte
                                      } else
                                          Toast.makeText(context, "FAILED TO UPDATE", Toast.LENGTH_LONG).show();
                                  } else
-                                     Toast.makeText(context, "Correct the Data or Cancel and Enter again", Toast.LENGTH_LONG).show();
+                                     Toast.makeText(context, "CORRECT THE DATA or CANCEL AND ENTER AGAIN", Toast.LENGTH_LONG).show();
                              }
                          }
 
@@ -497,7 +502,7 @@ public class WagesDetailsAdapter extends RecyclerView.Adapter<WagesDetailsAdapte
                              save.setEnabled(true);
                          }
                          if (!amount.matches("[0-9]+")) {//no space or . or ,
-                             Toast.makeText(context, "NOT ALLOWED(space  .  ,  -)\nPlease Correct", Toast.LENGTH_LONG).show();
+                             Toast.makeText(context, "NOT ALLOWED(space  .  ,  -)\nPLEASE CORRECT", Toast.LENGTH_LONG).show();
                              toGive_Amount.setTextColor(Color.RED);
                              save.setEnabled(false);
                              arr[4] = 2;//means wrong data
@@ -527,7 +532,7 @@ public class WagesDetailsAdapter extends RecyclerView.Adapter<WagesDetailsAdapte
                              inputP1.setTextColor(Color.RED);
                              save.setEnabled(false);
                              arr[0] = 2;//means wrong data
-                             Toast.makeText(context, "NOT ALLOWED(space  .  ,  -)\nPlease Correct", Toast.LENGTH_LONG).show();
+                             Toast.makeText(context, "NOT ALLOWED(space  .  ,  -)\nPLEASE CORRECT", Toast.LENGTH_LONG).show();
                          }
                      }
 
@@ -556,7 +561,7 @@ public class WagesDetailsAdapter extends RecyclerView.Adapter<WagesDetailsAdapte
                              inputP2.setTextColor(Color.RED);
                              save.setEnabled(false);
                              arr[1] = 2;//means wrong data
-                             Toast.makeText(context, "NOT ALLOWED(space  .  ,  -)\nPlease Correct", Toast.LENGTH_LONG).show();
+                             Toast.makeText(context, "NOT ALLOWED(space  .  ,  -)\nPLEASE CORRECT", Toast.LENGTH_LONG).show();
                          }
                      }
 
@@ -585,7 +590,7 @@ public class WagesDetailsAdapter extends RecyclerView.Adapter<WagesDetailsAdapte
                              inputP3.setTextColor(Color.RED);
                              save.setEnabled(false);
                              arr[2] = 2;//means wrong data
-                             Toast.makeText(context, "NOT ALLOWED(space  .  ,  -)\nPlease Correct", Toast.LENGTH_LONG).show();
+                             Toast.makeText(context, "NOT ALLOWED(space  .  ,  -)\nPLEASE CORRECT", Toast.LENGTH_LONG).show();
                          }
                      }
 
@@ -615,7 +620,7 @@ public class WagesDetailsAdapter extends RecyclerView.Adapter<WagesDetailsAdapte
                              inputP4.setTextColor(Color.RED);
                              save.setEnabled(false);
                              arr[3] = 2;//means wrong data
-                             Toast.makeText(context, "NOT ALLOWED(space  .  ,  -)\nPlease Correct", Toast.LENGTH_LONG).show();
+                             Toast.makeText(context, "NOT ALLOWED(space  .  ,  -)\nPLEASE CORRECT", Toast.LENGTH_LONG).show();
                          }
                      }
 
@@ -895,18 +900,6 @@ public class WagesDetailsAdapter extends RecyclerView.Adapter<WagesDetailsAdapte
          return bool;
     }
 
-    private int extractData(int i,String date) {
-        int data=0;
-        String[] str=date.split("-");//converting using String.split() method with "-" as a delimiter
-        if(i==0){//0 is for day of month
-         return Integer.parseInt(str[0]);
-        }else if(i==1){//1 is for month
-            return (Integer.parseInt(str[1])-1);//month-1 to get right result
-        }else if(i==2){//2 is for year
-            return Integer.parseInt(str[2]);
-        }
-        return data;
-    }
     @Override
     public int getItemCount() {
         return arrayList.size();
@@ -925,7 +918,6 @@ public class WagesDetailsAdapter extends RecyclerView.Adapter<WagesDetailsAdapte
             p4=itemView.findViewById(R.id.p4_in_recycler_tv);
             spinnerdescAudioIcon =itemView.findViewById(R.id.spinner_in_recycler_tv);
             singleRecordLayout=itemView.findViewById(R.id.single_record_layout);
-
         }
     }
     public void displResult(String title,String message) {
@@ -1015,7 +1007,7 @@ public class WagesDetailsAdapter extends RecyclerView.Adapter<WagesDetailsAdapte
         //to get previous date
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DATE, -1);//-1 to get previous date
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-M-yyyy");//dd-M-yyyy to get date as 19-3-2022 by lefting 0. 19-03-2022
+        SimpleDateFormat dateFormat = new SimpleDateFormat("d-M-yyyy");//d-M-yyyy to get date as 19-3-2022 or 9-3-2022 by lefting 0. ie.19-03-2022 or 09-3-2022
          return dateFormat.format(calendar.getTimeInMillis());
     }
 }

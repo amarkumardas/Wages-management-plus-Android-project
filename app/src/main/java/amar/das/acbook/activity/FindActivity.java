@@ -113,7 +113,7 @@ Boolean aboolean=false;
         //setting background custom image of theres button
         btn3.setBackgroundResource(R.drawable.white_detailsbg);
         btn2.setBackgroundResource(R.drawable.white_detailsbg);
-        btnData("SELECT ID,NAME,ACTIVE FROM "+db.TABLE_NAME1 +" WHERE TYPE='M'");
+        btnData("SELECT ID,NAME,ACTIVE,LATESTDATE FROM "+db.TABLE_NAME1 +" WHERE TYPE='M'");
     }
 
     public void laber_btn(View view) {
@@ -125,7 +125,7 @@ Boolean aboolean=false;
         //setting background custom image of theres button
         btn3.setBackgroundResource(R.drawable.white_detailsbg);
         btn1.setBackgroundResource(R.drawable.white_detailsbg);
-        btnData("SELECT ID,NAME,ACTIVE FROM "+db.TABLE_NAME1 +" WHERE TYPE='L'");
+        btnData("SELECT ID,NAME,ACTIVE,LATESTDATE FROM "+db.TABLE_NAME1 +" WHERE TYPE='L'");
     }
 
     public void g_btn(View view) {
@@ -137,7 +137,7 @@ Boolean aboolean=false;
         //setting background custom image of theres button
         btn1.setBackgroundResource(R.drawable.white_detailsbg);
         btn2.setBackgroundResource(R.drawable.white_detailsbg);
-        btnData("SELECT ID,NAME,ACTIVE FROM "+db.TABLE_NAME1 +" WHERE TYPE='G'");
+        btnData("SELECT ID,NAME,ACTIVE,LATESTDATE FROM "+db.TABLE_NAME1 +" WHERE TYPE='G'");
     }
 
     public void btnData(String query){
@@ -150,6 +150,7 @@ Boolean aboolean=false;
             model.setId(cursor2.getString(0));
             model.setName(cursor2.getString(1));
             model.setActive(cursor2.getString(2));//to set view red if inactive
+            model.setLatestDate(cursor2.getString(3));//to display inactive duration
             allMLGList.add(model);
         }
         cursor2.close();

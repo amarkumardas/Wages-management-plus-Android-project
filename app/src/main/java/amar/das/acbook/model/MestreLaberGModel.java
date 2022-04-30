@@ -18,7 +18,18 @@ public class MestreLaberGModel {
     }
 
     private int advanceAmount,balanceAmount;
-    private String name,id;
+    private String name;
+    private String id;
+
+    public String getLatestDate() {
+        return latestDate;
+    }
+
+    public void setLatestDate(String latestDate) {
+        this.latestDate = latestDate;
+    }
+
+    private String latestDate;
     private byte[] person_img;
 
     public String getName() {

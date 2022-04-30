@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -25,7 +24,7 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
-import android.widget.LinearLayout;
+
 import android.widget.Toast;
 
 import java.io.File;
@@ -39,7 +38,7 @@ import amar.das.acbook.R;
 import amar.das.acbook.databinding.ActivityCustomizeLayoutOrDepositAmountBinding;
 
 public class CustomizeLayoutOrDepositAmount extends AppCompatActivity {
-  ActivityCustomizeLayoutOrDepositAmountBinding binding;
+    ActivityCustomizeLayoutOrDepositAmountBinding binding;
     PersonRecordDatabase db;
     private  String fromIntentPersonId;
     //for recording variable declaration
@@ -53,7 +52,7 @@ public class CustomizeLayoutOrDepositAmount extends AppCompatActivity {
 
     int arr[]=new int[3];//to give information which field is empty or contain data
     String previousDataHold[]=new String[4];
-   int cYear,cMonth,cDayOfMonth;
+    int cYear,cMonth,cDayOfMonth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,7 +96,7 @@ public class CustomizeLayoutOrDepositAmount extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //checking for permission
-                if(checkPermission()==true){
+                if(checkPermission()){
                     if (mStartRecording) {//initially false
                         //while recording user should not perform other task like entering date while recording because app will crash so set all field to setEnabled(false);
                         binding.customDescriptionEt.setEnabled(false);
@@ -309,10 +308,13 @@ public class CustomizeLayoutOrDepositAmount extends AppCompatActivity {
                                         }else if(result.getInt(0) >= 1){
                                             displResult("CAN'T REMOVE","BECAUSE DATA IS PRESENT.SUM= "+result.getInt(0));
                                         }
-                                    }
+                                    }else
+                                        displResult("CAN'T REMOVE DEFAULT SETTING","STATUS: FAILED");
                                 }else
                                     Toast.makeText(CustomizeLayoutOrDepositAmount.this, "NO DATA IN CURSOR", Toast.LENGTH_SHORT).show();
                             }
+                            db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET ACTIVE='" + 1 + "'" + "WHERE ID='" + fromIntentPersonId + "'");//when ever user change setting then that person will become active.No idea why on top it is showing error
+
                         }
                         @Override
                         public void onNothingSelected(AdapterView<?> adapterView) { }
@@ -326,11 +328,19 @@ public class CustomizeLayoutOrDepositAmount extends AppCompatActivity {
                     String remarks=null;
                     String micPath=null;
 
-                    //To get exact time so write code in save button
+                    //To get exact time so written code in save button
                     Date d=Calendar.getInstance().getTime();
                     SimpleDateFormat sdf=new SimpleDateFormat("hh:mm:ss a");//a stands for is AM or PM
                     String onlyTime = sdf.format(d);
                     binding.customTimeTv.setText(onlyTime);//setting time to take time and store in db
+
+                    //this will store latest date in db if that date is current date
+                    final Calendar current=Calendar.getInstance();//to get current date
+                    String currentDate =current.get(Calendar.DAY_OF_MONTH)+"-"+(current.get(Calendar.MONTH)+1)+"-"+current.get(Calendar.YEAR);
+                    if(binding.customDateTv.getText().toString().equals(currentDate)) {//if it is true then store
+                        db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET  LATESTDATE='" + binding.customDateTv.getText().toString() + "'" +" WHERE ID='" + fromIntentPersonId + "'");
+                    }
+
 
                     if(file !=null){//if file is not null then only it execute otherwise nothing will be inserted
                         micPath=file.getAbsolutePath();
@@ -352,7 +362,9 @@ public class CustomizeLayoutOrDepositAmount extends AppCompatActivity {
                         if(binding.customDepositEt.getText().toString().trim().length() >= 1) {
                             depositAmount = Integer.parseInt(binding.customDepositEt.getText().toString().trim());
                         }
-                          success = db.insert_Deposit_Table2(fromIntentPersonId,binding.customDateTv.getText().toString(),binding.customTimeTv.getText().toString(),micPath,remarks,depositAmount,"1");
+
+                        db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET ACTIVE='" + 1 + "'" +" WHERE ID='" + fromIntentPersonId + "'");//when ever user update then that person will become active
+                        success = db.insert_Deposit_Table2(fromIntentPersonId,binding.customDateTv.getText().toString(),binding.customTimeTv.getText().toString(),micPath,remarks,depositAmount,"1");
                         if (success == true) {
                             displResult("DEPOSIT : "+depositAmount,"\nDATE:  "+binding.customDateTv.getText().toString()+"\n\nREMARKS: "+remarks+"\n\nMICPATH: "+micPath);
                         } else
@@ -456,10 +468,17 @@ public class CustomizeLayoutOrDepositAmount extends AppCompatActivity {
                     String time=binding.customTimeTv.getText().toString();
                     String date=binding.customDateTv.getText().toString();
 
+                    //this will store latest date in db if that date is current date
+                    final Calendar current=Calendar.getInstance();//to get current date
+                    String currentDate =current.get(Calendar.DAY_OF_MONTH)+"-"+(current.get(Calendar.MONTH)+1)+"-"+current.get(Calendar.YEAR);
+                    if(date.equals(currentDate)) {//if it is true then store
+                        db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET  LATESTDATE='" +date + "'" +" WHERE ID='" + getIntent().getStringExtra("ID") + "'");
+                    }
+
+
                     if(file !=null){//if file is not null then only it execute otherwise nothing will be inserted
                         micPath=file.getAbsolutePath();
-                        file=null;//after path is saved then file=null so that next time while entering data it should not take default value ie micPath=null
-                    }
+                     }
 
 
                     //if user dont enter remarks or description then it is sure that previous data will be entered so no need to check null pointer exception
@@ -471,8 +490,11 @@ public class CustomizeLayoutOrDepositAmount extends AppCompatActivity {
                       isWrongData= isEnterDataIsWrong(arr);//it should be here to get updated result
                       isDataPresent= isDataPresent(arr);
                     if(isDataPresent==true && isWrongData==false ) {  //means if data is present then check is it right data or not
-                        if(binding.customDepositEt.getText().toString().trim().length() >= 1)
+                        if(binding.customDepositEt.getText().toString().trim().length() >= 1) {
                             depositAmount = Integer.parseInt(binding.customDepositEt.getText().toString().trim());
+                        }
+
+                        db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET ACTIVE='" + 1 + "'" + " WHERE ID='" + getIntent().getStringExtra("ID") + "'");//when ever user update then that person will become active
 
                         if(micPath != null)//if it is not null then update micpath
                           success =db.updateTable("UPDATE " + db.TABLE_NAME2 + " SET DATE='" + date + "',TIME='" + time + "',DESCRIPTION='" + remarks +"',MICPATH='"+micPath+ "',DEPOSIT='" + depositAmount + "' WHERE ID= '" + getIntent().getStringExtra("ID") + "'" + " AND DATE= '" + getIntent().getStringExtra("DATE") + "'" + " AND TIME='" + getIntent().getStringExtra("TIME") + "'");
@@ -490,7 +512,6 @@ public class CustomizeLayoutOrDepositAmount extends AppCompatActivity {
                     return false;
                 }
             });
-
         }else
             Toast.makeText(this, "No ID from other Intent", Toast.LENGTH_SHORT).show();
     }

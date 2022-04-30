@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -27,6 +28,7 @@ public class ActiveLGFragment extends Fragment {
     RecyclerView lGRecyclerView;
     MestreLaberGAdapter madapter;
     PersonRecordDatabase db;
+    TextView advance,balance;
 
 
     @Override
@@ -38,8 +40,15 @@ public class ActiveLGFragment extends Fragment {
         //ids
         lGRecyclerView=root.findViewById(R.id.recycle_active_l_g);
 
+        advance=root.findViewById(R.id.active_l_g_advance);
+        balance=root.findViewById(R.id.active_l_g_balance);
+        Cursor advanceBalanceCursor=db.getData("SELECT SUM(ADVANCE),SUM(BALANCE) FROM "+db.TABLE_NAME1+" WHERE (TYPE='L' OR TYPE='G') AND (ACTIVE='1')");
+        advanceBalanceCursor.moveToFirst();
+        advance.setText("ADVANCE: "+advanceBalanceCursor.getInt(0));
+        balance.setText("BALANCE: "+advanceBalanceCursor.getInt(1));
+        advanceBalanceCursor.close();
 
-        Cursor cursorGL=db.getData("SELECT IMAGE,ID,NAME,ADVANCE,BALANCE FROM "+db.TABLE_NAME1 +" WHERE TYPE='L' OR TYPE='G' AND ACTIVE='1' ORDER BY ADVANCE DESC LIMIT 150");
+        Cursor cursorGL=db.getData("SELECT IMAGE,ID,NAME,ADVANCE,BALANCE,LATESTDATE FROM "+db.TABLE_NAME1 +" WHERE (TYPE='L' OR TYPE='G') AND (ACTIVE='1') ORDER BY ADVANCE DESC LIMIT 150");
         lGArrayList =new ArrayList<>();
 
         while(cursorGL.moveToNext()){
@@ -49,6 +58,7 @@ public class ActiveLGFragment extends Fragment {
             data.setId(cursorGL.getString(1));
             data.setAdvanceAmount(cursorGL.getInt(3));
             data.setBalanceAmount(cursorGL.getInt(4));
+            data.setLatestDate(cursorGL.getString(5));
             lGArrayList.add(data);//adding data to mestrearraylist
         }
         cursorGL.close();//closing cursor after finish

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:scaleType="fitCenter"
+                android:layout_gravity="center"
+                android:padding="2dp"
+                android:layout_marginTop="4dp"
+                android:src="@drawable/defaultprofileimage"
+                android:id="@+id/profile_img_inactive"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:id="@+id/advance_amount_tv_inactive"/>
+</LinearLayout>
+    <!-- change fitcenter attribute change in tablet view
+
+      >-->

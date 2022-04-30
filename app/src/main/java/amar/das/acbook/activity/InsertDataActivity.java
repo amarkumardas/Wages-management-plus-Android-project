@@ -332,14 +332,14 @@ public class InsertDataActivity extends AppCompatActivity {
                 public void onClick(DialogInterface dialogInterface, int i) {
                     dialogInterface.dismiss();
 
-                    boolean  booleanvalue=false;
+                    boolean  booleanvalue;
 
                     //update
                     if(getIntent().hasExtra("ID")){//will execute when updating
                         //get data from db
                         booleanvalue=personDb.updateDataTable1(personName, personAccount, personIfsccode, personBankName, personAadhar, personPhon, personType, personFathername, imagestore, personAccountHolderName,fromIntentPersonId);
                         if(booleanvalue==true){//if it is updated then show successfull message
-                            Toast.makeText(InsertDataActivity.this, "ID: "+fromIntentPersonId+" Updated successfully", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(InsertDataActivity.this, "ID: "+fromIntentPersonId+" UPDATED SUCCESSFULLY", Toast.LENGTH_SHORT).show();
 
                             //after success then go to previous activity automatically and destroy current activity so that when pressing back user should not get same activity this is done by finish();
                             Intent in=new Intent(getBaseContext(),IndividualPersonDetailActivity.class);//completed then go back
@@ -348,7 +348,7 @@ public class InsertDataActivity extends AppCompatActivity {
                             finish();//destroy current activity
 
                         }else
-                            Toast.makeText(InsertDataActivity.this, "Not Updated", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(InsertDataActivity.this, "Not Updated", Toast.LENGTH_LONG).show();
 
                     }else {//this will execute only when adding new person
 
