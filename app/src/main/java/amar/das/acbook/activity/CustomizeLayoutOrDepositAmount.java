@@ -538,7 +538,7 @@ public class CustomizeLayoutOrDepositAmount extends AppCompatActivity {
         Long  tsLong=System.currentTimeMillis()/1000;//folder name should be unique so taking time as name of mic record so every record name will be different
         String ts=tsLong.toString();
         fileName="audio_"+ts;//file name
-        file=new File(getExternalFilesDir( null )+"/acBookMicRecording/"+fileName+".mp3");//path of audio where it is saved in device
+        file=new File(getExternalFilesDir( null )+"/acBookMicRecording/"+fileName+".mp3");//fileName.mp3 fill will be stored in folder acBookMicRecordingpath
 
         //https://developer.android.com/reference/android/media/MediaRecorder
         mediaRecorder=new MediaRecorder();

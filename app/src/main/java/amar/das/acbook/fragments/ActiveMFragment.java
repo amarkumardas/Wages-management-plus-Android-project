@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 import amar.das.acbook.adapters.MestreLaberGAdapter;
@@ -46,8 +47,11 @@ public class ActiveMFragment extends Fragment {
          balance.setText("BALANCE: "+advanceBalanceCursor.getInt(1));
          advanceBalanceCursor.close();
 
+        LocalDate todayDate = LocalDate.now();//current date; return 2022-05-01
+        String currentDateDBPattern =""+ todayDate.getDayOfMonth()+"-"+ todayDate.getMonthValue()+"-"+ todayDate.getYear();//converted to 1-5-2022
+
          //mestre
-        Cursor cursormestre=db.getData("SELECT IMAGE,ID,NAME,ADVANCE,BALANCE,LATESTDATE FROM "+db.TABLE_NAME1 +" WHERE TYPE='M' AND ACTIVE='1' ORDER BY ADVANCE DESC LIMIT 100");//getting only mestre image from database
+        Cursor cursormestre=db.getData("SELECT IMAGE,ID,NAME,ADVANCE,BALANCE,LATESTDATE FROM "+db.TABLE_NAME1 +" WHERE TYPE='M' AND ACTIVE='1' ORDER BY LATESTDATE='"+currentDateDBPattern+"' LIMIT 100");//so that today data entered will be below and not entered data person will be up which will indicate that data is not entered
         mestreactiveArrayList =new ArrayList<>();
         while(cursormestre.moveToNext()){
             MestreLaberGModel data=new MestreLaberGModel();

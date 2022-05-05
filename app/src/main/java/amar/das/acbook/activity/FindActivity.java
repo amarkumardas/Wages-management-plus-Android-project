@@ -11,6 +11,8 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.Toast;
@@ -76,6 +78,11 @@ Boolean aboolean=false;
 
         //when Find Activity open then automatically keyboard should open.this is manual way of openeing keyboard
         //showSoftKeyboard(searchView);//to show keyboard code added to manifest file
+
+        /* To open keyboard in Dialog box automatically
+        Window window = dialog.getWindow();
+        window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);*/
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 

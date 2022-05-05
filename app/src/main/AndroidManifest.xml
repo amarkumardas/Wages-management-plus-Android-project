@@ -23,13 +23,16 @@
         <activity
             android:name=".activity.IndividualPersonDetailActivity"
             android:exported="false"
-            />
+            android:screenOrientation="portrait"
+             />
+
         <!--to unable service -->
         <activity
             android:name=".activity.FindActivity"
             android:exported="false"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateVisible"/><!--when activity start keyboard will open -->
-            android:screenOrientation="portrait" />
+
         <activity
             android:name=".activity.NavigationActivity"
             android:exported="true"

@@ -58,14 +58,14 @@ public class InactiveFragment extends Fragment {
 
         advance=root.findViewById(R.id.inactive_advance);
         balance=root.findViewById(R.id.inactive_balance);
-        Cursor advanceBalanceCursor=db.getData("SELECT SUM(ADVANCE),SUM(BALANCE) FROM "+db.TABLE_NAME1+" WHERE (TYPE='M' OR TYPE='L' OR TYPE='G') AND (ACTIVE='1')");
+        Cursor advanceBalanceCursor=db.getData("SELECT SUM(ADVANCE),SUM(BALANCE) FROM "+db.TABLE_NAME1+" WHERE (TYPE='M' OR TYPE='L' OR TYPE='G') AND (ACTIVE='0')");
         advanceBalanceCursor.moveToFirst();
         advance.setText("ADVANCE: "+advanceBalanceCursor.getInt(0));
         balance.setText("BALANCE: "+advanceBalanceCursor.getInt(1));
         advanceBalanceCursor.close();
 
         //1-6000                                                                                                            // ACTIVE='0'
-        Cursor cursormestre=db.getData("SELECT IMAGE,ID,ADVANCE,BALANCE FROM "+db.TABLE_NAME1 +" WHERE TYPE='M' AND ACTIVE='1' ORDER BY ADVANCE DESC LIMIT 14 ");
+        Cursor cursormestre=db.getData("SELECT IMAGE,ID,ADVANCE,BALANCE FROM "+db.TABLE_NAME1 +" WHERE TYPE='M' AND ACTIVE='0' ORDER BY ADVANCE DESC LIMIT 14 ");
         // Cursor cursorinactive=db.getImage("SELECT IMAGE,ADVANCEAMOUNT FROM "+db.TABLE_NAME+" WHERE ADVANCEAMOUNT  BETWEEN 0 AND 3000 AND ACTIVE='0' ORDER BY ADVANCEAMOUNT DESC");//this query will fetch image and advanceamount between 0 to 3000 and is not active ie;0 in decending order
         arrayList1_6000 =new ArrayList<>();
         while(cursormestre.moveToNext()){
@@ -102,7 +102,7 @@ public class InactiveFragment extends Fragment {
                 if(isScrolling1 && (currentItem1 + scrollOutItems1 == totalItem1)){
                     isScrolling1 =false;
                     Toast.makeText(getContext(), "PLEASE WAIT LOADING", Toast.LENGTH_SHORT).show();
-                    fetchData("SELECT IMAGE,ID,ADVANCE,BALANCE FROM " + db.TABLE_NAME1 + " WHERE TYPE='M' AND ACTIVE='1' ORDER BY ADVANCE DESC",arrayList1_6000);
+                    fetchData("SELECT IMAGE,ID,ADVANCE,BALANCE FROM " + db.TABLE_NAME1 + " WHERE TYPE='M' AND ACTIVE='0' ORDER BY ADVANCE DESC",arrayList1_6000);
                     recyclerView1_6000.clearOnScrollListeners();//this will remove scrollListener so we wont be able to scroll after loading all data and finished scrolling to last
                 }
             }
@@ -110,7 +110,7 @@ public class InactiveFragment extends Fragment {
 
 
 //        //6001-ABOVE                                                                                                                   ACTIVE='0' change
-        Cursor cursorinactive=db.getData("SELECT IMAGE,ID,ADVANCE,BALANCE FROM " + db.TABLE_NAME1 + " WHERE  (TYPE='L' OR TYPE='G') AND (ACTIVE='1') ORDER BY ADVANCE DESC LIMIT 14 ");//getting image from database
+        Cursor cursorinactive=db.getData("SELECT IMAGE,ID,ADVANCE,BALANCE FROM " + db.TABLE_NAME1 + " WHERE  (TYPE='L' OR TYPE='G') AND (ACTIVE='0') ORDER BY ADVANCE DESC LIMIT 14 ");//getting image from database
         // Cursor cursorinactive=db.getImage("SELECT IMAGE,ADVANCEAMOUNT FROM "+db.TABLE_NAME+" WHERE ADVANCEAMOUNT  BETWEEN 10001 AND 1000000 AND ACTIVE='0' ORDER BY ADVANCEAMOUNT DESC");
 
         arrayList6001_above =new ArrayList<>();
@@ -150,7 +150,7 @@ public class InactiveFragment extends Fragment {
                 if(isScrolling2 && (currentItem2 + scrollOutItems2 == totalItem2)){
                      isScrolling2 =false;
                     Toast.makeText(getContext(), "PLEASE WAIT LOADING", Toast.LENGTH_SHORT).show();
-                    fetchData("SELECT IMAGE,ID,ADVANCE,BALANCE FROM " + db.TABLE_NAME1 + " WHERE  (TYPE='L' OR TYPE='G') AND (ACTIVE='1') ORDER BY ADVANCE DESC",arrayList6001_above);
+                    fetchData("SELECT IMAGE,ID,ADVANCE,BALANCE FROM " + db.TABLE_NAME1 + " WHERE  (TYPE='L' OR TYPE='G') AND (ACTIVE='0') ORDER BY ADVANCE DESC",arrayList6001_above);
                     recyclerView6001_above.clearOnScrollListeners();//this will remove scrollListener so we wont be able to scroll after loading all data and finished scrolling to last
                 }
             }

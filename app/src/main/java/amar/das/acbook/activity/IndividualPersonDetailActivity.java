@@ -13,17 +13,22 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.pdf.PdfDocument;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.SystemClock;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -38,6 +43,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -218,7 +224,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
             }
             skillNRateCursor.close();
             sumCursor.close();
-            //***********Done setting skill**********************************************
+            //***********Done setting skill***********************************************
             //*******************Recycler view********************************************
               Cursor allDataCursor=db.getData("SELECT DATE,MICPATH,DESCRIPTION,WAGES,DEPOSIT,P1,P2,P3,P4,ID,TIME,ISDEPOSITED FROM "+db.TABLE_NAME2+" WHERE ID='"+fromIntentPersonId+"'");
               dataList=new ArrayList<>();
@@ -745,47 +751,81 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                     saveAndCreatePdf.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            //updating rate
-                            boolean success = db.updateTable("UPDATE " + db.TABLE_NAME3 + " SET R1='"+r1+"' , R2='"+r2+"' , R3='"+r3+"' , R4='"+r4+"'"+ " WHERE ID='" + fromIntentPersonId + "'");
-                            if (success == false)
-                                Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO UPDATE RATE", Toast.LENGTH_SHORT).show();
+                            updateTotalToDatabase();
+                            //create PDF
+                            PdfDocument myPdfDocument=new PdfDocument();//pdf instance
+                            Paint myPaint=new Paint();//it is responsible for text color
+                            PdfDocument.PageInfo myPageInfo=new PdfDocument.PageInfo.Builder(250,400,1).create();//meta data of pdf
+                            PdfDocument.Page mypage1=myPdfDocument.startPage(myPageInfo);
 
-                            if(!isEnterDataIsWrong(innerArray)) {//if data is right then only change fields.This condition is already checked but checking again
-                                if(!isp1p2p3p4PresentAndRateNotPresent(r1,r2,r3,r4,p1,p2,p3,p4,indicate)){//This condition is already checked but checking again
-                                    //if both wages and totalwork amount is less then 0 then dont save.This condition already checked but checking again
-                                    if (((totalDeposit + ((p1 * r1) + (p2 * r2) + (p3 * r3) + (p4 * r4))) < 0) || (totalWages < 0)) {//user cant enter negative number so when (totalDeposit + (totalr1r2r3r4sum1sum2sum3sum4)) is negative that means int range is exceeds so wrong result will be shown
-                                        Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO SAVE DUE TO WRONG DATA", Toast.LENGTH_LONG).show();
-                                    }else if ((totalDeposit + ((p1 * r1) + (p2 * r2) + (p3 * r3) + (p4 * r4))) < totalWages) {
-                                        //updating Advance to db
-                                        success = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET ADVANCE='" + (totalWages - (totalDeposit + ((p1 * r1) + (p2 * r2) + (p3 * r3) + (p4 * r4)))) + "'" + "WHERE ID='" + fromIntentPersonId + "'");
-                                        if (success == false)
-                                            Toast.makeText(IndividualPersonDetailActivity.this, "ADVANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
+                            //to write in pdf page 1
+                            Canvas canvas=mypage1.getCanvas();
+                            canvas.drawText("WELCOME  AMAR KUMAR DAS i love you ................",10,50,myPaint);
+                            canvas.drawCircle(12,34,5,myPaint);
+                            myPdfDocument.finishPage(mypage1);
+                            //Take permission
 
-                                        //if there is advance then balance  column should be 0
-                                        success = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET BALANCE='" + 0 + "'" + "WHERE ID='" + fromIntentPersonId + "'");
-                                        if (success == false)
-                                            Toast.makeText(IndividualPersonDetailActivity.this, "BALANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
+                            //To create folder code  File folder=new File(getExternalFilesDir(null)+"/foldername");
+//                            if (!folder.exists()) {//if folder not exist
+//                                folder.mkdir();//create folder
+//                            }
+                            File file=new File(getExternalFilesDir(null)+"/amar.pdf");//we do not need to create folder to store so it will directly create pdf file and store
+                                  try{
+                                      myPdfDocument.writeTo(new FileOutputStream(file));
+                                  }catch(IOException e){
+                                      e.printStackTrace();
+                                  }
+                                    myPdfDocument.close();
+                            Toast.makeText(IndividualPersonDetailActivity.this, "created", Toast.LENGTH_SHORT).show();
 
-                                    } else if ((totalDeposit + ((p1 * r1) + (p2 * r2) + (p3 * r3) + (p4 * r4))) >= totalWages) {//>= is given because when totalWages and totalwork is same then this condition will be executed to set balance 0
 
-                                        //updating balance to db if greater then 0
-                                        success = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET BALANCE='" + ((totalDeposit + ((p1 * r1) + (p2 * r2) + (p3 * r3) + (p4 * r4))) - totalWages) + "'" + "WHERE ID='" + fromIntentPersonId + "'");
-                                        if (success == false)
-                                            Toast.makeText(IndividualPersonDetailActivity.this, "BALANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
 
-                                        //if there is balance then update advance column should be 0
-                                        success = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET ADVANCE='" + 0 + "'" + "WHERE ID='" + fromIntentPersonId + "'");
-                                        if (success == false)
-                                            Toast.makeText(IndividualPersonDetailActivity.this, "ADVANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
-                                    }
-                                }else
-                                    Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO SAVE DUE TO RATE NOT PROVIDED", Toast.LENGTH_LONG).show();
-                            }else
-                                Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO SAVE DUE TO WRONG DATA", Toast.LENGTH_LONG).show();
+
                         }
                     });
                     dialog.show();
                     return false;
+                }
+
+                private void updateTotalToDatabase( ) {
+                    //updating rate
+                    boolean success = db.updateTable("UPDATE " + db.TABLE_NAME3 + " SET R1='"+r1+"' , R2='"+r2+"' , R3='"+r3+"' , R4='"+r4+"'"+ " WHERE ID='" + fromIntentPersonId + "'");
+                    if (success == false)
+                        Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO UPDATE RATE", Toast.LENGTH_SHORT).show();
+
+                    if(!isEnterDataIsWrong(innerArray)) {//if data is right then only change fields.This condition is already checked but checking again
+
+                        if(!isp1p2p3p4PresentAndRateNotPresent(r1,r2,r3,r4,p1,p2,p3,p4,indicate)){//This condition is already checked but checking again
+                            //if both wages and totalwork amount is less then 0 then dont save.This condition already checked but checking again
+                            if (((totalDeposit + ((p1 * r1) + (p2 * r2) + (p3 * r3) + (p4 * r4))) < 0) || (totalWages < 0)) {//user cant enter negative number so when (totalDeposit + (totalr1r2r3r4sum1sum2sum3sum4)) is negative that means int range is exceeds so wrong result will be shown
+                                Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO SAVE DUE TO WRONG DATA", Toast.LENGTH_LONG).show();
+                            }else if ((totalDeposit + ((p1 * r1) + (p2 * r2) + (p3 * r3) + (p4 * r4))) < totalWages) {
+                                //updating Advance to db
+                                success = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET ADVANCE='" + (totalWages - (totalDeposit + ((p1 * r1) + (p2 * r2) + (p3 * r3) + (p4 * r4)))) + "'" + "WHERE ID='" + fromIntentPersonId + "'");
+                                if (success == false)
+                                    Toast.makeText(IndividualPersonDetailActivity.this, "ADVANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
+
+                                //if there is advance then balance  column should be 0
+                                success = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET BALANCE='" + 0 + "'" + "WHERE ID='" + fromIntentPersonId + "'");
+                                if (success == false)
+                                    Toast.makeText(IndividualPersonDetailActivity.this, "BALANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
+
+                            } else if ((totalDeposit + ((p1 * r1) + (p2 * r2) + (p3 * r3) + (p4 * r4))) >= totalWages) {//>= is given because when totalWages and totalwork is same then this condition will be executed to set balance 0
+
+                                //updating balance to db if greater then 0
+                                success = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET BALANCE='" + ((totalDeposit + ((p1 * r1) + (p2 * r2) + (p3 * r3) + (p4 * r4))) - totalWages) + "'" + "WHERE ID='" + fromIntentPersonId + "'");
+                                if (success == false)
+                                    Toast.makeText(IndividualPersonDetailActivity.this, "BALANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
+
+                                //if there is balance then update advance column should be 0
+                                success = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET ADVANCE='" + 0 + "'" + "WHERE ID='" + fromIntentPersonId + "'");
+                                if (success == false)
+                                    Toast.makeText(IndividualPersonDetailActivity.this, "ADVANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
+                            }
+                        }else
+                            Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO SAVE DUE TO RATE NOT PROVIDED", Toast.LENGTH_LONG).show();
+                    }else
+                        Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO SAVE DUE TO WRONG DATA", Toast.LENGTH_LONG).show();
                 }
                 public boolean isp1p2p3p4PresentAndRateNotPresent(int r1,int r2,int r3,int r4,int p1,int p2,int p3,int p4,int indicator){
                     if(indicator==1 && (p1 !=0 && r1==0)){
@@ -1610,6 +1650,11 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
         Chronometer playAudioChronometer =myView.findViewById(R.id.chronometer);
 
         EditText inputP1=myView.findViewById(R.id.input_p1_et);
+        //to open keyboard automatically
+        Window window = dialog.getWindow();
+        window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+
         TextView runtimeSuggestionAmountToGive=myView.findViewById(R.id.work_amount_tv);
         EditText inputP2=myView.findViewById(R.id.input_p2_et);
         EditText inputP3=myView.findViewById(R.id.input_p3_et);
@@ -1673,10 +1718,10 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
 
         //to automatically set date to textView
         final Calendar current=Calendar.getInstance();//to get current date and time
-        int cYear=current.get(Calendar.YEAR);
-        int cMonth=current.get(Calendar.MONTH);
-        int cDayOfMonth=current.get(Calendar.DAY_OF_MONTH);
-        inputDate.setText(cDayOfMonth+"-"+(cMonth+1)+"-"+cYear);
+        //int cYear=current.get(Calendar.YEAR);
+       // int cMonth=current.get(Calendar.MONTH);
+       // int cDayOfMonth=current.get(Calendar.DAY_OF_MONTH);
+        inputDate.setText(current.get(Calendar.DAY_OF_MONTH)+"-"+(current.get(Calendar.MONTH)+1)+"-"+current.get(Calendar.YEAR));
         dateIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -1686,7 +1731,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                     public void onDateSet(DatePicker datePicker, int year, int month, int dayOfMonth) {
                         inputDate.setText(dayOfMonth+"-"+(month+1)+"-"+year);//month start from 0 so 1 is added to get right month like 12
                     }
-                },cYear,cMonth,cDayOfMonth);//This variable should be ordered this variable will set date day month to calendar to datePickerDialog so passing it
+                },current.get(Calendar.YEAR),current.get(Calendar.MONTH),current.get(Calendar.DAY_OF_MONTH));//This variable should be ordered this variable will set date day month to calendar to datePickerDialog so passing it
                 datePickerDialog.show();
             }
         });
@@ -1752,7 +1797,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                 String micPath=null;
                 String date=inputDate.getText().toString();//date will be inserted automatically
 
-                //this will store latest date in db if that date is current date
+                //this will store latest date in db if that date is current date because if we store directly current date then it will give incorrect information about whether data is entered today or other days
                 final Calendar current=Calendar.getInstance();//to get current date
                 String currentDate =current.get(Calendar.DAY_OF_MONTH)+"-"+(current.get(Calendar.MONTH)+1)+"-"+current.get(Calendar.YEAR);
                 if(date.equals(currentDate)) {//if it is true then store

@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 import amar.das.acbook.adapters.MestreLaberGAdapter;
@@ -48,7 +49,10 @@ public class ActiveLGFragment extends Fragment {
         balance.setText("BALANCE: "+advanceBalanceCursor.getInt(1));
         advanceBalanceCursor.close();
 
-        Cursor cursorGL=db.getData("SELECT IMAGE,ID,NAME,ADVANCE,BALANCE,LATESTDATE FROM "+db.TABLE_NAME1 +" WHERE (TYPE='L' OR TYPE='G') AND (ACTIVE='1') ORDER BY ADVANCE DESC LIMIT 150");
+        LocalDate todayDate = LocalDate.now();//current date; return 2022-05-01
+        String currentDateDBPattern =""+ todayDate.getDayOfMonth()+"-"+ todayDate.getMonthValue()+"-"+ todayDate.getYear();//converted to 1-5-2022
+
+        Cursor cursorGL=db.getData("SELECT IMAGE,ID,NAME,ADVANCE,BALANCE,LATESTDATE FROM "+db.TABLE_NAME1 +" WHERE (TYPE='L' OR TYPE='G') AND (ACTIVE='1') ORDER BY LATESTDATE='"+currentDateDBPattern+"' LIMIT 150");//so that today data entered will be below and not entered data person will be up which will indicate that data is not entered
         lGArrayList =new ArrayList<>();
 
         while(cursorGL.moveToNext()){

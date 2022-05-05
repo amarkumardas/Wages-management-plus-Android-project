@@ -31,6 +31,7 @@ import android.widget.Toast;
 import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Calendar;
 
 import amar.das.acbook.ImageResizer;
 import amar.das.acbook.PersonRecordDatabase;
@@ -110,7 +111,7 @@ public class InsertDataActivity extends AppCompatActivity {
         //spinner=findViewById(R.id.spinner);
 
 //        type_plus =getResources().getStringArray(R.array.skills);//getting array from string values declared there M L G
-//        ArrayAdapter<String>adapter=new ArrayAdapter<>(InsertDataActivity.this,android.R.layout.simple_list_item_1, type_plus);
+//        ArrayAdapte5r<String>adapter=new ArrayAdapter<>(InsertDataActivity.this,android.R.layout.simple_list_item_1, type_plus);
 //        spinner.setAdapter(adapter);
 
          //get bank names
@@ -317,8 +318,7 @@ public class InsertDataActivity extends AppCompatActivity {
                     "IFSC Code:--- " +"<b>"+ personIfsccode+"</b>"  +"<br>"+"<br>"+
                     "Phone No:---- " +"<b>"+ personPhon +"</b>" +"<br>"+"<br>"+
                     "Aadhar No:-- " +"<b>"+ personAadhar+"</b>"  +"<br>"+"<br>"+
-                    "Person Type:-" +"<b>"+ personType+"</b>"  +"<br>"));
-
+                    "Person Skill:-" +"<b>"+ personType+"</b>"  +"<br>"));
 
             detailsReview.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
                 @Override
@@ -335,11 +335,17 @@ public class InsertDataActivity extends AppCompatActivity {
                     boolean  booleanvalue;
 
                     //update
-                    if(getIntent().hasExtra("ID")){//will execute when updating
+                    if(getIntent().hasExtra("ID")){//will execute only when updating
                         //get data from db
                         booleanvalue=personDb.updateDataTable1(personName, personAccount, personIfsccode, personBankName, personAadhar, personPhon, personType, personFathername, imagestore, personAccountHolderName,fromIntentPersonId);
                         if(booleanvalue==true){//if it is updated then show successfull message
                             Toast.makeText(InsertDataActivity.this, "ID: "+fromIntentPersonId+" UPDATED SUCCESSFULLY", Toast.LENGTH_SHORT).show();
+
+                            //whenever user update its name,bank account,etc theN IF that account is inactive then that account will become active that is its latest date is updated to current date
+                            final Calendar current=Calendar.getInstance();//to get current date
+                            String currentDate =current.get(Calendar.DAY_OF_MONTH)+"-"+(current.get(Calendar.MONTH)+1)+"-"+current.get(Calendar.YEAR);
+                            personDb.updateTable("UPDATE " + personDb.TABLE_NAME1 + " SET  LATESTDATE='" + currentDate + "'" +" WHERE ID='" + fromIntentPersonId + "'");
+
 
                             //after success then go to previous activity automatically and destroy current activity so that when pressing back user should not get same activity this is done by finish();
                             Intent in=new Intent(getBaseContext(),IndividualPersonDetailActivity.class);//completed then go back
@@ -348,7 +354,7 @@ public class InsertDataActivity extends AppCompatActivity {
                             finish();//destroy current activity
 
                         }else
-                            Toast.makeText(InsertDataActivity.this, "Not Updated", Toast.LENGTH_LONG).show();
+                            Toast.makeText(InsertDataActivity.this, "NOT UPDATED", Toast.LENGTH_LONG).show();
 
                     }else {//this will execute only when adding new person
 
@@ -366,9 +372,11 @@ public class InsertDataActivity extends AppCompatActivity {
                                 buffer=new StringBuilder( );
 
                                 if(result.moveToFirst() && result.getCount()==1) {//ONLY 1 DATE NO DUPLICATE
-                                    insertDataToTable3(result.getString(0));
-                                    buffer.append("\n" + "New Person ID no: " + result.getString(0));
-                                    displResult("Added Successfully", buffer.toString());
+
+                                    insertDataToTable3(result.getString(0));//update R1,R2,R3,R4 TO 0
+
+                                    buffer.append("\n" + "New Person ID: " + result.getString(0));
+                                    displResult("ADDED SUCCESSFULLY", buffer.toString());
                                     add.setVisibility(View.VISIBLE);
                                 }
 
@@ -379,8 +387,10 @@ public class InsertDataActivity extends AppCompatActivity {
                                         holdlastid=""+result.getString(0);//to diaplay new added person ids comes at last when loop
                                         buffer.append("\nPerson ID: "+result.getString(0));
                                     }
+                                    //update R1,R2,R3,R4 TO 0
                                     insertDataToTable3(holdlastid);//holdlastid variable has newly added id.If this insertDataToTable3(holdlastid);  method is placed in while loop then all matching duplicate then have to  execute which is useless and produce exception
-                                    displResult("Successfully Added New Person ID is: "+holdlastid,buffer.toString());
+
+                                    displResult("Successfully Added New Person ID: "+holdlastid,buffer.toString());
                                     add.setVisibility(View.VISIBLE);
                                 }
                                 result.close();//closing cursor
@@ -394,7 +404,6 @@ public class InsertDataActivity extends AppCompatActivity {
                             displResult("Data FAILED to Insert","\n"+"Number of column maybe different in DataBase");
                     }
                 }
-
                 private void displResult(String title,String message) {
                     AlertDialog.Builder showDataFromDataBase = new AlertDialog.Builder(InsertDataActivity.this);
                     showDataFromDataBase.setCancelable(false);
@@ -408,7 +417,6 @@ public class InsertDataActivity extends AppCompatActivity {
                     });
                     showDataFromDataBase.create().show();
                 }
-
                 private void eraseAllDataAfterInsertingFromLayout() {
                     name.setText("");
                     account.setText("");
@@ -423,19 +431,16 @@ public class InsertDataActivity extends AppCompatActivity {
             });
        detailsReview.create().show();
     }
-
     private void insertDataToTable3(String id) {
-        Boolean bool=personDb.insertDataTable3( id,0,0,0,0,null,null,null,null);
+        boolean bool=personDb.insertDataTable3( id,0,0,0,0,null,null,null,null);
         if(bool== false)
             Toast.makeText(this, "Not Inserted to table 3", Toast.LENGTH_SHORT).show();
     }
-
     private byte[] convertBitmapToByteArray(Bitmap bitmap) {
         ByteArrayOutputStream byteArrayOutputStream=new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG,50,byteArrayOutputStream);
         return byteArrayOutputStream.toByteArray();//converted bitmap to byte array
     }
-
     public void go_back(View view) {
          //from activity to activity
         if(getIntent().hasExtra("ID")){//execute when it is called from other activity with ID intent
