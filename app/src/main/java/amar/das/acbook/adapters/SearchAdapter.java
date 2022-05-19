@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.core.text.HtmlCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -45,18 +46,18 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
 
 
        holder.id.setText("ID: "+data.getId());
-       holder.name.setText(Html.fromHtml("NAME:"+"<b>"+data.getName()+"</b>"));
+       holder.name.setText(HtmlCompat.fromHtml("NAME:"+"<b>"+data.getName()+"</b>",HtmlCompat.FROM_HTML_MODE_LEGACY));
        holder.father.setText("FATHER:"+data.getFather());
        //user may enter only account no or aadhar so if else is use separately
        //account and aadhar length should be greater than 4 or 5 otherwise stringoutofboundexception because we r using this method (data.getAccount().length() - 4 or 5)so checking in if statement.we are viewing last 4 and 5 letters to user
         if(data.getAccount().length()>4  ) {
-            holder.account.setText(Html.fromHtml("A/C:____" +"<b>"+ data.getAccount().substring(data.getAccount().length() - 4)+"<b>"));//getting last 4 letters
+            holder.account.setText(HtmlCompat.fromHtml("A/C:____" +"<b>"+ data.getAccount().substring(data.getAccount().length() - 4)+"<b>",HtmlCompat.FROM_HTML_MODE_LEGACY));//getting last 4 letters
         }else {/**when data is not there in Db than set account  to - otherwise others people value is been showed in place of account To check just comment next line and see.Default null in databse is not working only empty data is set if user dont enter data.*/
             holder.account.setText("A/C:    -");
           }
 
         if(data.getAadhar().length()>5){
-            holder.aadhar.setText(Html.fromHtml("AADHAR:____" +"<b>"+ data.getAadhar().substring(data.getAadhar().length() - 5)+"<b>"));//getting last 5 letters
+            holder.aadhar.setText(HtmlCompat.fromHtml("AADHAR:____" +"<b>"+ data.getAadhar().substring(data.getAadhar().length() - 5)+"<b>",HtmlCompat.FROM_HTML_MODE_LEGACY));//getting last 5 letters
         }else{/**when data is not there in Db than set  aadhar to - otherwise others people value is been showed in place of aadhar .Default null in databse is not working only empty data is set if user dont enter data*/
             holder.aadhar.setText("AADHAR:    -");
          }

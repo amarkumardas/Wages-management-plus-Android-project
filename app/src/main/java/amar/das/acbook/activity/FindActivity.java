@@ -113,7 +113,7 @@ Boolean aboolean=false;
 
     public void mestre_btn(View view) {
         //setting back ground color
-        view.setBackgroundColor(Color.GREEN);
+        view.setBackgroundColor(getColor(R.color.background));
         btn2.setBackgroundColor(Color.WHITE);
         btn3.setBackgroundColor(Color.WHITE);
 
@@ -125,7 +125,7 @@ Boolean aboolean=false;
 
     public void laber_btn(View view) {
         //setting back ground color
-        view.setBackgroundColor(Color.GREEN);
+        view.setBackgroundColor(getColor(R.color.background));
         btn1.setBackgroundColor(Color.WHITE);
         btn3.setBackgroundColor(Color.WHITE);
 
@@ -137,7 +137,7 @@ Boolean aboolean=false;
 
     public void g_btn(View view) {
         //setting back ground color
-        view.setBackgroundColor(Color.GREEN);
+        view.setBackgroundColor(getColor(R.color.background));
         btn1.setBackgroundColor(Color.WHITE);
         btn2.setBackgroundColor(Color.WHITE);
 

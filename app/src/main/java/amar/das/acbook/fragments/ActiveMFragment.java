@@ -3,6 +3,7 @@ package amar.das.acbook.fragments;
 import android.database.Cursor;
 import android.os.Bundle;
 
+import androidx.core.text.HtmlCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -43,8 +44,8 @@ public class ActiveMFragment extends Fragment {
          balance=root.findViewById(R.id.active_m_balance);
          Cursor advanceBalanceCursor=db.getData("SELECT SUM(ADVANCE),SUM(BALANCE) FROM "+db.TABLE_NAME1+" WHERE TYPE='M' AND ACTIVE='1'");
          advanceBalanceCursor.moveToFirst();
-         advance.setText("ADVANCE: "+advanceBalanceCursor.getInt(0));
-         balance.setText("BALANCE: "+advanceBalanceCursor.getInt(1));
+        advance.setText(HtmlCompat.fromHtml("ADVANCE: "+"<b>"+advanceBalanceCursor.getInt(0)+"</b>",HtmlCompat.FROM_HTML_MODE_LEGACY));
+        balance.setText(HtmlCompat.fromHtml("BALANCE: "+"<b>"+advanceBalanceCursor.getInt(1)+"</b>",HtmlCompat.FROM_HTML_MODE_LEGACY));
          advanceBalanceCursor.close();
 
         LocalDate todayDate = LocalDate.now();//current date; return 2022-05-01

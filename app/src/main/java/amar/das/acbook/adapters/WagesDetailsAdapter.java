@@ -96,7 +96,7 @@ public class WagesDetailsAdapter extends RecyclerView.Adapter<WagesDetailsAdapte
                  //if we put data.getIsdeposited().equals("1") then unwanted 0 will be set if not data is present so not using it.
        } else if( data.getDeposit() != 0 && data.getWages() == 0  && data.getP1() == 0){//if wages is not there and deposit there then set wages and color to green
            holder.wages.setText(""+data.getDeposit());//while entering deposit then there will be no p1 or p2p3p4 so checking data.getP1() == 0
-           holder.wages.setTextColor(context.getResources().getColor(R.color.green));
+           holder.wages.setTextColor(context.getColor(R.color.green));
 
        }else/**if we dont put else statement then default value will be set*/
            holder.wages.setText("");
@@ -186,9 +186,9 @@ public class WagesDetailsAdapter extends RecyclerView.Adapter<WagesDetailsAdapte
         }
          //************************SETTING BACKGROUND COLOR ACCORDING TO PREVIOUS AND TODAYS DATE*******************************
          if (data.getDate().equals(getPreviousDate()))//if data has enterded yesterday then set background to gray
-       holder.singleRecordLayout.setBackgroundColor(context.getResources().getColor(R.color.background));
+       holder.singleRecordLayout.setBackgroundColor(context.getColor(R.color.background));
        else if(currentDate.equals(data.getDate()))//if data has enterded today then set background to yellow
-       holder.singleRecordLayout.setBackgroundColor(context.getResources().getColor(R.color.yellow));
+       holder.singleRecordLayout.setBackgroundColor(context.getColor(R.color.yellow));
     else//if we dont put else statement then other layout also color get change so else is important
        holder.singleRecordLayout.setBackgroundColor(Color.WHITE);
         //************************ DONE SETTING BACKGROUND COLOR ACCORDING TO PREVIOUS AND TODAYS DATE*******************************
@@ -499,12 +499,12 @@ public class WagesDetailsAdapter extends RecyclerView.Adapter<WagesDetailsAdapte
                          toGive_Amount.setTextColor(Color.BLACK);
                          arr[4] = 1;//means data is inserted.This line should be here because when user enter wrong data and again enter right data then it should update array to 1 which indicate write data
                          if(!isEnterDataIsWrong(arr)) {//this is important if in field data is wrong then save button will not enabled until data is right.if save button is enabled with wrong data then if user has record audio then it will not be saved it will store null so to check right or wrong data this condition is important
-                             save.setEnabled(true);
+                             save.setVisibility(View.VISIBLE);
                          }
                          if (!amount.matches("[0-9]+")) {//no space or . or ,
                              Toast.makeText(context, "NOT ALLOWED(space  .  ,  -)\nPLEASE CORRECT", Toast.LENGTH_LONG).show();
                              toGive_Amount.setTextColor(Color.RED);
-                             save.setEnabled(false);
+                             save.setVisibility(View.GONE);
                              arr[4] = 2;//means wrong data
                          }
                      }
@@ -526,11 +526,11 @@ public class WagesDetailsAdapter extends RecyclerView.Adapter<WagesDetailsAdapte
                          inputP1.setTextColor(Color.BLACK);
                          arr[0] = 1;//means data is inserted.This line should be here because when user enter wrong data and again enter right data then it should update array to 1 which indicate write data
                          if(!isEnterDataIsWrong(arr)) {//this is important if in field data is wrong then save button will not enabled until data is right.if save button is enabled with wrong data then if user has record audio then it will not be saved it will store null so to check right or wrong data this condition is important
-                             save.setEnabled(true);
+                             save.setVisibility(View.VISIBLE);
                          }
                          if (!p11.matches("[0-9]+")) {//"[.]?[0-9]+[.]?[0-9]*" for float
                              inputP1.setTextColor(Color.RED);
-                             save.setEnabled(false);
+                             save.setVisibility(View.GONE);
                              arr[0] = 2;//means wrong data
                              Toast.makeText(context, "NOT ALLOWED(space  .  ,  -)\nPLEASE CORRECT", Toast.LENGTH_LONG).show();
                          }
@@ -555,11 +555,11 @@ public class WagesDetailsAdapter extends RecyclerView.Adapter<WagesDetailsAdapte
                          inputP2.setTextColor(Color.BLACK);
                          arr[1] = 1;//means data is inserted.This line should be here because when user enter wrong data and again enter right data then it should update array to 1 which indicate write data
                          if(!isEnterDataIsWrong(arr)) {//this is important if in field data is wrong then save button will not enabled until data is right.if save button is enabled with wrong data then if user has record audio then it will not be saved it will store null so to check right or wrong data this condition is important
-                             save.setEnabled(true);
+                             save.setVisibility(View.VISIBLE);
                          }
                          if (!p11.matches("[0-9]+")) {// "[.]?[0-9]+[.]?[0-9]*"
                              inputP2.setTextColor(Color.RED);
-                             save.setEnabled(false);
+                             save.setVisibility(View.GONE);
                              arr[1] = 2;//means wrong data
                              Toast.makeText(context, "NOT ALLOWED(space  .  ,  -)\nPLEASE CORRECT", Toast.LENGTH_LONG).show();
                          }
@@ -584,11 +584,11 @@ public class WagesDetailsAdapter extends RecyclerView.Adapter<WagesDetailsAdapte
                          inputP3.setTextColor(Color.BLACK);
                          arr[2] = 1;//means data is inserted.This line should be here because when user enter wrong data and again enter right data then it should update array to 1 which indicate write data
                          if(!isEnterDataIsWrong(arr)) {//this is important if in field data is wrong then save button will not enabled until data is right.if save button is enabled with wrong data then if user has record audio then it will not be saved it will store null so to check right or wrong data this condition is important
-                             save.setEnabled(true);
+                             save.setVisibility(View.VISIBLE);
                          }
                          if (!p11.matches("[0-9]+")) {//space or , or - is restricted
                              inputP3.setTextColor(Color.RED);
-                             save.setEnabled(false);
+                             save.setVisibility(View.GONE);
                              arr[2] = 2;//means wrong data
                              Toast.makeText(context, "NOT ALLOWED(space  .  ,  -)\nPLEASE CORRECT", Toast.LENGTH_LONG).show();
                          }
@@ -614,11 +614,11 @@ public class WagesDetailsAdapter extends RecyclerView.Adapter<WagesDetailsAdapte
                          arr[3] = 1;//means data is inserted.This line should be here because when user enter wrong data and again enter right data then it should update array to 1 which indicate write data
 
                          if(!isEnterDataIsWrong(arr)) {//this is important if in field data is wrong then save button will not enabled until data is right.if save button is enabled with wrong data then if user has record audio then it will not be saved it will store null so to check right or wrong data this condition is important
-                             save.setEnabled(true);
+                             save.setVisibility(View.VISIBLE);
                          }
                          if (!p11.matches("[0-9]+")) {//space or , or - is restricted
                              inputP4.setTextColor(Color.RED);
-                             save.setEnabled(false);
+                             save.setVisibility(View.GONE);
                              arr[3] = 2;//means wrong data
                              Toast.makeText(context, "NOT ALLOWED(space  .  ,  -)\nPLEASE CORRECT", Toast.LENGTH_LONG).show();
                          }
@@ -645,7 +645,7 @@ public class WagesDetailsAdapter extends RecyclerView.Adapter<WagesDetailsAdapte
                                      toGive_Amount.setEnabled(false);
                                      description.setEnabled(false);
                                      dateIcon.setEnabled(false);
-                                     save.setEnabled(false);
+                                     save.setVisibility(View.GONE);
                                      cancel.setEnabled(false);
 
                                      playAudioChronometer.setBase(SystemClock.elapsedRealtime());//In Android, Chronometer is a class that implements a simple timer. Chronometer is a subclass of TextView. This class helps us to add a timer in our app.
@@ -728,7 +728,7 @@ public class WagesDetailsAdapter extends RecyclerView.Adapter<WagesDetailsAdapte
 
                                  cancel.setEnabled(true);
 
-                                 playAudioChronometer.setTextColor(context.getResources().getColor(R.color.green));//changind text color to green to give feel that is saved
+                                 playAudioChronometer.setTextColor(context.getColor(R.color.green));//changind text color to green to give feel that is saved
                                  micIcon.setBackgroundResource(R.drawable.ic_green_sharp_mic_20);//set background image to cancel
                                  stopAndSaveRecordingPathToDB();
                                  playAudioChronometer.stop();//stopping chronometer

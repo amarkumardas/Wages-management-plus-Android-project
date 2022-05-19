@@ -1,8 +1,11 @@
 package amar.das.acbook.activity;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.text.HtmlCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.Manifest;
@@ -22,10 +25,11 @@ import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.StatFs;
 import android.os.SystemClock;
 import android.text.Editable;
-import android.text.Html;
 import android.text.TextWatcher;
+import android.text.format.Formatter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -84,7 +88,6 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
         if (getIntent().hasExtra("ID")) {//every operation will be perform based on id
             db = new PersonRecordDatabase(this);//on start only database should be create
             fromIntentPersonId = getIntent().getStringExtra("ID");//getting data from intent
-           // db.updateTable("UPDATE "+db.TABLE_NAME3+" SET R1='10',R2='10',R3='10',R4='10' WHERE ID='"+fromIntentPersonId+"'");
 
             //***********setting skill top of layout**********************************************
             Cursor defaultSkillCursor=db.getData("SELECT TYPE FROM " + db.TABLE_NAME1 + " WHERE ID= '" + fromIntentPersonId +"'");//for sure it will return type or skill
@@ -101,7 +104,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
 
              binding.blueTotalWagesTv.setText(sumCursor.getString(0));
              binding.blueTotalp1Tv.setText(sumCursor.getString(1));
-             binding.totalP1CountTv.setText(sumCursor.getString(1));//default skill
+             binding.totalP1CountTv.setText(sumCursor.getString(1));
                     //sum deposit
              if(sumCursor.getString(5) != null) {//if there is deposit then set visibility visible or else layout visibility GONE
                  binding.totalDepositAmountTv.setText("= " + sumCursor.getString(5));
@@ -126,7 +129,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                 }
                    //by default= deposit,totalP2CountTv,defaultHardcodedTv,defaultSkillTextTv,p1RateTv,totalP1AmountTv is set automatically
                      if(indicate==1) {
-                            indicatorDefaultCalculationAndUpdate(sumCursor,skillNRateCursor);
+                         indicator1234CalculateAndUpdate(sumCursor,skillNRateCursor.getInt(3) * sumCursor.getInt(1),0,0,0);
                      }
 
                 binding.p2Layout.setVisibility(View.GONE);//initiall invisible according to indicator it will customize
@@ -148,8 +151,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                     binding.blueTotalp2Tv.setText(sumCursor.getString(2));
                     binding.p2Layout.setVisibility(View.VISIBLE);
 
-                    indicator234CalculateAndUpdate(sumCursor,skillNRateCursor.getInt(3) * sumCursor.getInt(1),skillNRateCursor.getInt(4) * sumCursor.getInt(2),0,0,
-                            skillNRateCursor.getInt(4),0,0);
+                    indicator1234CalculateAndUpdate(sumCursor,skillNRateCursor.getInt(3) * sumCursor.getInt(1),skillNRateCursor.getInt(4) * sumCursor.getInt(2),0,0);
 
                 } else if (indicate == 3) {
                     if(skillNRateCursor.getInt(4) != 0) {
@@ -177,8 +179,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                     binding.p2Layout.setVisibility(View.VISIBLE);
                     binding.p3Layout.setVisibility(View.VISIBLE);
 
-                    indicator234CalculateAndUpdate(sumCursor,skillNRateCursor.getInt(3) * sumCursor.getInt(1),skillNRateCursor.getInt(4) * sumCursor.getInt(2),skillNRateCursor.getInt(5) * sumCursor.getInt(3),0,
-                            skillNRateCursor.getInt(4),  skillNRateCursor.getInt(5),0);
+                    indicator1234CalculateAndUpdate(sumCursor,skillNRateCursor.getInt(3) * sumCursor.getInt(1),skillNRateCursor.getInt(4) * sumCursor.getInt(2),skillNRateCursor.getInt(5) * sumCursor.getInt(3),0);
 
                 } else if (indicate == 4) {
                     if(skillNRateCursor.getInt(4) != 0) {
@@ -217,9 +218,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                     binding.p2Layout.setVisibility(View.VISIBLE);
                     binding.p3Layout.setVisibility(View.VISIBLE);
                     binding.p4Layout.setVisibility(View.VISIBLE);
-
-                    indicator234CalculateAndUpdate(sumCursor,skillNRateCursor.getInt(3) * sumCursor.getInt(1),skillNRateCursor.getInt(4) * sumCursor.getInt(2),skillNRateCursor.getInt(5) * sumCursor.getInt(3),skillNRateCursor.getInt(6) * sumCursor.getInt(4),
-                            skillNRateCursor.getInt(4),  skillNRateCursor.getInt(5), skillNRateCursor.getInt(6));
+                    indicator1234CalculateAndUpdate(sumCursor,skillNRateCursor.getInt(3) * sumCursor.getInt(1),skillNRateCursor.getInt(4) * sumCursor.getInt(2),skillNRateCursor.getInt(5) * sumCursor.getInt(3),skillNRateCursor.getInt(6) * sumCursor.getInt(4));
                 }
             }
             skillNRateCursor.close();
@@ -256,10 +255,10 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
             if (cursor != null) {
                 cursor.moveToFirst();
                 binding.nameTv.setText(cursor.getString(0));
-                binding.accountTv.setText(Html.fromHtml("A/C:  " + "<b>" + cursor.getString(1) + "</b>"));
+                binding.accountTv.setText(HtmlCompat.fromHtml("A/C:  " + "<b>" + cursor.getString(1) + "</b>",HtmlCompat.FROM_HTML_MODE_LEGACY));
                 binding.ifscCodeTv.setText("IFSC:  " + cursor.getString(2));
                 binding.bankNameTv.setText("Bank: " + cursor.getString(3));
-                binding.aadharTv.setText(Html.fromHtml("Aadhar Card:  " + "<b>" + cursor.getString(4) + "</b>"));
+                binding.aadharTv.setText(HtmlCompat.fromHtml("Aadhar Card:  " + "<b>" + cursor.getString(4) + "</b>",HtmlCompat.FROM_HTML_MODE_LEGACY));
                 binding.phoneTv.setText("Phone:  " + cursor.getString(5));
                 binding.fatherNameTv.setText("Father: " + cursor.getString(6));
 
@@ -463,11 +462,11 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                         //if both wages and totalwork amount is less then 0 then both message have to show so if statement two times
                         if(sumCursor.getInt(0) < 0 ) {//if total wages amount cross the  range of int the this message will be shown.its important
                             Toast.makeText(IndividualPersonDetailActivity.this, "INCORRECT CALCULATION PLEACE CHECK TOTAL WAGES", Toast.LENGTH_LONG).show();
-                            saveAndCreatePdf.setEnabled(false);
+                            saveAndCreatePdf.setVisibility(View.GONE);
                         }
                         if ((totalDeposit + ((p1 * r1) + (p2 * r2) + (p3 * r3) + (p4 * r4))) < 0) {//user cant enter negative number so when (totalDeposit + (totalr1r2r3r4sum1sum2sum3sum4)) is negative that means int range is exceeds so wrong result will be shown
                             Toast.makeText(IndividualPersonDetailActivity.this, "INCORRECT CALCULATION PLEASE CHECK TOTAL WORK AMOUNT", Toast.LENGTH_LONG).show();
-                            saveAndCreatePdf.setEnabled(false);//its important otherwise save option will be unabled when user enter rate
+                            saveAndCreatePdf.setVisibility(View.GONE);//its important otherwise save option will be unabled when user enter rate
                         }
 
                          indicate = get_indicator(fromIntentPersonId);
@@ -478,7 +477,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                             //    R1 * p1
                             totalP1AmountTv.setText("= " + skillNRateCursor.getInt(3) * sumCursor.getInt(1));//default skill
                         } else {
-                            saveAndCreatePdf.setEnabled(false);
+                            saveAndCreatePdf.setVisibility(View.GONE);
                             totalP1AmountTv.setText("= PROVIDE RATE");//default skill
                         }
                         //total wages
@@ -487,7 +486,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                         }
                         //by default= deposit,totalP2CountTv,defaultHardcodedTv,defaultSkillTextTv,p1RateTv,totalP1AmountTv is set automatically
                         if (indicate == 1) {
-                            indicatorDefaultCalculationFinal(sumCursor, skillNRateCursor);
+                            indicator1234CalculateButDontUpdateToDBFinal(sumCursor,skillNRateCursor.getInt(3) * sumCursor.getInt(1),0,0,0);
                         }
 
                         p2Layout.setVisibility(View.GONE);//initiall invisible according to indicator it will customize
@@ -501,45 +500,38 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                                 //    R2 * p2
                                 totalP2AmountTv.setText("= "+skillNRateCursor.getInt(4)*sumCursor.getInt(2));
                             }else {
-                                saveAndCreatePdf.setEnabled(false);
+                                saveAndCreatePdf.setVisibility(View.GONE);
                                 totalP2AmountTv.setText("= PROVIDE RATE");
                             }
 
                              totalP2CountTv.setText(sumCursor.getString(2));//total p2 count
                              skill1TextTv.setText(skillNRateCursor.getString(0)+" =");//setting skill 1
                              p2Layout.setVisibility(View.VISIBLE);
-
-                            indicator234CalculateFinal(sumCursor,skillNRateCursor.getInt(3) * sumCursor.getInt(1),skillNRateCursor.getInt(4) * sumCursor.getInt(2),0,0,
-                                    skillNRateCursor.getInt(4),0,0);
-
+                             indicator1234CalculateButDontUpdateToDBFinal(sumCursor,skillNRateCursor.getInt(3) * sumCursor.getInt(1),skillNRateCursor.getInt(4) * sumCursor.getInt(2),0,0);
                         } else if (indicate == 3) {
                             if(skillNRateCursor.getInt(4) != 0) {
                                  p2RateTv.setText(skillNRateCursor.getString(4));
                                 //    R2 * p2
                                  totalP2AmountTv.setText("= "+skillNRateCursor.getInt(4)*sumCursor.getInt(2));
                             }else {
-                                saveAndCreatePdf.setEnabled(false);
+                                saveAndCreatePdf.setVisibility(View.GONE);
                                 totalP2AmountTv.setText("= PROVIDE RATE");
                             }
-
                             if(skillNRateCursor.getInt(5) != 0) {
                                  p3RateTv.setText(skillNRateCursor.getString(5));
                                 //    R3 * p3
                                 totalP3AmountTv.setText("= "+skillNRateCursor.getInt(5)*sumCursor.getInt(3));
                             }else {
-                                saveAndCreatePdf.setEnabled(false);
+                                saveAndCreatePdf.setVisibility(View.GONE);
                                 totalP3AmountTv.setText("= PROVIDE RATE");
                             }
-
                              totalP2CountTv.setText(sumCursor.getString(2));//total p2 count
                              totalP3CountTv.setText(sumCursor.getString(3));//total p3 count
                              skill1TextTv.setText(skillNRateCursor.getString(0)+" =");//setting skill 1
                              skill2TextTv.setText(skillNRateCursor.getString(1)+" =");//setting skill 2
                              p2Layout.setVisibility(View.VISIBLE);
                              p3Layout.setVisibility(View.VISIBLE);
-
-                            indicator234CalculateFinal(sumCursor,skillNRateCursor.getInt(3) * sumCursor.getInt(1),skillNRateCursor.getInt(4) * sumCursor.getInt(2),skillNRateCursor.getInt(5) * sumCursor.getInt(3),0,
-                                    skillNRateCursor.getInt(4),  skillNRateCursor.getInt(5),0);
+                            indicator1234CalculateButDontUpdateToDBFinal(sumCursor,skillNRateCursor.getInt(3) * sumCursor.getInt(1),skillNRateCursor.getInt(4) * sumCursor.getInt(2),skillNRateCursor.getInt(5) * sumCursor.getInt(3),0);
 
                         } else if (indicate == 4) {
                             if(skillNRateCursor.getInt(4) != 0) {
@@ -547,7 +539,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                                 //    R2 * p2
                                  totalP2AmountTv.setText("= "+skillNRateCursor.getInt(4)*sumCursor.getInt(2));
                             }else {
-                                saveAndCreatePdf.setEnabled(false);
+                                saveAndCreatePdf.setVisibility(View.GONE);
                                 totalP2AmountTv.setText("= PROVIDE RATE");
                             }
 
@@ -556,7 +548,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                                 //    R3 * p3
                                  totalP3AmountTv.setText("= "+skillNRateCursor.getInt(5)*sumCursor.getInt(3));
                             }else {
-                                saveAndCreatePdf.setEnabled(false);
+                                saveAndCreatePdf.setVisibility(View.GONE);
                                 totalP3AmountTv.setText("= PROVIDE RATE");
                             }
 
@@ -565,7 +557,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                                 //    R4 * p4
                                  totalP4AmountTv.setText("= "+skillNRateCursor.getInt(6)*sumCursor.getInt(4));
                             }else {
-                                saveAndCreatePdf.setEnabled(false);
+                                saveAndCreatePdf.setVisibility(View.GONE);
                                 totalP4AmountTv.setText("= PROVIDE RATE");
                             }
                              totalP2CountTv.setText(sumCursor.getString(2));//total p2 count
@@ -577,8 +569,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                              p2Layout.setVisibility(View.VISIBLE);
                              p3Layout.setVisibility(View.VISIBLE);
                              p4Layout.setVisibility(View.VISIBLE);
-                            indicator234CalculateFinal(sumCursor,skillNRateCursor.getInt(3) * sumCursor.getInt(1),skillNRateCursor.getInt(4) * sumCursor.getInt(2),skillNRateCursor.getInt(5) * sumCursor.getInt(3),skillNRateCursor.getInt(6) * sumCursor.getInt(4),
-                                    skillNRateCursor.getInt(4),  skillNRateCursor.getInt(5), skillNRateCursor.getInt(6));
+                            indicator1234CalculateButDontUpdateToDBFinal(sumCursor,skillNRateCursor.getInt(3) * sumCursor.getInt(1),skillNRateCursor.getInt(4) * sumCursor.getInt(2),skillNRateCursor.getInt(5) * sumCursor.getInt(3),skillNRateCursor.getInt(6) * sumCursor.getInt(4));
                         }
                     }
                     //if rate 1 is changed
@@ -589,15 +580,15 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                         @Override
                         public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                             String p11 =p1RateTv.getText().toString().trim();
-                            p1RateTv.setTextColor(getResources().getColor(R.color.purple_700));
+                            p1RateTv.setTextColor(getColor(R.color.purple_700));
                             innerArray[0]=1;//means data is inserted.This line should be here because when user enter wrong data and again enter right data then it should update array to 1 which indicate write data
                             //this will check if other data is right or wrong
                             if(!isEnterDataIsWrong(innerArray)) {//this is important if in field data is wrong then save button will not enabled until data is right.
-                                saveAndCreatePdf.setEnabled(true);
+                                saveAndCreatePdf.setVisibility(View.VISIBLE);
                             }
                             if (!p11.matches("[0-9]+")) {//space or , or - is restricted"[.]?[0-9]+[.]?[0-9]*"
                                 p1RateTv.setTextColor(Color.RED);
-                                saveAndCreatePdf.setEnabled(false);
+                                saveAndCreatePdf.setVisibility(View.GONE);
                                 innerArray[0]=2;//means data is inserted wrong
                                 Toast.makeText(IndividualPersonDetailActivity.this, "NOT ALLOWED(space  .  ,  -)\nPLEASE CORRECT", Toast.LENGTH_LONG).show();
                             }
@@ -610,7 +601,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                                 updateTotalWorkAmountAndAdvanceOrBalanceTv();
 
                                 if(isp1p2p3p4PresentAndRateNotPresent(r1,r2,r3,r4,p1,p2,p3,p4,indicate)){
-                                    saveAndCreatePdf.setEnabled(false);
+                                    saveAndCreatePdf.setVisibility(View.GONE);
                                     advanceOrBalanceTv.setText("");
                                     workTotalAmountTv.setText(" - 0");
                                 }
@@ -631,16 +622,16 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                         @Override
                         public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                             String p11 =p2RateTv.getText().toString().trim();
-                            p2RateTv.setTextColor(getResources().getColor(R.color.purple_700));
+                            p2RateTv.setTextColor(getColor(R.color.purple_700));
                             innerArray[1]=1;//means data is inserted.This line should be here because when user enter wrong data and again enter right data then it should update array to 1 which indicate write data
                             //this will check if other data is right or wrong
                             if(!isEnterDataIsWrong(innerArray)) {//this is important if in field data is wrong then save button will not enabled until data is right.
-                                saveAndCreatePdf.setEnabled(true);
+                                saveAndCreatePdf.setVisibility(View.VISIBLE);
 
                             }
                             if (!p11.matches("[0-9]+")) {//space or , or - is restricted"[.]?[0-9]+[.]?[0-9]*"
                                 p2RateTv.setTextColor(Color.RED);
-                                saveAndCreatePdf.setEnabled(false);
+                                saveAndCreatePdf.setVisibility(View.GONE);
                                 innerArray[1]=2;//means data is inserted wrong
                                 Toast.makeText(IndividualPersonDetailActivity.this, "NOT ALLOWED(space  .  ,  -)\nPLEASE CORRECT", Toast.LENGTH_LONG).show();
                             }
@@ -653,7 +644,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                                 updateTotalWorkAmountAndAdvanceOrBalanceTv();
 
                                 if(isp1p2p3p4PresentAndRateNotPresent(r1,r2,r3,r4,p1,p2,p3,p4,indicate)){
-                                    saveAndCreatePdf.setEnabled(false);
+                                    saveAndCreatePdf.setVisibility(View.GONE);
                                     advanceOrBalanceTv.setText("");
                                     workTotalAmountTv.setText(" - 0");
                                 }
@@ -673,16 +664,15 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                         @Override
                         public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                             String p11 =p3RateTv.getText().toString().trim();
-                            p3RateTv.setTextColor(getResources().getColor(R.color.purple_700));
+                            p3RateTv.setTextColor(getColor(R.color.purple_700));
                             innerArray[2]=1;//means data is inserted.This line should be here because when user enter wrong data and again enter right data then it should update array to 1 which indicate write data
                             //this will check if other data is right or wrong
                             if(!isEnterDataIsWrong(innerArray)) {//this is important if in field data is wrong then save button will not enabled until data is right.
-                                saveAndCreatePdf.setEnabled(true);
-
+                                saveAndCreatePdf.setVisibility(View.VISIBLE);
                             }
                             if (!p11.matches("[0-9]+")) {//space or , or - is restricted"[.]?[0-9]+[.]?[0-9]*"
                                 p3RateTv.setTextColor(Color.RED);
-                                saveAndCreatePdf.setEnabled(false);
+                                saveAndCreatePdf.setVisibility(View.GONE);
                                 innerArray[2]=2;//means data is inserted wrong
                                 Toast.makeText(IndividualPersonDetailActivity.this, "NOT ALLOWED(space  .  ,  -)\nPLEASE CORRECT", Toast.LENGTH_LONG).show();
                             }
@@ -695,7 +685,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                                 updateTotalWorkAmountAndAdvanceOrBalanceTv();
 
                                 if(isp1p2p3p4PresentAndRateNotPresent(r1,r2,r3,r4,p1,p2,p3,p4,indicate)){
-                                    saveAndCreatePdf.setEnabled(false);
+                                    saveAndCreatePdf.setVisibility(View.GONE);
                                     advanceOrBalanceTv.setText("");
                                     workTotalAmountTv.setText(" - 0");
                                 }
@@ -714,15 +704,15 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                         @Override
                         public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                             String p11 =p4RateTv.getText().toString().trim();
-                            p4RateTv.setTextColor(getResources().getColor(R.color.purple_700));
+                            p4RateTv.setTextColor(getColor(R.color.purple_700));
                             innerArray[3]=1;//means data is inserted.This line should be here because when user enter wrong data and again enter right data then it should update array to 1 which indicate write data
                             //this will check if other data is right or wrong
                             if(!isEnterDataIsWrong(innerArray)) {//this is important if in field data is wrong then save button will not enabled until data is right.
-                                saveAndCreatePdf.setEnabled(true);
+                                saveAndCreatePdf.setVisibility(View.VISIBLE);
                             }
                             if (!p11.matches("[0-9]+")) {//space or , or - is restricted"[.]?[0-9]+[.]?[0-9]*"
                                 p4RateTv.setTextColor(Color.RED);
-                                saveAndCreatePdf.setEnabled(false);
+                                saveAndCreatePdf.setVisibility(View.GONE);
                                 innerArray[3]=2;//means data is inserted wrong
                                 Toast.makeText(IndividualPersonDetailActivity.this, "NOT ALLOWED(space  .  ,  -)\nPLEASE CORRECT", Toast.LENGTH_LONG).show();
                             }
@@ -735,7 +725,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                                 updateTotalWorkAmountAndAdvanceOrBalanceTv();
 
                                 if(isp1p2p3p4PresentAndRateNotPresent(r1,r2,r3,r4,p1,p2,p3,p4,indicate)){
-                                    saveAndCreatePdf.setEnabled(false);
+                                    saveAndCreatePdf.setVisibility(View.GONE);
                                     advanceOrBalanceTv.setText("");
                                     workTotalAmountTv.setText(" - 0");
                                 }
@@ -751,81 +741,189 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                     saveAndCreatePdf.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            updateTotalToDatabase();
-                            //create PDF
-                            PdfDocument myPdfDocument=new PdfDocument();//pdf instance
-                            Paint myPaint=new Paint();//it is responsible for text color
-                            PdfDocument.PageInfo myPageInfo=new PdfDocument.PageInfo.Builder(250,400,1).create();//meta data of pdf
-                            PdfDocument.Page mypage1=myPdfDocument.startPage(myPageInfo);
-
-                            //to write in pdf page 1
-                            Canvas canvas=mypage1.getCanvas();
-                            canvas.drawText("WELCOME  AMAR KUMAR DAS i love you ................",10,50,myPaint);
-                            canvas.drawCircle(12,34,5,myPaint);
-                            myPdfDocument.finishPage(mypage1);
-                            //Take permission
-
-                            //To create folder code  File folder=new File(getExternalFilesDir(null)+"/foldername");
-//                            if (!folder.exists()) {//if folder not exist
-//                                folder.mkdir();//create folder
-//                            }
-                            File file=new File(getExternalFilesDir(null)+"/amar.pdf");//we do not need to create folder to store so it will directly create pdf file and store
-                                  try{
-                                      myPdfDocument.writeTo(new FileOutputStream(file));
-                                  }catch(IOException e){
-                                      e.printStackTrace();
-                                  }
-                                    myPdfDocument.close();
-                            Toast.makeText(IndividualPersonDetailActivity.this, "created", Toast.LENGTH_SHORT).show();
-
-
-
-
+                            Toast.makeText(IndividualPersonDetailActivity.this, "M "+checkInternalStorageAvailability(), Toast.LENGTH_SHORT).show();
+                            if(checkInternalStorageAvailability() >= 2){//if Internal storage is greater then 2 GB then condition will be true
+                                if(checkPermissionForReadAndWriteToExternalStorage()) {//Take permission
+                                    updateTotalToDatabase();
+                                    generatePDF();
+                                }else {//request for permission
+                                    Toast.makeText(IndividualPersonDetailActivity.this, "READ,WRITE EXTERNAL STORAGE PERMISSION REQUIRED", Toast.LENGTH_LONG).show();
+                                    ActivityCompat.requestPermissions(IndividualPersonDetailActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 20);
+                                }
+                            }else//we will let user know what gone wrong
+                                Toast.makeText(IndividualPersonDetailActivity.this, "FAILED-NO SUFFICIENT MEMORY \nINTERNAL MEMORY AVAILABLE: "+checkInternalStorageAvailability()+" GB", Toast.LENGTH_LONG).show();
                         }
                     });
                     dialog.show();
                     return false;
                 }
+                private void generatePDF() {
+                    //create PDF
+                            /*PdfDocument myPdfDocument=new PdfDocument();//pdf instance
+                            Paint myPaint=new Paint();//it is responsible for text color
 
+                            PdfDocument.PageInfo myPageInfo=new PdfDocument.PageInfo.Builder(250,400,1).create();//meta data of pdf
+                            PdfDocument.Page mypage1=myPdfDocument.startPage(myPageInfo);
+                            //to write in pdf page 1
+                            Canvas canvas=mypage1.getCanvas();
+                            canvas.drawText("WELCOME  AMAR KUMAR DAS 1 love you ................",10,50,myPaint);
+                            myPdfDocument.finishPage(mypage1);
+
+                            PdfDocument.PageInfo myPageInfo2=new PdfDocument.PageInfo.Builder(250,400,1).create();//meta data of pdf
+                            PdfDocument.Page mypage2=myPdfDocument.startPage(myPageInfo2);
+                            //to write in pdf page 2
+                            Canvas canvas2=mypage2.getCanvas();
+                            canvas2.drawText("WELCOME  AMAR KUMAR DAS 2 love you ................",10,50,myPaint);
+                            myPdfDocument.finishPage(mypage2);*/
+
+                    PdfDocument myPdfDocument=new PdfDocument();//pdf instance
+                    Paint myPaint=new Paint();//it is responsible for text color
+
+                    PdfDocument.PageInfo myPageInfo=new PdfDocument.PageInfo.Builder(250,400,1).create();//meta data of pdf
+                    PdfDocument.Page mypage1=myPdfDocument.startPage(myPageInfo);
+                    //to write in pdf page 1
+                    Canvas canvas=mypage1.getCanvas();
+                    myPaint.setTextAlign(Paint.Align.CENTER);
+                    myPaint.setTextSize(12.0f);                 //so that it will be in middle
+                    canvas.drawText("HR Enterprises",myPageInfo.getPageWidth()/2,30,myPaint);
+
+                    myPaint.setTextSize(6.0f);
+                    //myPaint.setColor(Color.rgb(122,199,199));// myPaint.setColor(getResources().getColor(R.color.green)); or
+                    myPaint.setColor(ContextCompat.getColor(IndividualPersonDetailActivity.this,R.color.background));
+                    canvas.drawText("Street No. 15,Bharat Nagar,Haryana",myPageInfo.getPageWidth()/2,40,myPaint);
+
+                    myPaint.setTextAlign(Paint.Align.LEFT);
+                    myPaint.setTextSize(9.0f);
+                    myPaint.setColor(Color.rgb(122,199,199));//this is here because if in future upper color is changed then this link color will not change
+                    canvas.drawText("Customer Information",10,70,myPaint);
+
+                    myPaint.setTextAlign(Paint.Align.LEFT);
+                    myPaint.setTextSize(8.0f);
+                    myPaint.setColor(Color.BLACK);
+
+                    String information[]=new String[]{"Name","Company Name","Address","Phone","Email" };
+                    int startXPosition=10;
+                    int endXPosition=myPageInfo.getPageWidth()-10;
+                    int startYPosition=100;
+
+                    for(int i=0;i<5;i++){
+                        canvas.drawText(information[i],startXPosition,startYPosition,myPaint);
+                        canvas.drawLine(startXPosition,startYPosition+3,endXPosition,startYPosition+3,myPaint);
+                        startYPosition=startYPosition+20;
+                    }
+                    canvas.drawLine(80,92,80,190,myPaint);
+
+                    myPaint.setStyle(Paint.Style.STROKE);
+                    myPaint.setStrokeWidth(2);
+                    canvas.drawRect(10,200,myPageInfo.getPageWidth()-10,300,myPaint);
+                    canvas.drawLine(85,200,85,300,myPaint);
+                    canvas.drawLine(163,200,163,300,myPaint);
+                    myPaint.setStrokeWidth(0);
+                    myPaint.setStyle(Paint.Style.FILL);//Geometry and text drawn with this style will be filled, ignoring all stroke-related settings in the paint.
+
+                    canvas.drawText("Photo",35,250,myPaint);
+                    canvas.drawText("Photo",110,250,myPaint);
+                    canvas.drawText("Photo",190,250,myPaint);
+
+                    canvas.drawText("Note",10,320,myPaint);
+                    canvas.drawLine(35,325,myPageInfo.getPageWidth()-10,325,myPaint);
+                    canvas.drawLine(10,345,myPageInfo.getPageWidth()-10,345,myPaint);
+                    canvas.drawLine(10,365,myPageInfo.getPageWidth()-10,365,myPaint);
+                    myPdfDocument.finishPage(mypage1);
+
+
+
+                    File file=new File(getExternalFilesDir(null)+"/amar.pdf");//we do not need to create folder to store so it will directly create pdf file and store
+                    try{
+                        myPdfDocument.writeTo(new FileOutputStream(file));
+                    }catch(IOException e){
+                        Toast.makeText(IndividualPersonDetailActivity.this, "not created", Toast.LENGTH_SHORT).show();
+                        e.printStackTrace();
+                    }
+                    myPdfDocument.close();
+
+
+                    Toast.makeText(IndividualPersonDetailActivity.this, "created", Toast.LENGTH_SHORT).show();
+                }
+                private void displFinalResult(String title,String message) {
+                    AlertDialog.Builder showDataFromDataBase=new AlertDialog.Builder(IndividualPersonDetailActivity.this);
+                    showDataFromDataBase.setCancelable(false);
+                    showDataFromDataBase.setTitle(title);
+                    showDataFromDataBase.setMessage(message);
+                    showDataFromDataBase.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {//REFRESHING
+                            dialogInterface.dismiss();//close current dialog
+                            Intent intent=new Intent(IndividualPersonDetailActivity.this,IndividualPersonDetailActivity.class);
+                            intent.putExtra("ID",fromIntentPersonId);
+                            finish();//while going to other activity so destroy  this current activity so that while coming back we will see refresh activity
+                            startActivity(intent);
+                        }
+                    });
+                    showDataFromDataBase.create().show();
+                }
+                private float checkInternalStorageAvailability(){
+                    File path = Environment.getDataDirectory();//Return the user data directory.return type FILE and Environment class Provides access to environment variables.
+                    StatFs stat = new StatFs(path.getPath());//Construct a new StatFs for looking at the stats of the filesystem at path.
+                    long blockSize = stat.getBlockSizeLong();//The size, in bytes, of a block on the file system. This corresponds to the Unix statvfs.f_frsize field.
+                    long availableBlocks = stat.getAvailableBlocksLong();//The number of bytes that are free on the file system and available to applications.
+                    String format = Formatter.formatFileSize(IndividualPersonDetailActivity.this, availableBlocks * blockSize);//return available internal storage memory like 9.66 GB
+                    format=format.trim();//for safer side
+
+                    StringBuffer internalStorage=new StringBuffer();
+                    for(int i=0;i<format.length();i++){
+                        if(format.charAt(i) == ' ' || Character.isAlphabetic(format.charAt(i)))
+                            break;
+                        internalStorage.append(format.charAt(i));
+                    }
+                    return  Float.parseFloat(internalStorage.toString());
+                }
+                private boolean checkPermissionForReadAndWriteToExternalStorage() {
+                    if( (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE)==PackageManager.PERMISSION_GRANTED) &&
+                            (ActivityCompat.checkSelfPermission(getApplicationContext(),Manifest.permission.WRITE_EXTERNAL_STORAGE)==PackageManager.PERMISSION_GRANTED)) {
+                        return true;
+                    }else
+                        return false;
+                }
                 private void updateTotalToDatabase( ) {
                     //updating rate
                     boolean success = db.updateTable("UPDATE " + db.TABLE_NAME3 + " SET R1='"+r1+"' , R2='"+r2+"' , R3='"+r3+"' , R4='"+r4+"'"+ " WHERE ID='" + fromIntentPersonId + "'");
-                    if (success == false)
-                        Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO UPDATE RATE", Toast.LENGTH_SHORT).show();
+                   if(success==true){//if rate is updated then proceed
+                       if (!isEnterDataIsWrong(innerArray)) {//if data is right then only change fields.This condition is already checked but checking again
 
-                    if(!isEnterDataIsWrong(innerArray)) {//if data is right then only change fields.This condition is already checked but checking again
+                           if (!isp1p2p3p4PresentAndRateNotPresent(r1, r2, r3, r4, p1, p2, p3, p4, indicate)) {//This condition is already checked but checking again
+                               //if both wages and totalwork amount is less then 0 then dont save.This condition already checked but checking again
+                               if (((totalDeposit + ((p1 * r1) + (p2 * r2) + (p3 * r3) + (p4 * r4))) < 0) || (totalWages < 0)) {//user cant enter negative number so when (totalDeposit + (totalr1r2r3r4sum1sum2sum3sum4)) is negative that means int range is exceeds so wrong result will be shown
+                                   Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO SAVE DUE TO WRONG DATA", Toast.LENGTH_LONG).show();
+                               } else if ((totalDeposit + ((p1 * r1) + (p2 * r2) + (p3 * r3) + (p4 * r4))) < totalWages) {
+                                   //updating Advance to db
+                                   success = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET ADVANCE='" + (totalWages - (totalDeposit + ((p1 * r1) + (p2 * r2) + (p3 * r3) + (p4 * r4)))) + "'" + "WHERE ID='" + fromIntentPersonId + "'");
+                                   if (success == false)
+                                       Toast.makeText(IndividualPersonDetailActivity.this, "ADVANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
 
-                        if(!isp1p2p3p4PresentAndRateNotPresent(r1,r2,r3,r4,p1,p2,p3,p4,indicate)){//This condition is already checked but checking again
-                            //if both wages and totalwork amount is less then 0 then dont save.This condition already checked but checking again
-                            if (((totalDeposit + ((p1 * r1) + (p2 * r2) + (p3 * r3) + (p4 * r4))) < 0) || (totalWages < 0)) {//user cant enter negative number so when (totalDeposit + (totalr1r2r3r4sum1sum2sum3sum4)) is negative that means int range is exceeds so wrong result will be shown
-                                Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO SAVE DUE TO WRONG DATA", Toast.LENGTH_LONG).show();
-                            }else if ((totalDeposit + ((p1 * r1) + (p2 * r2) + (p3 * r3) + (p4 * r4))) < totalWages) {
-                                //updating Advance to db
-                                success = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET ADVANCE='" + (totalWages - (totalDeposit + ((p1 * r1) + (p2 * r2) + (p3 * r3) + (p4 * r4)))) + "'" + "WHERE ID='" + fromIntentPersonId + "'");
-                                if (success == false)
-                                    Toast.makeText(IndividualPersonDetailActivity.this, "ADVANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
+                                   //if there is advance then balance  column should be 0
+                                   success = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET BALANCE='" + 0 + "'" + "WHERE ID='" + fromIntentPersonId + "'");
+                                   if (success == false)
+                                       Toast.makeText(IndividualPersonDetailActivity.this, "BALANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
 
-                                //if there is advance then balance  column should be 0
-                                success = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET BALANCE='" + 0 + "'" + "WHERE ID='" + fromIntentPersonId + "'");
-                                if (success == false)
-                                    Toast.makeText(IndividualPersonDetailActivity.this, "BALANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
+                               } else if ((totalDeposit + ((p1 * r1) + (p2 * r2) + (p3 * r3) + (p4 * r4))) >= totalWages) {//>= is given because when totalWages and totalwork is same then this condition will be executed to set balance 0
 
-                            } else if ((totalDeposit + ((p1 * r1) + (p2 * r2) + (p3 * r3) + (p4 * r4))) >= totalWages) {//>= is given because when totalWages and totalwork is same then this condition will be executed to set balance 0
+                                   //updating balance to db if greater then 0
+                                   success = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET BALANCE='" + ((totalDeposit + ((p1 * r1) + (p2 * r2) + (p3 * r3) + (p4 * r4))) - totalWages) + "'" + "WHERE ID='" + fromIntentPersonId + "'");
+                                   if (success == false)
+                                       Toast.makeText(IndividualPersonDetailActivity.this, "BALANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
 
-                                //updating balance to db if greater then 0
-                                success = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET BALANCE='" + ((totalDeposit + ((p1 * r1) + (p2 * r2) + (p3 * r3) + (p4 * r4))) - totalWages) + "'" + "WHERE ID='" + fromIntentPersonId + "'");
-                                if (success == false)
-                                    Toast.makeText(IndividualPersonDetailActivity.this, "BALANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
-
-                                //if there is balance then update advance column should be 0
-                                success = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET ADVANCE='" + 0 + "'" + "WHERE ID='" + fromIntentPersonId + "'");
-                                if (success == false)
-                                    Toast.makeText(IndividualPersonDetailActivity.this, "ADVANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
-                            }
-                        }else
-                            Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO SAVE DUE TO RATE NOT PROVIDED", Toast.LENGTH_LONG).show();
-                    }else
-                        Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO SAVE DUE TO WRONG DATA", Toast.LENGTH_LONG).show();
+                                   //if there is balance then update advance column should be 0
+                                   success = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET ADVANCE='" + 0 + "'" + "WHERE ID='" + fromIntentPersonId + "'");
+                                   if (success == false)
+                                       Toast.makeText(IndividualPersonDetailActivity.this, "ADVANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
+                               }
+                           } else
+                               Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO SAVE DUE TO RATE NOT PROVIDED", Toast.LENGTH_LONG).show();
+                       } else
+                           Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO SAVE DUE TO WRONG DATA", Toast.LENGTH_LONG).show();
+                   }else
+                       Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO UPDATE RATE", Toast.LENGTH_LONG).show();
                 }
                 public boolean isp1p2p3p4PresentAndRateNotPresent(int r1,int r2,int r3,int r4,int p1,int p2,int p3,int p4,int indicator){
                     if(indicator==1 && (p1 !=0 && r1==0)){
@@ -846,11 +944,11 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                         //if both wages and totalwork amount is less then 0 then both message have to show so if statement two times
                         if ((totalDeposit + ((p1 * r1) + (p2 * r2) + (p3 * r3) + (p4 * r4))) < 0) {//user cant enter negative number so when (totalDeposit + (totalr1r2r3r4sum1sum2sum3sum4)) is negative that means int range is exceeds so wrong result will be shown
                             Toast.makeText(IndividualPersonDetailActivity.this, "INCORRECT CALCULATION PLEASE CHECK TOTAL WORK AMOUNT", Toast.LENGTH_LONG).show();
-                            saveAndCreatePdf.setEnabled(false);//its important otherwise save option will be unabled when user enter rate
+                            saveAndCreatePdf.setVisibility(View.GONE);//its important otherwise save option will be unabled when user enter rate
                         }
                         if(totalWages < 0){//its important otherwise save option will be unabled when user enter rate
                             Toast.makeText(IndividualPersonDetailActivity.this, "INCORRECT CALCULATION PLEACE CHECK TOTAL WAGES", Toast.LENGTH_LONG).show();
-                            saveAndCreatePdf.setEnabled(false);
+                            saveAndCreatePdf.setVisibility(View.GONE);
                         }
 
                         if ((totalDeposit + ((p1 * r1) + (p2 * r2) + (p3 * r3) + (p4 * r4))) < totalWages) {
@@ -859,246 +957,38 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                             advanceOrBalanceTv.setText("= " + (totalWages - (totalDeposit + ((p1 * r1) + (p2 * r2) + (p3 * r3) + (p4 * r4)))));
                             //       totalDeposit+(R1*SUMP1)+(R2*SUMP2)+(R3*SUMP3)+(R4*SUMP4) >= totalWages
                         } else if ((totalDeposit + ((p1 * r1) + (p2 * r2) + (p3 * r3) + (p4 * r4))) >= totalWages) {//>= is given because of green color
-                            advanceOrBalanceTv.setTextColor(getResources().getColor(R.color.green));
+                            advanceOrBalanceTv.setTextColor(getColor(R.color.green));
                             //                                           totalDeposit+(R1*SUMP1)+(R2*SUMP2)+(R3*SUMP3)+(R4*SUMP4) -total wages
                             advanceOrBalanceTv.setText("= " + ((totalDeposit + ((p1 * r1) + (p2 * r2) + (p3 * r3) + (p4 * r4))) - totalWages));
                         }
                     }else{
                         advanceOrBalanceTv.setText("= 0");
-                        advanceOrBalanceTv.setTextColor(getResources().getColor(R.color.green));
+                        advanceOrBalanceTv.setTextColor(getColor(R.color.green));
                         workTotalAmountTv.setText(" - 0");
                     }
 
                 }
-                private void indicator234CalculateFinal(Cursor sumCursor, int rate1IntoSump1, int rate2IntoSump2, int rate3IntoSump3, int rate4IntoSump4, int rate2, int rate3, int rate4 ) {
+                private void indicator1234CalculateButDontUpdateToDBFinal(@NonNull Cursor sumCursor, int rate1IntoSump1, int rate2IntoSump2, int rate3IntoSump3, int rate4IntoSump4) {
                     int  totalDeposit,totalWages;
                     int totalr1r2r3r4sum1sum2sum3sum4=rate1IntoSump1+rate2IntoSump2+rate3IntoSump3+rate4IntoSump4;
                     totalWages=sumCursor.getInt(0);
                     totalDeposit=sumCursor.getInt(5);
 
-//        int  rate1IntoSump1,rate2IntoSump2,rate3IntoSump3,rate4IntoSump4,rate2,rate3,rate4;
-//        rate2=skillCursor.getInt(4);
-//        rate3=skillCursor.getInt(5);
-//        rate4=skillCursor.getInt(6);
-//        rate1IntoSump1=skillCursor.getInt(3) * sumCursor.getInt(1);// (R1*SUMP1)
-//        rate2IntoSump2=skillCursor.getInt(4) * sumCursor.getInt(2);// (R2*SUMP2)
-//        rate3IntoSump3=skillCursor.getInt(5) * sumCursor.getInt(3);// (R3*SUMP3)
-//        rate4IntoSump4=skillCursor.getInt(6) * sumCursor.getInt(4);// (R4*SUMP4)
-                    /** (rate2 != 0) || (rate2 != 0 && rate3 != 0 ) || (rate2 != 0 && rate3 != 0 && rate4 != 0) this condition satisfy when there is only two rate and rest 0 then this condition will be true for every operation*/
+                    if(((totalDeposit + totalr1r2r3r4sum1sum2sum3sum4) < 0) || (totalr1r2r3r4sum1sum2sum3sum4 < 0) || (totalDeposit < 0)) //user cant enter negative number so when (totalDeposit + (totalr1r2r3r4sum1sum2sum3sum4)) is negative that means int range is exceeds so wrong result will be shown
+                        Toast.makeText(IndividualPersonDetailActivity.this, "INCORRECT CALCULATION PLEASE CHECK TOTAL WORK AMOUNT", Toast.LENGTH_LONG).show();
 
-                    //totalDeposit           (                                  R2R3R4 rate                                           )     wages
-                    //                            2                     3                                      4
-                    if (totalDeposit != 0 &&( (rate2 != 0) || (rate2 != 0 && rate3 != 0 ) || (rate2 != 0 && rate3 != 0 && rate4 != 0) )&&  totalWages != 0) {
-                        //                                          totalDeposit+(R1*SUMP1)+(R2*SUMP2)+(R3*SUMP3)+(R4*SUMP4)
-                         workTotalAmountTv.setText(" - " + (totalDeposit + (totalr1r2r3r4sum1sum2sum3sum4)));
+                    workTotalAmountTv.setText(" - " + (totalDeposit + (totalr1r2r3r4sum1sum2sum3sum4)));
+                    //    totalDeposit+(R1*SUMP1)+(R2*SUMP2)+(R3*SUMP3)+(R4*SUMP4)
+                    if ((totalDeposit + (totalr1r2r3r4sum1sum2sum3sum4)) < totalWages) {
+                        advanceOrBalanceTv.setTextColor(Color.RED);
+                        //                                total wages -   totalDeposit+(R1*SUMP1)+(R2*SUMP2)+(R3*SUMP3)+(R4*SUMP4)
+                        advanceOrBalanceTv.setText("= " + (totalWages - (totalDeposit + (totalr1r2r3r4sum1sum2sum3sum4))));
 
-                        if((totalDeposit + (totalr1r2r3r4sum1sum2sum3sum4)) < 0) {//user cant enter negative number so when (totalDeposit + (totalr1r2r3r4sum1sum2sum3sum4)) is negative that means int range is exceeds so wrong result will be shown
-                            Toast.makeText(IndividualPersonDetailActivity.this, "INCORRECT CALCULATION PLEASE CHECK TOTAL WORK AMOUNT", Toast.LENGTH_LONG).show();
-                        }
-
-                        //    totalDeposit+(R1*SUMP1)+(R2*SUMP2)+(R3*SUMP3)+(R4*SUMP4)
-                        if ((totalDeposit + (totalr1r2r3r4sum1sum2sum3sum4)) < totalWages) {
-                             advanceOrBalanceTv.setTextColor(Color.RED);
-                            //                                        total wages -   totalDeposit+(R1*SUMP1)+(R2*SUMP2)+(R3*SUMP3)+(R4*SUMP4)
-                             advanceOrBalanceTv.setText("= " + (totalWages - (totalDeposit + (totalr1r2r3r4sum1sum2sum3sum4))));
-                            //       totalDeposit+(R1*SUMP1)+(R2*SUMP2)+(R3*SUMP3)+(R4*SUMP4) >= totalWages
-                        } else if ((totalDeposit + (totalr1r2r3r4sum1sum2sum3sum4)) >= totalWages) {//>= is given because of green color
-                             advanceOrBalanceTv.setTextColor(getResources().getColor(R.color.green));
-                            //                                           totalDeposit+(R1*SUMP1)+(R2*SUMP2)+(R3*SUMP3)+(R4*SUMP4) -total wages
-                             advanceOrBalanceTv.setText("= " + ((totalDeposit + (totalr1r2r3r4sum1sum2sum3sum4)) -totalWages));
-                        }
-                    }
-                    //        no totalDeposit     (                                         rate                                         )      wages
-                    //                                   2                      3                                         4
-                    else if (totalDeposit == 0 && ((rate2 != 0) || (rate2 != 0 && rate3 != 0 ) || (rate2 != 0 && rate3 != 0 && rate4 != 0))&& totalWages != 0) {
-                        //                                       (R1*SUMP1)+(R2*SUMP2)+(R3*SUMP3)+(R4*SUMP4)
-                        workTotalAmountTv.setText(" - " + (totalr1r2r3r4sum1sum2sum3sum4));
-
-                        if((totalr1r2r3r4sum1sum2sum3sum4) < 0) {//user cant enter negative number so when totalr1r2r3r4sum1sum2sum3sum4 is negative that means int range is exceeds so wrong result will be shown
-                            Toast.makeText(IndividualPersonDetailActivity.this, "INCORRECT CALCULATION PLEASE CHECK TOTAL WORK AMOUNT", Toast.LENGTH_LONG).show();
-                        }
-
-
-                        //(R1*SUMP1)+(R2*SUMP2)+(R3*SUMP3)+(R4*SUMP4) < total wages
-                        if ((totalr1r2r3r4sum1sum2sum3sum4) < totalWages) {
-                             advanceOrBalanceTv.setTextColor(Color.RED);
-                            //                                        total wages-(R1*SUMP1)+(R2*SUMP2)+(R3*SUMP3)+(R4*SUMP4)
-                             advanceOrBalanceTv.setText("= " + (totalWages- ((totalr1r2r3r4sum1sum2sum3sum4))));
-
-                            //     (R1*SUMP1)+(R2*SUMP2)+(R3*SUMP3)+(R4*SUMP4) >= total wages
-                        } else if ((totalr1r2r3r4sum1sum2sum3sum4) >= totalWages) {//>= equal is given because of green color
-                             advanceOrBalanceTv.setTextColor(getResources().getColor(R.color.green));
-                            //                             (R1*SUMP1)+(R2*SUMP2)+(R3*SUMP3)+(R4*SUMP4) -total wages
-                             advanceOrBalanceTv.setText("= " + ((totalr1r2r3r4sum1sum2sum3sum4) - totalWages));
-
-                        }
-                    }
-                    //        totalDeposit         (                                  no  R2R3R4                                           )    no wage
-                    //                                       2                 3                                    4
-                    else if (totalDeposit != 0 &&( (rate2 == 0) || (rate2 == 0 && rate3 == 0 ) || (rate2 == 0 && rate3 == 0 && rate4 == 0) )&& totalWages == 0) {
-                        //                                           totalDeposit
-                         workTotalAmountTv.setText(" - " + totalDeposit);
-
-                        if(totalDeposit < 0) {//user cant enter negative number so when (totalDeposit) is negative that means int range is exceeds so wrong result will be shown
-                            Toast.makeText(IndividualPersonDetailActivity.this, "INCORRECT CALCULATION PLEASE CHECK TOTAL WORK AMOUNT", Toast.LENGTH_LONG).show();
-                        }
-                        //                                               totalDeposit
-                        advanceOrBalanceTv.setText("= " + totalDeposit);
-                        advanceOrBalanceTv.setTextColor(getResources().getColor(R.color.green));
-                    }
-                    //           totalDeposit     (                     no  R2R3R4                                                         )      wages
-                    //                                   2                     3                                          4
-                    else if (totalDeposit != 0 &&( (rate2 == 0) || (rate2 == 0 && rate3 == 0 ) || (rate2 == 0 && rate3 == 0 && rate4 == 0) )&& totalWages != 0) {
-                        //        totalDeposit
-                         workTotalAmountTv.setText(" - " + totalDeposit);
-
-                        if(totalDeposit < 0) {//user cant enter negative number so when (totalDeposit) is negative that means int range is exceeds so wrong result will be shown
-                            Toast.makeText(IndividualPersonDetailActivity.this, "INCORRECT CALCULATION PLEASE CHECK TOTAL WORK AMOUNT", Toast.LENGTH_LONG).show();
-                        }
-
-                        //    totalDeposit < total wages
-                        if ((totalDeposit) < totalWages) {
-                             advanceOrBalanceTv.setTextColor(Color.RED);
-                            //                                        total wages -    totalDeposit
-                             advanceOrBalanceTv.setText("= " + (totalWages - (totalDeposit)));
-                            //       totalDeposit >= total wages
-                        } else if ((totalDeposit) >= totalWages) {//>= equal is given because of green color
-                            advanceOrBalanceTv.setTextColor(getResources().getColor(R.color.green));
-                            //                                         totalDeposit -total wages
-                            advanceOrBalanceTv.setText("= " + (totalDeposit - totalWages));
-                        }
-                    }
-                    //           no totalDeposit                            no  R2R3R4                                                      TOTALwages
-                    //                                    2                   3                                   4
-                    else if (totalDeposit == 0 &&( (rate2 == 0) || (rate2 == 0 && rate3 == 0 ) || (rate2 == 0 && rate3 == 0 && rate4 == 0) )&& totalWages != 0) {
-                         advanceOrBalanceTv.setText("= " + totalWages);
-                         advanceOrBalanceTv.setTextColor(Color.RED);
-                    }
-                    //         no totalDeposit   (                                      R2R3R4                                             )     no wages
-                    //                                     2                   3                                        4
-                    else if (totalDeposit == 0 &&( (rate2 != 0) || (rate2 != 0 && rate3 != 0 ) || (rate2 != 0 && rate3 != 0 && rate4 != 0) )&& totalWages == 0) {
-                        //                                       (R1*SUMP1)+(R2*SUMP2)+(R3*SUMP3)+(R4*SUMP4)
-                         workTotalAmountTv.setText(" - " + (totalr1r2r3r4sum1sum2sum3sum4));
-
-                        if((totalr1r2r3r4sum1sum2sum3sum4) < 0) {//user cant enter negative number so when (totalr1r2r3r4sum1sum2sum3sum4) is negative that means int range is exceeds so wrong result will be shown
-                            Toast.makeText(IndividualPersonDetailActivity.this, "INCORRECT CALCULATION PLEASE CHECK TOTAL WORK AMOUNT", Toast.LENGTH_LONG).show();
-                        }
-                        //                                       (R1*SUMP1)+(R2*SUMP2)+(R3*SUMP3)+(R4*SUMP4)
-                         advanceOrBalanceTv.setText("= " + (totalr1r2r3r4sum1sum2sum3sum4));
-                         advanceOrBalanceTv.setTextColor(getResources().getColor(R.color.green));
-                    }
-                    //        totalDeposit       (                                              rate                                      )     no wages
-                    //                                   2                     3                                  4
-                    else if (totalDeposit != 0 &&((rate2 != 0) || (rate2 != 0 && rate3 != 0 ) || (rate2 != 0 && rate3 != 0 && rate4 != 0) )&& totalWages == 0) {
-                        //                                           totalDeposit+                       (R1*SUMP1)
-                         workTotalAmountTv.setText(" - " + ((totalDeposit +  (totalr1r2r3r4sum1sum2sum3sum4))));
-
-                        if(((totalDeposit +  (totalr1r2r3r4sum1sum2sum3sum4))) < 0) {//user cant enter negative number so when ((totalDeposit +  (totalr1r2r3r4sum1sum2sum3sum4))) is negative that means int range is exceeds so wrong result will be shown
-                            Toast.makeText(IndividualPersonDetailActivity.this, "INCORRECT CALCULATION PLEASE CHECK TOTAL WORK AMOUNT", Toast.LENGTH_LONG).show();
-                        }
-                         advanceOrBalanceTv.setText("= " + ((totalDeposit +  (totalr1r2r3r4sum1sum2sum3sum4))));
-                         advanceOrBalanceTv.setTextColor(getResources().getColor(R.color.green));
-                    }
-                }
-                private void indicatorDefaultCalculationFinal(Cursor sumCursor, Cursor skillCursor){
-                    //deposit                              rate                                wages
-                    if(sumCursor.getString(5) != null && skillCursor.getInt(3) != 0 && sumCursor.getInt(0) !=0) {
-                        //                                                       deposit+                       (R1*SUMP1)
-                        workTotalAmountTv.setText("  - " + (sumCursor.getInt(5) + (skillCursor.getInt(3) * sumCursor.getInt(1))));
-
-                        if((sumCursor.getInt(5) + (skillCursor.getInt(3) * sumCursor.getInt(1))) < 0) {//user cant enter negative number so when (sumCursor.getInt(5) + (skillCursor.getInt(3) * sumCursor.getInt(1))) is negative that means int range is exceeds so wrong result will be shown
-                            Toast.makeText(IndividualPersonDetailActivity.this, "INCORRECT CALCULATION PLEASE CHECK TOTAL WORK AMOUNT", Toast.LENGTH_LONG).show();
-                        }
-
-                        //                   deposit+                       (R1*SUMP1)                     total wages
-                        if ((sumCursor.getInt(5) + (skillCursor.getInt(3) * sumCursor.getInt(1))) < sumCursor.getInt(0)) {
-                            advanceOrBalanceTv.setTextColor(Color.RED);
-                            //                                           total wages -                  deposit+                       (R1*SUMP1)
-                            advanceOrBalanceTv.setText("= " + (sumCursor.getInt(0) - (sumCursor.getInt(5) + (skillCursor.getInt(3) * sumCursor.getInt(1)))));
-
-                            //                     deposit+                       (R1*SUMP1)                     total wages
-                        } else if ((sumCursor.getInt(5) + (skillCursor.getInt(3) * sumCursor.getInt(1))) >= sumCursor.getInt(0)) {//>= is given because of green color
-                             advanceOrBalanceTv.setTextColor(getResources().getColor(R.color.green));
-                            //                                                    deposit+                     (R1*SUMP1)                     -total wages
-                             advanceOrBalanceTv.setText("= " + ((sumCursor.getInt(5) + (skillCursor.getInt(3) * sumCursor.getInt(1))) - sumCursor.getInt(0)));
-                        }
-                        //no deposit                              rate                                   wages
-                    } else if (sumCursor.getString(5) == null && skillCursor.getInt(3) != 0 && sumCursor.getInt(0) !=0 ) {
-                        //                                                             (R1*SUMP1)
-                         workTotalAmountTv.setText("  - " + (skillCursor.getInt(3) * sumCursor.getInt(1)));
-
-                        if((skillCursor.getInt(3) * sumCursor.getInt(1)) < 0) {//user cant enter negative number so when (skillCursor.getInt(3) * sumCursor.getInt(1)) is negative that means int range is exceeds so wrong result will be shown
-                            Toast.makeText(IndividualPersonDetailActivity.this, "INCORRECT CALCULATION PLEASE CHECK TOTAL WORK AMOUNT", Toast.LENGTH_LONG).show();
-                        }
-                        //             (R1*SUMP1)                                     total wages
-                        if ( ((skillCursor.getInt(3) * sumCursor.getInt(1))) < sumCursor.getInt(0)) {
-                             advanceOrBalanceTv.setTextColor(Color.RED);
-                            //                                            total wages -                        (R1*SUMP1)
-                             advanceOrBalanceTv.setText("= " + (sumCursor.getInt(0) - ((skillCursor.getInt(3) * sumCursor.getInt(1)))));
-
-                            //                            (R1*SUMP1)                     total wages
-                        } else if (((skillCursor.getInt(3) * sumCursor.getInt(1))) >= sumCursor.getInt(0)) {//>= equal is given because of green color
-                             advanceOrBalanceTv.setTextColor(getResources().getColor(R.color.green));
-                            //                                                         (R1*SUMP1)                    -total wages
-                             advanceOrBalanceTv.setText("= " + (((skillCursor.getInt(3) * sumCursor.getInt(1))) - sumCursor.getInt(0)));
-                        }
-                        //deposit                            no  R1                                   no wage
-                    }else if(sumCursor.getString(5) != null && skillCursor.getInt(3) == 0 && sumCursor.getInt(0)== 0){
-                        //                                           deposit
-                         workTotalAmountTv.setText(" - "+sumCursor.getInt(5));
-
-                        if(sumCursor.getInt(5) < 0) {//user cant enter negative number so when sumCursor.getInt(5) is negative that means int range is exceeds so wrong result will be shown
-                            Toast.makeText(IndividualPersonDetailActivity.this, "INCORRECT CALCULATION PLEASE CHECK TOTAL WORK AMOUNT", Toast.LENGTH_LONG).show();
-                        }
-                        //                                     deposit
-                        advanceOrBalanceTv.setText("= " +sumCursor.getInt(5));
-                         advanceOrBalanceTv.setTextColor(getResources().getColor(R.color.green));
-                        //deposit                            no  R1                                     wages
-                    }else if(sumCursor.getString(5) != null && skillCursor.getInt(3) == 0 && sumCursor.getInt(0)!= 0){
-                         workTotalAmountTv.setText(" - "+sumCursor.getInt(5));
-
-                        if(sumCursor.getInt(5) < 0) {//user cant enter negative number so when sumCursor.getInt(5) is negative that means int range is exceeds so wrong result will be shown
-                            Toast.makeText(IndividualPersonDetailActivity.this, "INCORRECT CALCULATION PLEASE CHECK TOTAL WORK AMOUNT", Toast.LENGTH_LONG).show();
-                        }
-
-                        //             deposit              total wages
-                        if ( (sumCursor.getInt(5) ) < sumCursor.getInt(0)) {
-                             advanceOrBalanceTv.setTextColor(Color.RED);
-                            //                                                   total wages -    deposit
-                             advanceOrBalanceTv.setText("= " + (sumCursor.getInt(0) - ( sumCursor.getInt(5))));
-
-                            //             deposit              total wages
-                        } else if ( (sumCursor.getInt(5) ) >= sumCursor.getInt(0)) {//>= equal is given because of green color
-                             advanceOrBalanceTv.setTextColor(getResources().getColor(R.color.green));
-                            //                                                   deposit      -total wages
-                             advanceOrBalanceTv.setText("= " + (sumCursor.getInt(5) - sumCursor.getInt(0)));
-                        }
-                        //no deposit                            no  R1                                     wages
-                    }else if(sumCursor.getString(5) == null && skillCursor.getInt(3) == 0 && sumCursor.getInt(0)!= 0){
-                         advanceOrBalanceTv.setText("= " + sumCursor.getInt(0));
-                         advanceOrBalanceTv.setTextColor(Color.RED);
-                        //no deposit                             R1                                    no wages
-                    }else if(sumCursor.getString(5) == null && skillCursor.getInt(3) != 0 && sumCursor.getInt(0)== 0){
-                        //      (SUMP1)*R1
-                         workTotalAmountTv.setText(" - "+(sumCursor.getInt(1)*skillCursor.getInt(3)));
-
-                        if((sumCursor.getInt(1)*skillCursor.getInt(3)) < 0) {//user cant enter negative number so when (sumCursor.getInt(1)*skillCursor.getInt(3)) is negative that means int range is exceeds so wrong result will be shown
-                            Toast.makeText(IndividualPersonDetailActivity.this, "INCORRECT CALCULATION PLEASE CHECK TOTAL WORK AMOUNT", Toast.LENGTH_LONG).show();
-                        }
-
-                        //                                                     R1*(SUMP1)
-                        advanceOrBalanceTv.setText("= "+(skillCursor.getInt(3)*sumCursor.getInt(1)));
-                        advanceOrBalanceTv.setTextColor(getResources().getColor(R.color.green));
-                        //deposit                              rate                               no wages
-                    }else if(sumCursor.getString(5) != null && skillCursor.getInt(3) != 0 && sumCursor.getInt(0) ==0){
-                        //                                                 deposit+                       (R1*SUMP1)
-                         workTotalAmountTv.setText(" - "+((sumCursor.getInt(5) + (skillCursor.getInt(3) * sumCursor.getInt(1)))));
-
-                        if(((sumCursor.getInt(5) + (skillCursor.getInt(3) * sumCursor.getInt(1)))) < 0) {//user cant enter negative number so when ((sumCursor.getInt(5) + (skillCursor.getInt(3) * sumCursor.getInt(1)))) is negative that means int range is exceeds so wrong result will be shown
-                            Toast.makeText(IndividualPersonDetailActivity.this, "INCORRECT CALCULATION PLEASE CHECK TOTAL WORK AMOUNT", Toast.LENGTH_LONG).show();
-                        }
-                         advanceOrBalanceTv.setText("= "+((sumCursor.getInt(5) + (skillCursor.getInt(3) * sumCursor.getInt(1)))));
-                         advanceOrBalanceTv.setTextColor(getResources().getColor(R.color.green));
+                        //totalDeposit+(R1*SUMP1)+(R2*SUMP2)+(R3*SUMP3)+(R4*SUMP4) >= totalWages
+                    }else if((totalDeposit + (totalr1r2r3r4sum1sum2sum3sum4)) >= totalWages) {//>= is given because of green color and when calculation is 0
+                        advanceOrBalanceTv.setTextColor(getColor(R.color.green));
+                        //                                   totalDeposit+(R1*SUMP1)+(R2*SUMP2)+(R3*SUMP3)+(R4*SUMP4) -total wages
+                        advanceOrBalanceTv.setText("= " + ((totalDeposit + (totalr1r2r3r4sum1sum2sum3sum4)) -totalWages));
                     }
                 }
                 private void initialiseIDs(View myView) {
@@ -1171,13 +1061,53 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
             }
         });
     }
-    private void indicator234CalculateAndUpdate(Cursor sumCursor,int rate1IntoSump1, int rate2IntoSump2, int rate3IntoSump3, int rate4IntoSump4, int rate2, int rate3, int rate4 ) {
+    private void indicator1234CalculateAndUpdate(Cursor sumCursor, int rate1IntoSump1, int rate2IntoSump2, int rate3IntoSump3, int rate4IntoSump4) {
         boolean bool;
         int  totalDeposit,totalWages;
         int totalr1r2r3r4sum1sum2sum3sum4=rate1IntoSump1+rate2IntoSump2+rate3IntoSump3+rate4IntoSump4;
         totalWages=sumCursor.getInt(0);
         totalDeposit=sumCursor.getInt(5);
 
+        if(((totalDeposit + totalr1r2r3r4sum1sum2sum3sum4) < 0) || (totalr1r2r3r4sum1sum2sum3sum4 < 0) || (totalDeposit < 0)) //user cant enter negative number so when (totalDeposit + (totalr1r2r3r4sum1sum2sum3sum4)) is negative that means int range is exceeds so wrong result will be shown
+            Toast.makeText(this, "INCORRECT CALCULATION PLEASE CHECK TOTAL WORK AMOUNT", Toast.LENGTH_LONG).show();
+
+        binding.workTotalAmountTv.setText(" - " + (totalDeposit + (totalr1r2r3r4sum1sum2sum3sum4)));
+        //    totalDeposit+(R1*SUMP1)+(R2*SUMP2)+(R3*SUMP3)+(R4*SUMP4)
+        if ((totalDeposit + (totalr1r2r3r4sum1sum2sum3sum4)) < totalWages) {
+            binding.advanceOrBalanceTv.setTextColor(Color.RED);
+            //                                        total wages -   totalDeposit+(R1*SUMP1)+(R2*SUMP2)+(R3*SUMP3)+(R4*SUMP4)
+            binding.advanceOrBalanceTv.setText("= " + (totalWages - (totalDeposit + (totalr1r2r3r4sum1sum2sum3sum4))));
+
+            //updating Advance to db                                                    total wages -   totalDeposit+(R1*SUMP1)+(R2*SUMP2)+(R3*SUMP3)+(R4*SUMP4)
+            bool = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET ADVANCE='" + (totalWages - (totalDeposit + (totalr1r2r3r4sum1sum2sum3sum4))) + "'" + "WHERE ID='" + fromIntentPersonId + "'");
+            if(bool==true){
+                /**Situation when user first enter jama /totalDeposit amount then wages amount which is greater then jama amount then balance column should be updated otherwise advance coulmn will have amount and balance column will also have amount so when there is advance then balance should be 0.*/
+                bool = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET BALANCE='" + 0 + "'" + "WHERE ID='" + fromIntentPersonId + "'");
+                if (bool == false)
+                    Toast.makeText(this, "BALANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
+            }
+            else if (bool == false)
+                Toast.makeText(this, "ADVANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
+
+            //totalDeposit+(R1*SUMP1)+(R2*SUMP2)+(R3*SUMP3)+(R4*SUMP4) >= totalWages
+        }else if((totalDeposit + (totalr1r2r3r4sum1sum2sum3sum4)) >= totalWages) {//>= is given because of green color and when calculation is 0
+            binding.advanceOrBalanceTv.setTextColor(getColor(R.color.green));
+            //                                           totalDeposit+(R1*SUMP1)+(R2*SUMP2)+(R3*SUMP3)+(R4*SUMP4) -total wages
+            binding.advanceOrBalanceTv.setText("= " + ((totalDeposit + (totalr1r2r3r4sum1sum2sum3sum4)) -totalWages));
+
+            //updating balance to db if greater then or equal to 0
+            bool = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET BALANCE='" + ((totalDeposit + (totalr1r2r3r4sum1sum2sum3sum4)) -totalWages) + "'" + "WHERE ID='" + fromIntentPersonId + "'");
+            if(bool == true){
+                //if there is balance then update advance column should be 0
+                bool = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET ADVANCE='" + 0 + "'" + "WHERE ID='" + fromIntentPersonId + "'");
+                if (bool == false)
+                    Toast.makeText(this, "ADVANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
+            }
+            else if(bool == false)
+                Toast.makeText(this, "BALANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
+        }
+
+        //Toast.makeText(this, "r1*p1="+rate1IntoSump1+" r2*p2="+rate2IntoSump2+"\n"+"r3*p3="+rate3IntoSump3+" r4*p4="+rate4IntoSump4+"\n"+" wages"+totalWages+" deposit"+totalDeposit, Toast.LENGTH_LONG).show();
 //        int  rate1IntoSump1,rate2IntoSump2,rate3IntoSump3,rate4IntoSump4,rate2,rate3,rate4;
 //        rate2=skillCursor.getInt(4);
 //        rate3=skillCursor.getInt(5);
@@ -1186,430 +1116,225 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
 //        rate2IntoSump2=skillCursor.getInt(4) * sumCursor.getInt(2);// (R2*SUMP2)
 //        rate3IntoSump3=skillCursor.getInt(5) * sumCursor.getInt(3);// (R3*SUMP3)
 //        rate4IntoSump4=skillCursor.getInt(6) * sumCursor.getInt(4);// (R4*SUMP4)
-        /** (rate2 != 0) || (rate2 != 0 && rate3 != 0 ) || (rate2 != 0 && rate3 != 0 && rate4 != 0) this condition satisfy when there is only two rate and rest 0 then this condition will be true for every operation*/
+    //    /** (rate2 != 0) || (rate2 != 0 && rate3 != 0 ) || (rate2 != 0 && rate3 != 0 && rate4 != 0) this condition satisfy when there is only two rate and rest 0 then this condition will be true for every operation*/
 
         //totalDeposit           (                                  R2R3R4 rate                                           )     wages
          //                            2                     3                                      4
-        if (totalDeposit != 0 &&( (rate2 != 0) || (rate2 != 0 && rate3 != 0 ) || (rate2 != 0 && rate3 != 0 && rate4 != 0) )&&  totalWages != 0) {
-             //                                          totalDeposit+(R1*SUMP1)+(R2*SUMP2)+(R3*SUMP3)+(R4*SUMP4)
-            binding.workTotalAmountTv.setText(" - " + (totalDeposit + (totalr1r2r3r4sum1sum2sum3sum4)));
-
-            if((totalDeposit + (totalr1r2r3r4sum1sum2sum3sum4)) < 0) {//user cant enter negative number so when (totalDeposit + (totalr1r2r3r4sum1sum2sum3sum4)) is negative that means int range is exceeds so wrong result will be shown
-                Toast.makeText(this, "INCORRECT CALCULATION PLEASE CHECK TOTAL WORK AMOUNT", Toast.LENGTH_LONG).show();
-            }
-
-            //    totalDeposit+(R1*SUMP1)+(R2*SUMP2)+(R3*SUMP3)+(R4*SUMP4)
-            if ((totalDeposit + (totalr1r2r3r4sum1sum2sum3sum4)) < totalWages) {
-                binding.advanceOrBalanceTv.setTextColor(Color.RED);
-                //                                        total wages -   totalDeposit+(R1*SUMP1)+(R2*SUMP2)+(R3*SUMP3)+(R4*SUMP4)
-                binding.advanceOrBalanceTv.setText("= " + (totalWages - (totalDeposit + (totalr1r2r3r4sum1sum2sum3sum4))));
-
-                //updating Advance to db ****************                                   total wages -   totalDeposit+(R1*SUMP1)+(R2*SUMP2)+(R3*SUMP3)+(R4*SUMP4)
-                bool = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET ADVANCE='" + (totalWages - (totalDeposit + (totalr1r2r3r4sum1sum2sum3sum4))) + "'" + "WHERE ID='" + fromIntentPersonId + "'");
-                if (bool == false)
-                    Toast.makeText(this, "ADVANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
-
-                /**Situation when user first enter jama /totalDeposit amount then wages amount which is greater then jama amount then balance column should be updated otherwise advance coulmn will have amount and balance column will also have amount so when there is advance then balance should be 0.*/
-                bool = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET BALANCE='" + 0 + "'" + "WHERE ID='" + fromIntentPersonId + "'");
-                if (bool == false)
-                    Toast.makeText(this, "BALANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
-
-                //       totalDeposit+(R1*SUMP1)+(R2*SUMP2)+(R3*SUMP3)+(R4*SUMP4) >= totalWages
-            } else if ((totalDeposit + (totalr1r2r3r4sum1sum2sum3sum4)) >= totalWages) {//>= is given because of green color
-                binding.advanceOrBalanceTv.setTextColor(getResources().getColor(R.color.green));
-                //                                           totalDeposit+(R1*SUMP1)+(R2*SUMP2)+(R3*SUMP3)+(R4*SUMP4) -total wages
-                binding.advanceOrBalanceTv.setText("= " + ((totalDeposit + (totalr1r2r3r4sum1sum2sum3sum4)) -totalWages));
-
-                //updating balance to db if greater then 0
-
-                bool = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET BALANCE='" + ((totalDeposit + (totalr1r2r3r4sum1sum2sum3sum4)) -totalWages) + "'" + "WHERE ID='" + fromIntentPersonId + "'");
-                if (bool == false)
-                    Toast.makeText(this, "BALANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
-
-                //if balance there is balance then update advance column should be 0
-                bool = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET ADVANCE='" + 0 + "'" + "WHERE ID='" + fromIntentPersonId + "'");
-                if (bool == false)
-                    Toast.makeText(this, "ADVANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
-            }
-        }
-        //        no totalDeposit     (                                         rate                                         )      wages
-        //                                   2                      3                                         4
-        else if (totalDeposit == 0 && ((rate2 != 0) || (rate2 != 0 && rate3 != 0 ) || (rate2 != 0 && rate3 != 0 && rate4 != 0))&& totalWages != 0) {
-             //                                       (R1*SUMP1)+(R2*SUMP2)+(R3*SUMP3)+(R4*SUMP4)
-            binding.workTotalAmountTv.setText("  - " + (totalr1r2r3r4sum1sum2sum3sum4));
-
-            if((totalr1r2r3r4sum1sum2sum3sum4) < 0) {//user cant enter negative number so when totalr1r2r3r4sum1sum2sum3sum4 is negative that means int range is exceeds so wrong result will be shown
-                Toast.makeText(this, "INCORRECT CALCULATION PLEASE CHECK TOTAL WORK AMOUNT", Toast.LENGTH_LONG).show();
-            }
-
-
-            //(R1*SUMP1)+(R2*SUMP2)+(R3*SUMP3)+(R4*SUMP4) < total wages
-            if ((totalr1r2r3r4sum1sum2sum3sum4) < totalWages) {
-                binding.advanceOrBalanceTv.setTextColor(Color.RED);
-                //                                        total wages-(R1*SUMP1)+(R2*SUMP2)+(R3*SUMP3)+(R4*SUMP4)
-                binding.advanceOrBalanceTv.setText("= " + (totalWages- ((totalr1r2r3r4sum1sum2sum3sum4))));
-
-                //updating Advance to db
-                bool = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET ADVANCE='" + ((totalWages- ((totalr1r2r3r4sum1sum2sum3sum4))) ) + "'" + "WHERE ID='" + fromIntentPersonId + "'");
-                if (bool == false)
-                    Toast.makeText(this, "ADVANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
-                //if advance   is there then update balance column should be 0 because both cant have value
-                bool = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET BALANCE='" + 0 + "'" + "WHERE ID='" + fromIntentPersonId + "'");
-                if (bool == false)
-                    Toast.makeText(this, "BALANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
-
-                //     (R1*SUMP1)+(R2*SUMP2)+(R3*SUMP3)+(R4*SUMP4) >= total wages
-            } else if ((totalr1r2r3r4sum1sum2sum3sum4) >= totalWages) {//>= equal is given because of green color
-                binding.advanceOrBalanceTv.setTextColor(getResources().getColor(R.color.green));
-                //                             (R1*SUMP1)+(R2*SUMP2)+(R3*SUMP3)+(R4*SUMP4) -total wages
-                binding.advanceOrBalanceTv.setText("= " + ((totalr1r2r3r4sum1sum2sum3sum4) - totalWages));
-
-                //updating balance to db
-                bool = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET BALANCE='" + (((totalr1r2r3r4sum1sum2sum3sum4) - totalWages)) + "'" + "WHERE ID='" + fromIntentPersonId + "'");
-                if (bool == false)
-                    Toast.makeText(this, "BALANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
-                //if balance there is balance then update advance column should be 0
-                bool = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET ADVANCE='" + 0 + "'" + "WHERE ID='" + fromIntentPersonId + "'");
-                if (bool == false)
-                    Toast.makeText(this, "ADVANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
-            }
-        }
-        //        totalDeposit         (                                  no  R2R3R4                                           )    no wage
-        //                                       2                 3                                    4
-        else if (totalDeposit != 0 &&( (rate2 == 0) || (rate2 == 0 && rate3 == 0 ) || (rate2 == 0 && rate3 == 0 && rate4 == 0) )&& totalWages == 0) {
-             //                                           totalDeposit
-            binding.workTotalAmountTv.setText(" - " + totalDeposit);
-
-            if(totalDeposit < 0) {//user cant enter negative number so when (totalDeposit) is negative that means int range is exceeds so wrong result will be shown
-                Toast.makeText(this, "INCORRECT CALCULATION PLEASE CHECK TOTAL WORK AMOUNT", Toast.LENGTH_LONG).show();
-            }
-
-            //                                               totalDeposit
-            binding.advanceOrBalanceTv.setText("= " + totalDeposit);
-
-            //updating balance to db
-            bool = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET BALANCE='" +totalDeposit + "'" + "WHERE ID='" + fromIntentPersonId + "'");
-            if (bool == false)
-                Toast.makeText(this, "BALANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
-            //if balance there is balance then update advance column should be 0
-            bool = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET ADVANCE='" + 0 + "'" + "WHERE ID='" + fromIntentPersonId + "'");
-            if (bool == false)
-                Toast.makeText(this, "ADVANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
-
-            binding.advanceOrBalanceTv.setTextColor(getResources().getColor(R.color.green));
-        }
-        //           totalDeposit     (                     no  R2R3R4                                                         )      wages
-        //                                   2                     3                                          4
-        else if (totalDeposit != 0 &&( (rate2 == 0) || (rate2 == 0 && rate3 == 0 ) || (rate2 == 0 && rate3 == 0 && rate4 == 0) )&& totalWages != 0) {
-                                             //        totalDeposit
-            binding.workTotalAmountTv.setText("  - " + totalDeposit);
-
-            if(totalDeposit < 0) {//user cant enter negative number so when (totalDeposit) is negative that means int range is exceeds so wrong result will be shown
-                Toast.makeText(this, "INCORRECT CALCULATION PLEASE CHECK TOTAL WORK AMOUNT", Toast.LENGTH_LONG).show();
-            }
-
-            //    totalDeposit < total wages
-            if ((totalDeposit) < totalWages) {
-                binding.advanceOrBalanceTv.setTextColor(Color.RED);
-                //                                        total wages -    totalDeposit
-                binding.advanceOrBalanceTv.setText("= " + (totalWages - (totalDeposit)));
-
-                //updating Advance to db                                                            total wages    - totalDeposit
-                bool = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET ADVANCE='" + (totalWages - (totalDeposit)) + "'" + "WHERE ID='" + fromIntentPersonId + "'");
-                if (bool == false)
-                    Toast.makeText(this, "ADVANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
-                //if advance   is there then update balance column should be 0 because both cant have value
-                bool = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET BALANCE='" + 0 + "'" + "WHERE ID='" + fromIntentPersonId + "'");
-                if (bool == false)
-                    Toast.makeText(this, "BALANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
-
-
-                //       totalDeposit >= total wages
-            } else if ((totalDeposit) >= totalWages) {//>= equal is given because of green color
-                binding.advanceOrBalanceTv.setTextColor(getResources().getColor(R.color.green));
-                //                                         totalDeposit -total wages
-                binding.advanceOrBalanceTv.setText("= " + (totalDeposit - totalWages));
-
-                //updating balance to db                                                     totalDeposit -total wages
-                bool = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET BALANCE='" + (totalDeposit -totalWages) + "'" + "WHERE ID='" + fromIntentPersonId + "'");
-                if (bool == false)
-                    Toast.makeText(this, "BALANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
-                //if balance there is balance then update advance column should be 0
-                bool = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET ADVANCE='" + 0 + "'" + "WHERE ID='" + fromIntentPersonId + "'");
-                if (bool == false)
-                    Toast.makeText(this, "ADVANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
-
-            }
-
-        }
-        //           no totalDeposit                            no  R2R3R4                                                      TOTALwages
-        //                                    2                   3                                   4
-        else if (totalDeposit == 0 &&( (rate2 == 0) || (rate2 == 0 && rate3 == 0 ) || (rate2 == 0 && rate3 == 0 && rate4 == 0) )&& totalWages != 0) {
-             binding.advanceOrBalanceTv.setText("= " + totalWages);
-
-            //updating Advance to db
-            bool = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET ADVANCE='" + totalWages + "'" + "WHERE ID='" + fromIntentPersonId + "'");
-            if (bool == false)
-                Toast.makeText(this, "ADVANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
-            //if advance   is there then update balance column should be 0 because both cant have value
-            bool = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET BALANCE='" + 0 + "'" + "WHERE ID='" + fromIntentPersonId + "'");
-            if (bool == false)
-                Toast.makeText(this, "BALANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
-
-            binding.advanceOrBalanceTv.setTextColor(Color.RED);
-
-        }
-        //         no totalDeposit   (                                      R2R3R4                                             )     no wages
-        //                                     2                   3                                        4
-        else if (totalDeposit == 0 &&( (rate2 != 0) || (rate2 != 0 && rate3 != 0 ) || (rate2 != 0 && rate3 != 0 && rate4 != 0) )&& totalWages == 0) {
-             //                                       (R1*SUMP1)+(R2*SUMP2)+(R3*SUMP3)+(R4*SUMP4)
-            binding.workTotalAmountTv.setText("  - " + (totalr1r2r3r4sum1sum2sum3sum4));
-
-            if((totalr1r2r3r4sum1sum2sum3sum4) < 0) {//user cant enter negative number so when (totalr1r2r3r4sum1sum2sum3sum4) is negative that means int range is exceeds so wrong result will be shown
-                Toast.makeText(this, "INCORRECT CALCULATION PLEASE CHECK TOTAL WORK AMOUNT", Toast.LENGTH_LONG).show();
-            }
-
-
-            //                                       (R1*SUMP1)+(R2*SUMP2)+(R3*SUMP3)+(R4*SUMP4)
-            binding.advanceOrBalanceTv.setText("= " + (totalr1r2r3r4sum1sum2sum3sum4));
-
-            //updating balance to db                                                    (R1*SUMP1)+(R2*SUMP2)+(R3*SUMP3)+(R4*SUMP4)
-            bool = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET BALANCE='" + (totalr1r2r3r4sum1sum2sum3sum4) + "'" + "WHERE ID='" + fromIntentPersonId + "'");
-            if (bool == false)
-                Toast.makeText(this, "BALANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
-            //if balance there is balance then update advance column should be 0
-            bool = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET ADVANCE='" + 0 + "'" + "WHERE ID='" + fromIntentPersonId + "'");
-            if (bool == false)
-                Toast.makeText(this, "ADVANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
-            binding.advanceOrBalanceTv.setTextColor(getResources().getColor(R.color.green));
-        }
-        //        totalDeposit       (                                              rate                                      )     no wages
-        //                                   2                     3                                  4
-        else if (totalDeposit != 0 &&((rate2 != 0) || (rate2 != 0 && rate3 != 0 ) || (rate2 != 0 && rate3 != 0 && rate4 != 0) )&& totalWages == 0) {
-             //                                           totalDeposit+                       (R1*SUMP1)
-            binding.workTotalAmountTv.setText("  - " + ((totalDeposit +  (totalr1r2r3r4sum1sum2sum3sum4))));
-
-            if(((totalDeposit +  (totalr1r2r3r4sum1sum2sum3sum4))) < 0) {//user cant enter negative number so when ((totalDeposit +  (totalr1r2r3r4sum1sum2sum3sum4))) is negative that means int range is exceeds so wrong result will be shown
-                Toast.makeText(this, "INCORRECT CALCULATION PLEASE CHECK TOTAL WORK AMOUNT", Toast.LENGTH_LONG).show();
-            }
-
-
-            binding.advanceOrBalanceTv.setText("= " + ((totalDeposit +  (totalr1r2r3r4sum1sum2sum3sum4))));
-
-            //updating balance to db
-            bool = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET BALANCE='" + (( totalDeposit + (totalr1r2r3r4sum1sum2sum3sum4))) + "'" + "WHERE ID='" + fromIntentPersonId + "'");
-            if (bool == false)
-                Toast.makeText(this, "BALANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
-            //if balance there is balance then update advance column should be 0
-            bool = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET ADVANCE='" + 0 + "'" + "WHERE ID='" + fromIntentPersonId + "'");
-            if (bool == false)
-                Toast.makeText(this, "ADVANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
-            binding.advanceOrBalanceTv.setTextColor(getResources().getColor(R.color.green));
-        }
-    }
-    private void indicatorDefaultCalculationAndUpdate(Cursor sumCursor, Cursor skillCursor){
-         boolean bool;
-              //deposit                              rate                                wages
-        if(sumCursor.getString(5) != null && skillCursor.getInt(3) != 0 && sumCursor.getInt(0) !=0) {
-               //                                                       deposit+                       (R1*SUMP1)
-            binding.workTotalAmountTv.setText("  - " + (sumCursor.getInt(5) + (skillCursor.getInt(3) * sumCursor.getInt(1))));
-
-            if((sumCursor.getInt(5) + (skillCursor.getInt(3) * sumCursor.getInt(1))) < 0) {//user cant enter negative number so when (sumCursor.getInt(5) + (skillCursor.getInt(3) * sumCursor.getInt(1))) is negative that means int range is exceeds so wrong result will be shown
-                Toast.makeText(this, "INCORRECT CALCULATION PLEASE CHECK TOTAL WORK AMOUNT", Toast.LENGTH_LONG).show();
-            }
-
-            //                   deposit+                       (R1*SUMP1)                     total wages
-            if ((sumCursor.getInt(5) + (skillCursor.getInt(3) * sumCursor.getInt(1))) < sumCursor.getInt(0)) {
-                binding.advanceOrBalanceTv.setTextColor(Color.RED);
-                //                                                   total wages -                  deposit+                       (R1*SUMP1)
-                binding.advanceOrBalanceTv.setText("= " + (sumCursor.getInt(0) - (sumCursor.getInt(5) + (skillCursor.getInt(3) * sumCursor.getInt(1)))));
-
-                //updating Advance to db
-               bool= db.updateTable("UPDATE "+db.TABLE_NAME1+" SET ADVANCE='"+(sumCursor.getInt(0) - (sumCursor.getInt(5) + (skillCursor.getInt(3) * sumCursor.getInt(1))))+"'"+"WHERE ID='"+fromIntentPersonId+"'");
-                if(bool == false)
-                    Toast.makeText(this, "ADVANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
-
-                /**Situation when user first enter jama /deposit amount then wages amount which is greater then jama amount then balance column should be updated otherwise advance coulmn will have amount and balance column will also have amount so when there is advance then balance should be 0.*/
-                bool = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET BALANCE='" +0+ "'" + "WHERE ID='" + fromIntentPersonId + "'");
-                if (bool == false)
-                    Toast.makeText(this, "BALANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
-
-                                      //deposit+                       (R1*SUMP1)                     total wages
-            } else if ((sumCursor.getInt(5) + (skillCursor.getInt(3) * sumCursor.getInt(1))) >= sumCursor.getInt(0)) {//>= is given because of green color
-                binding.advanceOrBalanceTv.setTextColor(getResources().getColor(R.color.green));
-                //                                                    deposit+                     (R1*SUMP1)                     -total wages
-                binding.advanceOrBalanceTv.setText("= " + ((sumCursor.getInt(5) + (skillCursor.getInt(3) * sumCursor.getInt(1))) - sumCursor.getInt(0)));
-
-                //updating balance to db if greater then 0
-
-                    bool = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET BALANCE='" + ((sumCursor.getInt(5) + (skillCursor.getInt(3) * sumCursor.getInt(1))) - sumCursor.getInt(0)) + "'" + "WHERE ID='" + fromIntentPersonId + "'");
-                    if (bool == false)
-                        Toast.makeText(this, "BALANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
-
-                    //if balance there is balance then update advance column should be 0
-                    bool= db.updateTable("UPDATE "+db.TABLE_NAME1+" SET ADVANCE='"+0+"'"+"WHERE ID='"+fromIntentPersonId+"'");
-                    if(bool == false)
-                        Toast.makeText(this, "ADVANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
-            }
-                        //no deposit                              rate                                   wages
-        } else if (sumCursor.getString(5) == null && skillCursor.getInt(3) != 0 && sumCursor.getInt(0) !=0 ) {
-            //                                                             (R1*SUMP1)
-            binding.workTotalAmountTv.setText("  - " + (skillCursor.getInt(3) * sumCursor.getInt(1)));
-
-            if((skillCursor.getInt(3) * sumCursor.getInt(1)) < 0) {//user cant enter negative number so when (skillCursor.getInt(3) * sumCursor.getInt(1)) is negative that means int range is exceeds so wrong result will be shown
-                Toast.makeText(this, "INCORRECT CALCULATION PLEASE CHECK TOTAL WORK AMOUNT", Toast.LENGTH_LONG).show();
-            }
-
-            //             (R1*SUMP1)                                     total wages
-            if ( ((skillCursor.getInt(3) * sumCursor.getInt(1))) < sumCursor.getInt(0)) {
-                binding.advanceOrBalanceTv.setTextColor(Color.RED);
-                //                                                   total wages -                        (R1*SUMP1)
-                binding.advanceOrBalanceTv.setText("= " + (sumCursor.getInt(0) - ((skillCursor.getInt(3) * sumCursor.getInt(1)))));
-
-                //updating Advance to db
-                bool= db.updateTable("UPDATE "+db.TABLE_NAME1+" SET ADVANCE='"+(sumCursor.getInt(0) - ((skillCursor.getInt(3) * sumCursor.getInt(1))))+"'"+"WHERE ID='"+fromIntentPersonId+"'");
-                if(bool == false)
-                    Toast.makeText(this, "ADVANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
-                //if advance   is there then update balance column should be 0 because both cant have value
-                bool = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET BALANCE='" +0+ "'" + "WHERE ID='" + fromIntentPersonId + "'");
-                if (bool == false)
-                    Toast.makeText(this, "BALANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
-
-
-                //                            (R1*SUMP1)                     total wages
-            } else if (((skillCursor.getInt(3) * sumCursor.getInt(1))) >= sumCursor.getInt(0)) {//>= equal is given because of green color
-                binding.advanceOrBalanceTv.setTextColor(getResources().getColor(R.color.green));
-                //                                                                (R1*SUMP1)                    -total wages
-                binding.advanceOrBalanceTv.setText("= " + (((skillCursor.getInt(3) * sumCursor.getInt(1))) - sumCursor.getInt(0)));
-
-                //updating balance to db
-                    bool = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET BALANCE='" + (((skillCursor.getInt(3) * sumCursor.getInt(1))) - sumCursor.getInt(0)) + "'" + "WHERE ID='" + fromIntentPersonId + "'");
-                    if (bool == false)
-                        Toast.makeText(this, "BALANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
-                //if balance there is balance then update advance column should be 0
-                bool= db.updateTable("UPDATE "+db.TABLE_NAME1+" SET ADVANCE='"+0+"'"+"WHERE ID='"+fromIntentPersonId+"'");
-                if(bool == false)
-                    Toast.makeText(this, "ADVANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
-
-            }
-            //deposit                            no  R1                                   no wage
-        }else if(sumCursor.getString(5) != null && skillCursor.getInt(3) == 0 && sumCursor.getInt(0)== 0){
-             //                                           deposit
-            binding.workTotalAmountTv.setText(" - "+sumCursor.getInt(5));
-
-            if(sumCursor.getInt(5) < 0) {//user cant enter negative number so when sumCursor.getInt(5) is negative that means int range is exceeds so wrong result will be shown
-                Toast.makeText(this, "INCORRECT CALCULATION PLEASE CHECK TOTAL WORK AMOUNT", Toast.LENGTH_LONG).show();
-            }
-            //                                               deposit
-            binding.advanceOrBalanceTv.setText("= " +sumCursor.getInt(5));
-
-            //updating balance to db
-            bool = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET BALANCE='" + sumCursor.getInt(5) + "'" + "WHERE ID='" + fromIntentPersonId + "'");
-            if (bool == false)
-                    Toast.makeText(this, "BALANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
-            //if balance there is balance then update advance column should be 0
-            bool= db.updateTable("UPDATE "+db.TABLE_NAME1+" SET ADVANCE='"+0+"'"+"WHERE ID='"+fromIntentPersonId+"'");
-            if(bool == false)
-                Toast.makeText(this, "ADVANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
-
-            binding.advanceOrBalanceTv.setTextColor(getResources().getColor(R.color.green));
-            //deposit                            no  R1                                     wages
-        }else if(sumCursor.getString(5) != null && skillCursor.getInt(3) == 0 && sumCursor.getInt(0)!= 0){
-            binding.workTotalAmountTv.setText(" - "+sumCursor.getInt(5));
-
-            if(sumCursor.getInt(5) < 0) {//user cant enter negative number so when sumCursor.getInt(5) is negative that means int range is exceeds so wrong result will be shown
-                Toast.makeText(this, "INCORRECT CALCULATION PLEASE CHECK TOTAL WORK AMOUNT", Toast.LENGTH_LONG).show();
-            }
-
-            //             deposit              total wages
-            if ( (sumCursor.getInt(5) ) < sumCursor.getInt(0)) {
-                binding.advanceOrBalanceTv.setTextColor(Color.RED);
-                //                                                   total wages -    deposit
-                binding.advanceOrBalanceTv.setText("= " + (sumCursor.getInt(0) - ( sumCursor.getInt(5))));
-
-                //updating Advance to db
-                bool= db.updateTable("UPDATE "+db.TABLE_NAME1+" SET ADVANCE='"+(sumCursor.getInt(0) - ( sumCursor.getInt(5)))+"'"+"WHERE ID='"+fromIntentPersonId+"'");
-                if(bool == false)
-                    Toast.makeText(this, "ADVANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
-                //if advance   is there then update balance column should be 0 because both cant have value
-                bool = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET BALANCE='" +0+ "'" + "WHERE ID='" + fromIntentPersonId + "'");
-                if (bool == false)
-                    Toast.makeText(this, "BALANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
-
-                //             deposit              total wages
-            } else if ( (sumCursor.getInt(5) ) >= sumCursor.getInt(0)) {//>= equal is given because of green color
-                binding.advanceOrBalanceTv.setTextColor(getResources().getColor(R.color.green));
-                //                                                   deposit      -total wages
-                binding.advanceOrBalanceTv.setText("= " + (sumCursor.getInt(5) - sumCursor.getInt(0)));
-
-                //updating balance to db
-                bool = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET BALANCE='" + (sumCursor.getInt(5) - sumCursor.getInt(0)) + "'" + "WHERE ID='" + fromIntentPersonId + "'");
-                if (bool == false)
-                        Toast.makeText(this, "BALANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
-                //if balance there is balance then update advance column should be 0
-                bool= db.updateTable("UPDATE "+db.TABLE_NAME1+" SET ADVANCE='"+0+"'"+"WHERE ID='"+fromIntentPersonId+"'");
-                if(bool == false)
-                    Toast.makeText(this, "ADVANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
-            }
-            //no deposit                            no  R1                                     wages
-        }else if(sumCursor.getString(5) == null && skillCursor.getInt(3) == 0 && sumCursor.getInt(0)!= 0){
-                 binding.advanceOrBalanceTv.setText("= " + sumCursor.getInt(0));
-
-            //updating Advance to db
-            bool= db.updateTable("UPDATE "+db.TABLE_NAME1+" SET ADVANCE='"+sumCursor.getInt(0)+"'"+"WHERE ID='"+fromIntentPersonId+"'");
-            if(bool == false)
-                Toast.makeText(this, "ADVANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
-            //if advance   is there then update balance column should be 0 because both cant have value
-            bool = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET BALANCE='" +0+ "'" + "WHERE ID='" + fromIntentPersonId + "'");
-            if (bool == false)
-                Toast.makeText(this, "BALANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
-
-            binding.advanceOrBalanceTv.setTextColor(Color.RED);
-            //no deposit                             R1                                    no wages
-        }else if(sumCursor.getString(5) == null && skillCursor.getInt(3) != 0 && sumCursor.getInt(0)== 0){
-                                                            //      (SUMP1)*R1
-            binding.workTotalAmountTv.setText("  - "+(sumCursor.getInt(1)*skillCursor.getInt(3)));
-
-            if((sumCursor.getInt(1)*skillCursor.getInt(3)) < 0) {//user cant enter negative number so when (sumCursor.getInt(1)*skillCursor.getInt(3)) is negative that means int range is exceeds so wrong result will be shown
-                Toast.makeText(this, "INCORRECT CALCULATION PLEASE CHECK TOTAL WORK AMOUNT", Toast.LENGTH_LONG).show();
-            }
-
-                                                                       //  R1*(SUMP1)
-            binding.advanceOrBalanceTv.setText("= "+(skillCursor.getInt(3)*sumCursor.getInt(1)));
-
-            //updating balance to db
-
-                bool = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET BALANCE='" + (skillCursor.getInt(3) * sumCursor.getInt(1)) + "'" + "WHERE ID='" + fromIntentPersonId + "'");
-                if (bool == false)
-                    Toast.makeText(this, "BALANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
-            //if balance there is balance then update advance column should be 0
-            bool= db.updateTable("UPDATE "+db.TABLE_NAME1+" SET ADVANCE='"+0+"'"+"WHERE ID='"+fromIntentPersonId+"'");
-            if(bool == false)
-                Toast.makeText(this, "ADVANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
-
-
-            binding.advanceOrBalanceTv.setTextColor(getResources().getColor(R.color.green));
-                   //deposit                              rate                               no wages
-        }else if(sumCursor.getString(5) != null && skillCursor.getInt(3) != 0 && sumCursor.getInt(0) ==0){
-             //                                                       deposit+                       (R1*SUMP1)
-            binding.workTotalAmountTv.setText("  - "+((sumCursor.getInt(5) + (skillCursor.getInt(3) * sumCursor.getInt(1)))));
-
-            if(((sumCursor.getInt(5) + (skillCursor.getInt(3) * sumCursor.getInt(1)))) < 0) {//user cant enter negative number so when ((sumCursor.getInt(5) + (skillCursor.getInt(3) * sumCursor.getInt(1)))) is negative that means int range is exceeds so wrong result will be shown
-                Toast.makeText(this, "INCORRECT CALCULATION PLEASE CHECK TOTAL WORK AMOUNT", Toast.LENGTH_LONG).show();
-            }
-
-            binding.advanceOrBalanceTv.setText("= "+((sumCursor.getInt(5) + (skillCursor.getInt(3) * sumCursor.getInt(1)))));
-
-            //updating balance to db
-                bool = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET BALANCE='" + ((sumCursor.getInt(5) + (skillCursor.getInt(3) * sumCursor.getInt(1)))) + "'" + "WHERE ID='" + fromIntentPersonId + "'");
-                if (bool == false)
-                    Toast.makeText(this, "BALANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
-            //if balance there is balance then update advance column should be 0
-            bool= db.updateTable("UPDATE "+db.TABLE_NAME1+" SET ADVANCE='"+0+"'"+"WHERE ID='"+fromIntentPersonId+"'");
-            if(bool == false)
-                Toast.makeText(this, "ADVANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
-            binding.advanceOrBalanceTv.setTextColor(getResources().getColor(R.color.green));
-        }
+//        if (totalDeposit != 0 &&( (rate2 != 0) || (rate2 != 0 && rate3 != 0 ) || (rate2 != 0 && rate3 != 0 && rate4 != 0) )&&  totalWages != 0) {
+//             //                                          totalDeposit+(R1*SUMP1)+(R2*SUMP2)+(R3*SUMP3)+(R4*SUMP4)
+//            binding.workTotalAmountTv.setText(" - " + (totalDeposit + (totalr1r2r3r4sum1sum2sum3sum4)));
+//            Toast.makeText(this, "1", Toast.LENGTH_SHORT).show();
+//            if((totalDeposit + (totalr1r2r3r4sum1sum2sum3sum4)) < 0) {//user cant enter negative number so when (totalDeposit + (totalr1r2r3r4sum1sum2sum3sum4)) is negative that means int range is exceeds so wrong result will be shown
+//                Toast.makeText(this, "INCORRECT CALCULATION PLEASE CHECK TOTAL WORK AMOUNT", Toast.LENGTH_LONG).show();
+//            }
+//
+//            //    totalDeposit+(R1*SUMP1)+(R2*SUMP2)+(R3*SUMP3)+(R4*SUMP4)
+//            if ((totalDeposit + (totalr1r2r3r4sum1sum2sum3sum4)) < totalWages) {
+//                binding.advanceOrBalanceTv.setTextColor(Color.RED);
+//                //                                        total wages -   totalDeposit+(R1*SUMP1)+(R2*SUMP2)+(R3*SUMP3)+(R4*SUMP4)
+//                binding.advanceOrBalanceTv.setText("= " + (totalWages - (totalDeposit + (totalr1r2r3r4sum1sum2sum3sum4))));
+//
+//                //updating Advance to db ****************                                   total wages -   totalDeposit+(R1*SUMP1)+(R2*SUMP2)+(R3*SUMP3)+(R4*SUMP4)
+//                bool = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET ADVANCE='" + (totalWages - (totalDeposit + (totalr1r2r3r4sum1sum2sum3sum4))) + "'" + "WHERE ID='" + fromIntentPersonId + "'");
+//                if (bool == false)
+//                    Toast.makeText(this, "ADVANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
+//
+//                /**Situation when user first enter jama /totalDeposit amount then wages amount which is greater then jama amount then balance column should be updated otherwise advance coulmn will have amount and balance column will also have amount so when there is advance then balance should be 0.*/
+//                bool = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET BALANCE='" + 0 + "'" + "WHERE ID='" + fromIntentPersonId + "'");
+//                if (bool == false)
+//                    Toast.makeText(this, "BALANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
+//
+//                //       totalDeposit+(R1*SUMP1)+(R2*SUMP2)+(R3*SUMP3)+(R4*SUMP4) >= totalWages
+//            } else if ((totalDeposit + (totalr1r2r3r4sum1sum2sum3sum4)) >= totalWages) {//>= is given because of green color
+//                binding.advanceOrBalanceTv.setTextColor(getColor(R.color.green));
+//                //                                           totalDeposit+(R1*SUMP1)+(R2*SUMP2)+(R3*SUMP3)+(R4*SUMP4) -total wages
+//                binding.advanceOrBalanceTv.setText("= " + ((totalDeposit + (totalr1r2r3r4sum1sum2sum3sum4)) -totalWages));
+//
+//                //updating balance to db if greater then 0
+//
+//                bool = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET BALANCE='" + ((totalDeposit + (totalr1r2r3r4sum1sum2sum3sum4)) -totalWages) + "'" + "WHERE ID='" + fromIntentPersonId + "'");
+//                if (bool == false)
+//                    Toast.makeText(this, "BALANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
+//
+//                //if balance there is balance then update advance column should be 0
+//                bool = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET ADVANCE='" + 0 + "'" + "WHERE ID='" + fromIntentPersonId + "'");
+//                if (bool == false)
+//                    Toast.makeText(this, "ADVANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
+//            }
+//        }
+//        //        no totalDeposit     (                                         rate                                         )      wages
+//        //                                   2                      3                                         4
+//        else if (totalDeposit == 0 && ((rate2 != 0) || (rate2 != 0 && rate3 != 0 ) || (rate2 != 0 && rate3 != 0 && rate4 != 0))&& totalWages != 0) {
+//             //                                       (R1*SUMP1)+(R2*SUMP2)+(R3*SUMP3)+(R4*SUMP4)
+//            binding.workTotalAmountTv.setText("  - " + (totalr1r2r3r4sum1sum2sum3sum4));
+//            Toast.makeText(this, "2", Toast.LENGTH_SHORT).show();
+//            if((totalr1r2r3r4sum1sum2sum3sum4) < 0) {//user cant enter negative number so when totalr1r2r3r4sum1sum2sum3sum4 is negative that means int range is exceeds so wrong result will be shown
+//                Toast.makeText(this, "INCORRECT CALCULATION PLEASE CHECK TOTAL WORK AMOUNT", Toast.LENGTH_LONG).show();
+//            }
+//
+//
+//            //(R1*SUMP1)+(R2*SUMP2)+(R3*SUMP3)+(R4*SUMP4) < total wages
+//            if ((totalr1r2r3r4sum1sum2sum3sum4) < totalWages) {
+//                binding.advanceOrBalanceTv.setTextColor(Color.RED);
+//                //                                        total wages-(R1*SUMP1)+(R2*SUMP2)+(R3*SUMP3)+(R4*SUMP4)
+//                binding.advanceOrBalanceTv.setText("= " + (totalWages- ((totalr1r2r3r4sum1sum2sum3sum4))));
+//
+//                //updating Advance to db
+//                bool = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET ADVANCE='" + ((totalWages- ((totalr1r2r3r4sum1sum2sum3sum4))) ) + "'" + "WHERE ID='" + fromIntentPersonId + "'");
+//                if (bool == false)
+//                    Toast.makeText(this, "ADVANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
+//                //if advance   is there then update balance column should be 0 because both cant have value
+//                bool = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET BALANCE='" + 0 + "'" + "WHERE ID='" + fromIntentPersonId + "'");
+//                if (bool == false)
+//                    Toast.makeText(this, "BALANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
+//
+//                //     (R1*SUMP1)+(R2*SUMP2)+(R3*SUMP3)+(R4*SUMP4) >= total wages
+//            } else if ((totalr1r2r3r4sum1sum2sum3sum4) >= totalWages) {//>= equal is given because of green color
+//                binding.advanceOrBalanceTv.setTextColor(getColor(R.color.green));
+//                //                             (R1*SUMP1)+(R2*SUMP2)+(R3*SUMP3)+(R4*SUMP4) -total wages
+//                binding.advanceOrBalanceTv.setText("= " + ((totalr1r2r3r4sum1sum2sum3sum4) - totalWages));
+//
+//                //updating balance to db
+//                bool = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET BALANCE='" + (((totalr1r2r3r4sum1sum2sum3sum4) - totalWages)) + "'" + "WHERE ID='" + fromIntentPersonId + "'");
+//                if (bool == false)
+//                    Toast.makeText(this, "BALANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
+//                //if balance there is balance then update advance column should be 0
+//                bool = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET ADVANCE='" + 0 + "'" + "WHERE ID='" + fromIntentPersonId + "'");
+//                if (bool == false)
+//                    Toast.makeText(this, "ADVANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
+//            }
+//        }
+//        //        totalDeposit         (                                  no  R2R3R4                                           )    no wage
+//        //                                       2                 3                                    4
+//        else if (totalDeposit != 0 &&( (rate2 == 0) || (rate2 == 0 && rate3 == 0 ) || (rate2 == 0 && rate3 == 0 && rate4 == 0) )&& totalWages == 0) {
+//             //                                           totalDeposit
+//            binding.workTotalAmountTv.setText(" - " + totalDeposit);
+//            Toast.makeText(this, "3", Toast.LENGTH_SHORT).show();
+//            if(totalDeposit < 0) {//user cant enter negative number so when (totalDeposit) is negative that means int range is exceeds so wrong result will be shown
+//                Toast.makeText(this, "INCORRECT CALCULATION PLEASE CHECK TOTAL WORK AMOUNT", Toast.LENGTH_LONG).show();
+//            }
+//
+//            //                                               totalDeposit
+//            binding.advanceOrBalanceTv.setText("= " + totalDeposit);
+//
+//            //updating balance to db
+//            bool = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET BALANCE='" +totalDeposit + "'" + "WHERE ID='" + fromIntentPersonId + "'");
+//            if (bool == false)
+//                Toast.makeText(this, "BALANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
+//            //if balance there is balance then update advance column should be 0
+//            bool = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET ADVANCE='" + 0 + "'" + "WHERE ID='" + fromIntentPersonId + "'");
+//            if (bool == false)
+//                Toast.makeText(this, "ADVANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
+//
+//            binding.advanceOrBalanceTv.setTextColor(getColor(R.color.green));
+//        }
+//        //           totalDeposit     (                     no  R2R3R4                                                         )      wages
+//        //                                   2                     3                                          4
+//        else if (totalDeposit != 0 &&( (rate2 == 0) || (rate2 == 0 && rate3 == 0 ) || (rate2 == 0 && rate3 == 0 && rate4 == 0) )&& totalWages != 0) {
+//                                             //        totalDeposit
+//            binding.workTotalAmountTv.setText("  - " + totalDeposit);
+//            Toast.makeText(this, "4", Toast.LENGTH_SHORT).show();
+//            if(totalDeposit < 0) {//user cant enter negative number so when (totalDeposit) is negative that means int range is exceeds so wrong result will be shown
+//                Toast.makeText(this, "INCORRECT CALCULATION PLEASE CHECK TOTAL WORK AMOUNT", Toast.LENGTH_LONG).show();
+//            }
+//
+//            //    totalDeposit < total wages
+//            if ((totalDeposit) < totalWages) {
+//                binding.advanceOrBalanceTv.setTextColor(Color.RED);
+//                //                                        total wages -    totalDeposit
+//                binding.advanceOrBalanceTv.setText("= " + (totalWages - (totalDeposit)));
+//
+//                //updating Advance to db                                                            total wages    - totalDeposit
+//                bool = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET ADVANCE='" + (totalWages - (totalDeposit)) + "'" + "WHERE ID='" + fromIntentPersonId + "'");
+//                if (bool == false)
+//                    Toast.makeText(this, "ADVANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
+//                //if advance   is there then update balance column should be 0 because both cant have value
+//                bool = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET BALANCE='" + 0 + "'" + "WHERE ID='" + fromIntentPersonId + "'");
+//                if (bool == false)
+//                    Toast.makeText(this, "BALANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
+//
+//
+//                //       totalDeposit >= total wages
+//            } else if ((totalDeposit) >= totalWages) {//>= equal is given because of green color
+//                binding.advanceOrBalanceTv.setTextColor(getResources().getColor(R.color.green));
+//                //                                         totalDeposit -total wages
+//                binding.advanceOrBalanceTv.setText("= " + (totalDeposit - totalWages));
+//
+//                //updating balance to db                                                     totalDeposit -total wages
+//                bool = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET BALANCE='" + (totalDeposit -totalWages) + "'" + "WHERE ID='" + fromIntentPersonId + "'");
+//                if (bool == false)
+//                    Toast.makeText(this, "BALANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
+//                //if balance there is balance then update advance column should be 0
+//                bool = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET ADVANCE='" + 0 + "'" + "WHERE ID='" + fromIntentPersonId + "'");
+//                if (bool == false)
+//                    Toast.makeText(this, "ADVANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
+//
+//            }
+//        }
+//        //           no totalDeposit                            no  R2R3R4                                                      TOTALwages
+//        //                                    2                   3                                   4
+//        else if (totalDeposit == 0 &&( (rate2 == 0) || (rate2 == 0 && rate3 == 0 ) || (rate2 == 0 && rate3 == 0 && rate4 == 0) )&& totalWages != 0) {
+//             binding.advanceOrBalanceTv.setText("= " + totalWages);
+//            Toast.makeText(this, "5", Toast.LENGTH_SHORT).show();
+//            //updating Advance to db
+//            bool = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET ADVANCE='" + totalWages + "'" + "WHERE ID='" + fromIntentPersonId + "'");
+//            if (bool == false)
+//                Toast.makeText(this, "ADVANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
+//            //if advance   is there then update balance column should be 0 because both cant have value
+//            bool = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET BALANCE='" + 0 + "'" + "WHERE ID='" + fromIntentPersonId + "'");
+//            if (bool == false)
+//                Toast.makeText(this, "BALANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
+//
+//            binding.advanceOrBalanceTv.setTextColor(Color.RED);
+//
+//        }
+//        //         no totalDeposit   (                                      R2R3R4                                             )     no wages
+//        //                                     2                   3                                        4
+//        else if (totalDeposit == 0 &&( (rate2 != 0) || (rate2 != 0 && rate3 != 0 ) || (rate2 != 0 && rate3 != 0 && rate4 != 0) )&& totalWages == 0) {
+//             //                                       (R1*SUMP1)+(R2*SUMP2)+(R3*SUMP3)+(R4*SUMP4)
+//            binding.workTotalAmountTv.setText("  - " + (totalr1r2r3r4sum1sum2sum3sum4));
+//            Toast.makeText(this, "6", Toast.LENGTH_SHORT).show();
+//            if((totalr1r2r3r4sum1sum2sum3sum4) < 0) {//user cant enter negative number so when (totalr1r2r3r4sum1sum2sum3sum4) is negative that means int range is exceeds so wrong result will be shown
+//                Toast.makeText(this, "INCORRECT CALCULATION PLEASE CHECK TOTAL WORK AMOUNT", Toast.LENGTH_LONG).show();
+//            }
+//
+//
+//            //                                       (R1*SUMP1)+(R2*SUMP2)+(R3*SUMP3)+(R4*SUMP4)
+//            binding.advanceOrBalanceTv.setText("= " + (totalr1r2r3r4sum1sum2sum3sum4));
+//
+//            //updating balance to db                                                    (R1*SUMP1)+(R2*SUMP2)+(R3*SUMP3)+(R4*SUMP4)
+//            bool = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET BALANCE='" + (totalr1r2r3r4sum1sum2sum3sum4) + "'" + "WHERE ID='" + fromIntentPersonId + "'");
+//            if (bool == false)
+//                Toast.makeText(this, "BALANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
+//            //if balance there is balance then update advance column should be 0
+//            bool = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET ADVANCE='" + 0 + "'" + "WHERE ID='" + fromIntentPersonId + "'");
+//            if (bool == false)
+//                Toast.makeText(this, "ADVANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
+//            binding.advanceOrBalanceTv.setTextColor(getColor(R.color.green));
+//        }
+//        //        totalDeposit       (                                              rate                                      )     no wages
+//        //                                   2                     3                                  4
+//        else if (totalDeposit != 0 &&((rate2 != 0) || (rate2 != 0 && rate3 != 0 ) || (rate2 != 0 && rate3 != 0 && rate4 != 0) )&& totalWages == 0) {
+//             //                                           totalDeposit+                       (R1*SUMP1)
+//            binding.workTotalAmountTv.setText("  - " + ((totalDeposit +  (totalr1r2r3r4sum1sum2sum3sum4))));
+//            Toast.makeText(this, "7", Toast.LENGTH_SHORT).show();
+//            if(((totalDeposit +  (totalr1r2r3r4sum1sum2sum3sum4))) < 0) {//user cant enter negative number so when ((totalDeposit +  (totalr1r2r3r4sum1sum2sum3sum4))) is negative that means int range is exceeds so wrong result will be shown
+//                Toast.makeText(this, "INCORRECT CALCULATION PLEASE CHECK TOTAL WORK AMOUNT", Toast.LENGTH_LONG).show();
+//            }
+//
+//
+//            binding.advanceOrBalanceTv.setText("= " + ((totalDeposit +  (totalr1r2r3r4sum1sum2sum3sum4))));
+//
+//            //updating balance to db
+//            bool = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET BALANCE='" + (( totalDeposit + (totalr1r2r3r4sum1sum2sum3sum4))) + "'" + "WHERE ID='" + fromIntentPersonId + "'");
+//            if (bool == false)
+//                Toast.makeText(this, "BALANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
+//            //if balance there is balance then update advance column should be 0
+//            bool = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET ADVANCE='" + 0 + "'" + "WHERE ID='" + fromIntentPersonId + "'");
+//            if (bool == false)
+//                Toast.makeText(this, "ADVANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
+//            binding.advanceOrBalanceTv.setTextColor(getColor(R.color.green));
+//        }
     }
     private int get_indicator(String PersonId) {
          Cursor cursor=db.getData("SELECT INDICATOR FROM " + db.TABLE_NAME3 + " WHERE ID= '" + PersonId +"'");//for sure it will return type or skill
@@ -1662,7 +1387,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
         EditText toGive_Amount=myView.findViewById(R.id.wages_et);
         EditText description=myView.findViewById(R.id.enter_description_et);
         Button save=myView.findViewById(R.id.save_btn);
-        save.setEnabled(false);//initially save button is disabled it is enabled when user enter any data and its important otherwise app crash
+        save.setVisibility(View.GONE);//initially save button is disabled it is enabled when user enter any data and its important otherwise app crash
         Button cancel=myView.findViewById(R.id.cancel_btn);
 
         //***********************setting no of days and warningTotaladvanceamount********************************************
@@ -1913,7 +1638,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //checking for permission
-                if(checkPermission()==true){
+                if(checkPermissionForAudio()){
                     if (mStartRecording) {//initially false
                         //while recording user should not perform other task like entering date while recording because app will crash so set all field to setEnabled(false);
                         inputP1.setEnabled(false);
@@ -1923,7 +1648,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                         toGive_Amount.setEnabled(false);
                         description.setEnabled(false);
                         dateIcon.setEnabled(false);
-                        save.setEnabled(false);
+                        save.setVisibility(View.GONE);
                         cancel.setEnabled(false);
                         deposit_btn_tv.setEnabled(false);
 
@@ -1948,12 +1673,14 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                         IndividualPersonDetailActivity.this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON); //while the user is recording screen should be on. it should not close
 
                     } else {//if recording is not started then stop
-                        Toast.makeText(IndividualPersonDetailActivity.this, "Again Tab on MIC to Start Recording", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(IndividualPersonDetailActivity.this, "AGAIN TAB ON MIC TO START RECORDING", Toast.LENGTH_SHORT).show();
                     }
                     mStartRecording = !mStartRecording;//so that user should click 2 times to start recording
 
-                }else//request for permission
-                    ActivityCompat.requestPermissions(IndividualPersonDetailActivity.this,new String[]{Manifest.permission.RECORD_AUDIO,Manifest.permission.WRITE_EXTERNAL_STORAGE},21);
+                }else {//request for permission
+                    Toast.makeText(IndividualPersonDetailActivity.this, "AUDIO PERMISSION REQUIRED", Toast.LENGTH_SHORT).show();
+                    ActivityCompat.requestPermissions(IndividualPersonDetailActivity.this, new String[]{Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 21);
+                }
             }
         });
         playAudioChronometer.setOnClickListener(new View.OnClickListener() {
@@ -1971,7 +1698,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                 }else
-                    Toast.makeText(IndividualPersonDetailActivity.this, "Tab on MIC to Start Recording", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(IndividualPersonDetailActivity.this, "TAB ON MIC TO START RECORDING", Toast.LENGTH_SHORT).show();
             }
         });
         saveAudio.setOnClickListener(new View.OnClickListener() {
@@ -1988,7 +1715,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                     dateIcon.setEnabled(true);
 
                     if(!isEnterDataIsWrong(arr)) {//this is important if in field data is wrong then save button will not enabled until data is right.if save button is enabled with wrong data then if user has record audio then it will not be saved it will store null so to check right or wrong data this condition is important
-                        save.setEnabled(true);
+                        save.setVisibility(View.VISIBLE);
                      }
 
                     cancel.setEnabled(true);
@@ -2002,7 +1729,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                     saveAudio.setEnabled(false);//even this button user should not click again
                     playAudioChronometer.setEnabled(true);//when audio is save then user will be able to play
                 }else
-                    Toast.makeText(IndividualPersonDetailActivity.this, "Tab on MIC to Start Recording", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(IndividualPersonDetailActivity.this, "TAB ON MIC TO START RECORDING", Toast.LENGTH_SHORT).show();
             }
         });
         cancel.setOnClickListener(new View.OnClickListener() {
@@ -2023,13 +1750,13 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
 
                 //this will check if other data is right or wrong
                 if(!isEnterDataIsWrong(arr)) {//this is important if in field data is wrong then save button will not enabled until data is right.if save button is enabled with wrong data then if user has record audio then it will not be saved it will store null so to check right or wrong data this condition is important
-                    save.setEnabled(true);
-                }
+                    save.setVisibility(View.VISIBLE);
+                 }
 
                 if(!amount.matches("[0-9]+")){//no space or . or ,
                     Toast.makeText(IndividualPersonDetailActivity.this, "NOT ALLOWED(space  .  ,  -)\nPlease Correct", Toast.LENGTH_LONG).show();
                     toGive_Amount.setTextColor(Color.RED);
-                    save.setEnabled(false);
+                    save.setVisibility(View.GONE);
                     arr[4]=2;//means wrong data
                 }
             }
@@ -2048,11 +1775,11 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
 
                 //this will check if other data is right or wrong
                 if(!isEnterDataIsWrong(arr)) {//this is important if in field data is wrong then save button will not enabled until data is right.if save button is enabled with wrong data then if user has record audio then it will not be saved it will store null so to check right or wrong data this condition is important
-                    save.setEnabled(true);
+                    save.setVisibility(View.VISIBLE);
                 }
                 if(!p11.matches("[0-9]+")){//"[.]?[0-9]+[.]?[0-9]*" for float
                     inputP1.setTextColor(Color.RED);
-                    save.setEnabled(false);
+                    save.setVisibility(View.GONE);
                     arr[0]=2;//means wrong data
                      Toast.makeText(IndividualPersonDetailActivity.this, "NOT ALLOWED(space  .  ,  -)\nPLEASE CORRECT", Toast.LENGTH_LONG).show();
                 }
@@ -2075,12 +1802,12 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
 
                 //this will check if other data is right or wrong
                 if(!isEnterDataIsWrong(arr)) {//this is important if in field data is wrong then save button will not enabled until data is right.if save button is enabled with wrong data then if user has record audio then it will not be saved it will store null so to check right or wrong data this condition is important
-                    save.setEnabled(true);
+                    save.setVisibility(View.VISIBLE);
                 }
 
                 if(!p11.matches("[0-9]+")){// "[.]?[0-9]+[.]?[0-9]*"
                     inputP2.setTextColor(Color.RED);
-                    save.setEnabled(false);
+                    save.setVisibility(View.GONE);
                     arr[1]=2;//means wrong data
                     Toast.makeText(IndividualPersonDetailActivity.this, "NOT ALLOWED(space  .  ,  -)\nPLEASE CORRECT", Toast.LENGTH_LONG).show();
                 }
@@ -2104,12 +1831,12 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
 
                 //this will check if other data is right or wrong
                 if(!isEnterDataIsWrong(arr)) {//this is important if in field data is wrong then save button will not enabled until data is right.if save button is enabled with wrong data then if user has record audio then it will not be saved it will store null so to check right or wrong data this condition is important
-                    save.setEnabled(true);
+                    save.setVisibility(View.VISIBLE);
                 }
 
                 if(!p11.matches("[0-9]+")){//space or , or - is restricted
                     inputP3.setTextColor(Color.RED);
-                    save.setEnabled(false);
+                    save.setVisibility(View.GONE);
                     arr[2]=2;//means wrong data
                     Toast.makeText(IndividualPersonDetailActivity.this, "NOT ALLOWED(space  .  ,  -)\nPLEASE CORRECT", Toast.LENGTH_LONG).show();
                 }
@@ -2131,11 +1858,11 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                 arr[3]=1;//means data is inserted.This line should be here because when user enter wrong data and again enter right data then it should update array to 1 which indicate write data
                 //this will check if other data is right or wrong
                 if(!isEnterDataIsWrong(arr)) {//this is important if in field data is wrong then save button will not enabled until data is right.if save button is enabled with wrong data then if user has record audio then it will not be saved it will store null so to check right or wrong data this condition is important
-                    save.setEnabled(true);
+                    save.setVisibility(View.VISIBLE);
                 }
                 if(!p11.matches("[0-9]+")){//space or , or - is restricted
                     inputP4.setTextColor(Color.RED);
-                    save.setEnabled(false);
+                    save.setVisibility(View.GONE);
                     arr[3]=2;//means wrong data
                     Toast.makeText(IndividualPersonDetailActivity.this, "NOT ALLOWED(space  .  ,  -)\nPLEASE CORRECT", Toast.LENGTH_LONG).show();
                 }
@@ -2272,13 +1999,12 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
             bool= true;
         return bool;
     }
-    private boolean checkPermission() {//checking for permission of mic and external storage
-        if( (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.RECORD_AUDIO)==PackageManager.PERMISSION_GRANTED) &&
+    private boolean checkPermissionForAudio() {//checking for permission of mic and external storage
+        if((ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.RECORD_AUDIO)==PackageManager.PERMISSION_GRANTED) &&
                 (ActivityCompat.checkSelfPermission(getApplicationContext(),Manifest.permission.WRITE_EXTERNAL_STORAGE)==PackageManager.PERMISSION_GRANTED)) {
             return true;
-        }else {
+        }else
             return false;
-        }
     }
     private void startRecordingVoice() {
         Long  tsLong=System.currentTimeMillis()/1000;//folder name should be unique so taking time as name of mic record so every record name will be different

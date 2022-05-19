@@ -76,7 +76,7 @@
                 android:textAlignment="center"
                 android:textColor="@color/purple_700"
                 android:textSize="18dp"
-
+                android:text="RATE"
                 android:inputType="numberDecimal"
                 android:id="@+id/p1_rate_tv_final"/>
         </LinearLayout>
@@ -150,7 +150,7 @@
                 android:textAlignment="center"
                 android:textColor="@color/purple_700"
                 android:textSize="18dp"
-
+                android:text="RATE"
                 android:inputType="numberDecimal"
                 android:id="@+id/p2_rate_tv_final"/>
         </LinearLayout>
@@ -224,7 +224,7 @@
                 android:textAlignment="center"
                 android:textColor="@color/purple_700"
                 android:textSize="18dp"
-
+                android:text="RATE"
                 android:inputType="numberDecimal"
                 android:id="@+id/p3_rate_tv_final"/>
         </LinearLayout>
@@ -297,7 +297,7 @@
                 android:textAlignment="center"
                 android:textColor="@color/purple_700"
                 android:textSize="18dp"
-
+                android:text="RATE"
                 android:inputType="numberDecimal"
                 android:id="@+id/p4_rate_tv_final"/>
         </LinearLayout>
@@ -369,7 +369,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="4"
-            android:background="#D6DADF"
+            android:background="#7EE8EBF1"
             android:textAlignment="textEnd"
             android:textColor="#FF9800"
 
@@ -381,7 +381,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="5"
-            android:background="#D6DADF"
+            android:background="#7EE8EBF1"
             android:textAlignment="textStart"
             android:textColor="@color/black"
             android:textSize="17dp"
@@ -427,7 +427,8 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:text="SAVE AND CREATE INVOICE"
+            android:textColor="@color/white"
+            android:text="SAVE AND CREATE PDF"
             android:textStyle="bold"
             android:background="@drawable/green_color_bg"
             android:id="@+id/save_btn_final"/>

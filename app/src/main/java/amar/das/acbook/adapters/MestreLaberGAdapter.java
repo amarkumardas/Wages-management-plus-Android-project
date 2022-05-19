@@ -71,14 +71,14 @@ public class MestreLaberGAdapter extends RecyclerView.Adapter<MestreLaberGAdapte
             holder.amountAdvance.setTextColor(Color.RED);
         }else if(data.getBalanceAmount() > 0 ){
             holder.amountAdvance.setText(""+data.getBalanceAmount());
-            holder.amountAdvance.setTextColor(contex.getResources().getColor(R.color.green));
+            holder.amountAdvance.setTextColor(contex.getColor(R.color.green));
         }else {
             holder.amountAdvance.setText("0");//if no advance or balance then set to zero
-            holder.amountAdvance.setTextColor(contex.getResources().getColor(R.color.green));
+            holder.amountAdvance.setTextColor(contex.getColor(R.color.green));
         }
           if(data.getLatestDate() !=null) {//for null pointer exception//https://www.youtube.com/watch?v=VmhcvoenUl0
               if (data.getLatestDate().equals(currentDateDBPattern)) //if profile color is yellow that means on current day some data is entered
-                 holder.yellowBg.setBackgroundColor(contex.getResources().getColor(R.color.yellow));
+                 holder.yellowBg.setBackgroundColor(contex.getColor(R.color.yellow));
              else
                   holder.yellowBg.setBackgroundColor(Color.WHITE);
 

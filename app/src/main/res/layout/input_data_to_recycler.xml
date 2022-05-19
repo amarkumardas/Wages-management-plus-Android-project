@@ -193,6 +193,7 @@
             <TextView
                 android:id="@+id/advance_or_balance_amount_warring_tv"
                 android:layout_width="0dp"
+                android:background="@drawable/border_outline_while_bg"
                 android:layout_height="wrap_content"
                 android:layout_weight="7"
                 android:textAlignment="center"
@@ -353,6 +354,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:text="SAVE"
+                android:textColor="@color/white"
                 android:textStyle="bold"
                 android:background="@drawable/green_color_bg"
                 android:id="@+id/save_btn"/>

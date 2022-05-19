@@ -16,16 +16,16 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textColor="@color/black"
-        android:textStyle="bold"
+
         android:textSize="15dp"
         android:id="@+id/name_tv"/>
     <TextView
         android:layout_weight="5"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@color/background"
+        android:background="@drawable/graycolor_bg"
         android:textColor="@color/black"
-        android:textSize="13dp"
+        android:textSize="12dp"
         android:textAlignment="center"
         android:id="@+id/inactive_duration_tv"/>
 

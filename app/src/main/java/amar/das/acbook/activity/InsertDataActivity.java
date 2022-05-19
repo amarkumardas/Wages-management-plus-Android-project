@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.core.text.HtmlCompat;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.Manifest;
@@ -310,7 +311,7 @@ public class InsertDataActivity extends AppCompatActivity {
             AlertDialog.Builder detailsReview = new AlertDialog.Builder(this);
             detailsReview.setCancelable(false);
             detailsReview.setTitle("REVIEW DETAILS");// Html tags video- https://www.youtube.com/watch?v=98BD6IjQQkE
-            detailsReview.setMessage(Html.fromHtml("Name:-" +"<b>"+ personName+"</b>"+"<br>"+"<br>"+
+            detailsReview.setMessage(HtmlCompat.fromHtml("Name:-" +"<b>"+ personName+"</b>"+"<br>"+"<br>"+
                     "Father Name:-" +"<b>"+ personFathername+"</b>" +"<br>"+"<br>"+
                     "Account No:-" +"<b>"+ personAccount +"</b>" +"<br>"+"<br>"+
                     "A/C Holder:-" +"<b>"+personAccountHolderName+"</b>" +"<br>"+"<br>"+
@@ -318,7 +319,7 @@ public class InsertDataActivity extends AppCompatActivity {
                     "IFSC Code:--- " +"<b>"+ personIfsccode+"</b>"  +"<br>"+"<br>"+
                     "Phone No:---- " +"<b>"+ personPhon +"</b>" +"<br>"+"<br>"+
                     "Aadhar No:-- " +"<b>"+ personAadhar+"</b>"  +"<br>"+"<br>"+
-                    "Person Skill:-" +"<b>"+ personType+"</b>"  +"<br>"));
+                    "Person Skill:-" +"<b>"+ personType+"</b>"  +"<br>",HtmlCompat.FROM_HTML_MODE_LEGACY));
 
             detailsReview.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
                 @Override

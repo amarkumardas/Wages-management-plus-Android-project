@@ -80,11 +80,11 @@ public class CustomizeLayoutOrDepositAmount extends AppCompatActivity {
                 arr[0]=1;//means data is inserted.This line should be here because when user enter wrong data and again enter right data then it should update array to 1 which indicate write data
                 //this will check if other data is right or wrong
                 if(!isEnterDataIsWrong(arr)) {//this is important if in field data is wrong then save button will not enabled until data is right.if save button is enabled with wrong data then if user has record audio then it will not be saved it will store null so to check right or wrong data this condition is important
-                    binding.customSaveBtn.setEnabled(true);
+                    binding.customSaveBtn.setVisibility(View.VISIBLE);
                 }
                 if (!p11.matches("[0-9]+")) {//space or , or - is restricted"[.]?[0-9]+[.]?[0-9]*"
                     binding.customDepositEt.setTextColor(Color.RED);
-                    binding.customSaveBtn.setEnabled(false);
+                    binding.customSaveBtn.setVisibility(View.GONE);
                     arr[0]=2;//means data is inserted wrong
                     Toast.makeText(CustomizeLayoutOrDepositAmount.this, "NOT ALLOWED(space  .  ,  -)\nPLEASE CORRECT", Toast.LENGTH_LONG).show();
                 }
@@ -102,7 +102,7 @@ public class CustomizeLayoutOrDepositAmount extends AppCompatActivity {
                         binding.customDescriptionEt.setEnabled(false);
                         binding.customDepositEt.setEnabled(false);
                         binding.customDateIconTv.setEnabled(false);
-                        binding.customSaveBtn.setEnabled(false);
+                        binding.customSaveBtn.setVisibility(View.GONE);
                         binding.customCancelBtn.setEnabled(false);
                         binding.customSpinnerSetting.setEnabled(false);
 
@@ -131,8 +131,10 @@ public class CustomizeLayoutOrDepositAmount extends AppCompatActivity {
                     }
                     mStartRecording = !mStartRecording;//so that user should click 2 times to start recording
 
-                }else//request for permission
-                    ActivityCompat.requestPermissions(CustomizeLayoutOrDepositAmount.this,new String[]{Manifest.permission.RECORD_AUDIO,Manifest.permission.WRITE_EXTERNAL_STORAGE},21);
+                }else {//request for permission
+                    Toast.makeText(CustomizeLayoutOrDepositAmount.this, "AUDIO PERMISSION REQUIRED", Toast.LENGTH_SHORT).show();
+                    ActivityCompat.requestPermissions(CustomizeLayoutOrDepositAmount.this, new String[]{Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 21);
+                }
             }
         });
         binding.customSaveAudioIconTv.setOnClickListener(new View.OnClickListener() {
@@ -147,7 +149,7 @@ public class CustomizeLayoutOrDepositAmount extends AppCompatActivity {
 
                     //this will check if other data is right or wrong
                     if(!isEnterDataIsWrong(arr)) {//this is important if in field data is wrong then save button will not enabled until data is right.if save button is enabled with wrong data then if user has record audio then it will not be saved it will store null so to check right or wrong data this condition is important
-                        binding.customSaveBtn.setEnabled(true);
+                        binding.customSaveBtn.setVisibility(View.VISIBLE);
                     }
 
                     binding.customCancelBtn.setEnabled(true);

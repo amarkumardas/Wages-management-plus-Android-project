@@ -48,10 +48,10 @@ public class InactiveLGAdapter extends RecyclerView.Adapter<InactiveLGAdapter.Vi
             holder.amountAdvance.setTextColor(Color.RED);
         }else if(data.getBalanceAmount() > 0 ){
             holder.amountAdvance.setText(""+data.getBalanceAmount());
-            holder.amountAdvance.setTextColor(contex.getResources().getColor(R.color.green));
+            holder.amountAdvance.setTextColor(contex.getColor(R.color.green));
         }else {
             holder.amountAdvance.setText("0");//if no advance or balance then set to zero
-            holder.amountAdvance.setTextColor(contex.getResources().getColor(R.color.green));
+            holder.amountAdvance.setTextColor(contex.getColor(R.color.green));
         }
 
         holder.profileimg.setOnClickListener(new View.OnClickListener() {

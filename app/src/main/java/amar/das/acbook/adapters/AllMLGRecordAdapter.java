@@ -50,7 +50,7 @@ public class AllMLGRecordAdapter extends RecyclerView.Adapter<AllMLGRecordAdapte
     @Override
     public void onBindViewHolder(@NonNull AllMLGRecordAdapter.ViewHolder holder, int position) {
         MLGAllRecordModel data=arrayList.get(position);
-        holder.name.setText(Html.fromHtml("<b>"+data.getName()+"</b>"));
+        holder.name.setText(data.getName());
         holder.inactiveDuration.setText("ACTIVE");//when user is active then it show active
         if(data.getActive().equals("0")) { //if account is not active then view will be in red color which indicate inactive
            // holder.name.setTextColor(Color.RED);
