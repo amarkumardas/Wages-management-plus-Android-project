@@ -337,7 +337,6 @@ public class WagesDetailsAdapter extends RecyclerView.Adapter<WagesDetailsAdapte
                      }
                  });
 
-
                  //description.setText(cursorData.getString(3));//dont set previous data because if the data is more then update button or cancel button will hide due to large data
                  dialog.show();
                  //*************************************SAVING*****************************************************************************************************
@@ -359,8 +358,7 @@ public class WagesDetailsAdapter extends RecyclerView.Adapter<WagesDetailsAdapte
                          String time = inputTime.getText().toString();//time will be inserted automatically
 
                          //if user dont enter remarks or description then it is sure that previous data will be entered so no need to check null pointer exception
-                         String remarks = "[" + time + "]-[EDITED]\n\n*****PREVIOUS DATA WAS*****\n" + previousDataHold[5] + "  " + previousDataHold[6] + "\n" + previousDataHold[0] + " " + previousDataHold[1] + " " + previousDataHold[2] + " " + previousDataHold[3] + "\n" + previousDataHold[4] + "\n" + previousDataHold[7] + "\n\n" +
-                                 "*****NEW EDITED DATA REMARKS*****" + "\n" + description.getText().toString().trim();//time is set automatically to remarks if user enter any remarks;
+                         String remarks = "[" + time + "]-[EDITED]\n\n"+ description.getText().toString().trim()+"\n\n*****PREVIOUS DATA WAS*****\n" + previousDataHold[5] + "  " + previousDataHold[6] + "\n" + previousDataHold[0] + " " + previousDataHold[1] + " " + previousDataHold[2] + " " + previousDataHold[3] + "\n" + previousDataHold[4] + "\n" + previousDataHold[7];//time is set automatically to remarks if user enter any remarks;
                          arr[5] = 1;//this is important because when user do not enter any data while updating then atleast 1 field should be filled with data so this field will sure be filled automatically so this is important.
 
                          String date = inputDate.getText().toString();//date will be inserted automatically
@@ -391,20 +389,24 @@ public class WagesDetailsAdapter extends RecyclerView.Adapter<WagesDetailsAdapte
                              Toast.makeText(context, "CORRECT THE DATA or CANCEL AND ENTER AGAIN", Toast.LENGTH_LONG).show();
 
                          //*********************************  all the upper code are common to all indicator 1,2,3,4*******************
-                         db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET ACTIVE='" + 1 + "'" +" WHERE ID='" +  data.getId() + "'");//when ever user update then that person will become active.This will work for all indicators
+                         success=db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET ACTIVE='" + 1 + "'" +" WHERE ID='" +  data.getId() + "'");//when ever user update then that person will become active.This will work for all indicators
+                         if(!success)
+                             Toast.makeText(context, "UPDATE TO SET ACTIVE FAILED", Toast.LENGTH_LONG).show();
+
                          if (indicator == 1) {
                              if (isDataPresent == true && isWrongData == false) {//it is important means if data is present then check is it right data or not.if condition is false then this message will be displayed "Correct the Data or Cancel and Enter again"
                                  //UPDATE to database
                                   if(micPath != null){//if it is not null then update micpath
-                                     success = db.updateTable("UPDATE " + db.TABLE_NAME2 + " SET DATE='" + date + "',TIME='" + time + "',DESCRIPTION='" + remarks +"',MICPATH='"+micPath+ "',WAGES='" + wages + "',P1='" + p1 + "'" + " WHERE ID= '" + data.getId() + "'" + " AND DATE= '" + data.getDate() + "'" + " AND TIME='" + data.getTime() + "'");
-                                 }else //if micPath == null then we are not updating because null in text will be set to micpath and give wroing result like it will indicate that audio is present but actually audio is not present
-                                     success = db.updateTable("UPDATE " + db.TABLE_NAME2 + " SET DATE='" + date + "',TIME='" + time + "',DESCRIPTION='" + remarks +"',WAGES='" + wages + "',P1='" + p1 + "'" + " WHERE ID= '" + data.getId() + "'" + " AND DATE= '" + data.getDate() + "'" + " AND TIME='" + data.getTime() + "'");
-
-                                 if (success == true) {
-                                     displResultAndRefresh(wages + "          " + p1, "\nDATE: " + date + "\n\n" + "REMARKS: " + remarks+"\n"+"MICPATH: "+micPath);
+                                      // success = db.updateTable("UPDATE " + db.TABLE_NAME2 + " SET DATE='" + date + "',TIME='" + time + "',DESCRIPTION='" + remarks +"',MICPATH='"+micPath+ "',WAGES='" + wages + "',P1='" + p1 + "'" + " WHERE ID= '" + data.getId() + "'" + " AND DATE= '" + data.getDate() + "'" + " AND TIME='" + data.getTime() + "'");
+                                success=db.update_1_TABLE_NAME2(date,time,remarks,micPath,wages,p1,data.getId(),data.getDate(),data.getTime());
+                                 }else {//if micPath == null then we are not updating because null in text will be set to micpath and give wroing result like it will indicate that audio is present but actually audio is not present
+                                     // success = db.updateTable("UPDATE " + db.TABLE_NAME2 + " SET DATE='" + date + "',TIME='" + time + "',DESCRIPTION='" + remarks + "',WAGES='" + wages + "',P1='" + p1 + "'" + " WHERE ID= '" + data.getId() + "'" + " AND DATE= '" + data.getDate() + "'" + " AND TIME='" + data.getTime() + "'");
+                                      success=db.update_1_TABLE_NAME2(date,time,remarks,null,wages,p1,data.getId(),data.getDate(),data.getTime());
+                                  }
+                                 if (success) {
+                                     displResultAndRefresh(wages + "          " + p1, "\nDATE: " + date + "\n\n" + "REMARKS: " + remarks+"\n\n"+"MICPATH: "+micPath);
                                      fromIntentPersonId = data.getId();//update to send to other intent for refresh
                                      dialog.dismiss();//dialog will be dismiss after saved automatically
-
                                  } else
                                      Toast.makeText(context, "FAILED TO UPDATE", Toast.LENGTH_LONG).show();
                              } else//once user enter wrong data and left blank then user wound be able to save because array value would not be change it will be 2 so  user have to "Cancel and enter again" if use dont leave blank then it will save successfully
@@ -418,17 +420,19 @@ public class WagesDetailsAdapter extends RecyclerView.Adapter<WagesDetailsAdapte
                                  }
                                  //UPDATE to database
                                  if(micPath != null){//if it is not null then update micpath
-                                     success = db.updateTable("UPDATE " + db.TABLE_NAME2 + " SET DATE='" + date + "',TIME='" + time + "',DESCRIPTION='" + remarks + "',MICPATH='"+micPath+"',WAGES='" + wages + "',P1='" + p1 + "'" + ",P2='" + p2 + "'  WHERE ID= '" + data.getId() + "'" + " AND DATE= '" + data.getDate() + "'" + " AND TIME='" + data.getTime() + "'");
-                                 }else//if micPath == null then we are not updating because null in text will be set to micpath and give wroing result like it will indicate that audio is present but actually audio is not present
-                                     success = db.updateTable("UPDATE " + db.TABLE_NAME2 + " SET DATE='" + date + "',TIME='" + time + "',DESCRIPTION='" + remarks +"',WAGES='" + wages + "',P1='" + p1 + "'" + ",P2='" + p2 + "'  WHERE ID= '" + data.getId() + "'" + " AND DATE= '" + data.getDate() + "'" + " AND TIME='" + data.getTime() + "'");
-
-                                 if (success == true) {
-                                     displResultAndRefresh(wages + "          " + p1 + "     " + p2, "\nDATE: " + date + "\n\n" + "REMARKS: " + remarks+"\n"+"MICPATH: "+micPath);
+                                    // success = db.updateTable("UPDATE " + db.TABLE_NAME2 + " SET DATE='" + date + "',TIME='" + time + "',DESCRIPTION='" + remarks + "',MICPATH='"+micPath+"',WAGES='" + wages + "',P1='" + p1 + "'" + ",P2='" + p2 + "'  WHERE ID= '" + data.getId() + "'" + " AND DATE= '" + data.getDate() + "'" + " AND TIME='" + data.getTime() + "'");
+                                     success=db.update_2_TABLE_NAME2(date,time,remarks,micPath,wages,p1,p2,data.getId(),data.getDate(),data.getTime());
+                                 }else {//if micPath == null then we are not updating because null in text will be set to micpath and give wroing result like it will indicate that audio is present but actually audio is not present
+                                     //success = db.updateTable("UPDATE " + db.TABLE_NAME2 + " SET DATE='" + date + "',TIME='" + time + "',DESCRIPTION='" + remarks + "',WAGES='" + wages + "',P1='" + p1 + "'" + ",P2='" + p2 + "'  WHERE ID= '" + data.getId() + "'" + " AND DATE= '" + data.getDate() + "'" + " AND TIME='" + data.getTime() + "'");
+                                     success=db.update_2_TABLE_NAME2(date,time,remarks,null,wages,p1,p2,data.getId(),data.getDate(),data.getTime());
+                                 }
+                                 if (success) {
+                                     displResultAndRefresh(wages + "          " + p1 + "     " + p2, "\nDATE: " + date + "\n\n" + "REMARKS: " + remarks+"\n\n"+"MICPATH: "+micPath);
                                      fromIntentPersonId = data.getId();//update to send to other intent for refresh
                                      dialog.dismiss();//dialog will be dismiss after saved automatically
                                  } else
                                      Toast.makeText(context, "FAILED TO UPDATE", Toast.LENGTH_LONG).show();
-                             } else
+                             }else
                                  Toast.makeText(context, "CORRECT THE DATA or CANCEL AND ENTER AGAIN", Toast.LENGTH_LONG).show();
 
                          } else if (indicator == 3) {
@@ -441,13 +445,15 @@ public class WagesDetailsAdapter extends RecyclerView.Adapter<WagesDetailsAdapte
                                  }
                                  //UPDATE to database
                                  if(micPath != null){//if it is not null then update micpath
-                                     success = db.updateTable("UPDATE " + db.TABLE_NAME2 + " SET DATE='" + date + "',TIME='" + time + "',DESCRIPTION='" + remarks +"',MICPATH='"+micPath+ "',WAGES='" + wages + "',P1='" + p1 + "'" + ",P2='" + p2 + "'" + ",P3='" + p3 + "' WHERE ID= '" + data.getId() + "'" + " AND DATE= '" + data.getDate() + "'" + " AND TIME='" + data.getTime() + "'");
-                                 }else//if micPath == null then we are not updating because null in text will be set to micpath and give wroing result like it will indicate that audio is present but actually audio is not present
-                                     success = db.updateTable("UPDATE " + db.TABLE_NAME2 + " SET DATE='" + date + "',TIME='" + time + "',DESCRIPTION='" + remarks +"',WAGES='" + wages + "',P1='" + p1 + "'" + ",P2='" + p2 + "'" + ",P3='" + p3 + "' WHERE ID= '" + data.getId() + "'" + " AND DATE= '" + data.getDate() + "'" + " AND TIME='" + data.getTime() + "'");
+                                    // success = db.updateTable("UPDATE " + db.TABLE_NAME2 + " SET DATE='" + date + "',TIME='" + time + "',DESCRIPTION='" + remarks +"',MICPATH='"+micPath+ "',WAGES='" + wages + "',P1='" + p1 + "'" + ",P2='" + p2 + "'" + ",P3='" + p3 + "' WHERE ID= '" + data.getId() + "'" + " AND DATE= '" + data.getDate() + "'" + " AND TIME='" + data.getTime() + "'");
+                                     success=db.update_3_TABLE_NAME2(date,time,remarks,micPath,wages,p1,p2,p3,data.getId(),data.getDate(),data.getTime());
+                                 }else {//if micPath == null then we are not updating because null in text will be set to micpath and give wroing result like it will indicate that audio is present but actually audio is not present
+                                    // success = db.updateTable("UPDATE " + db.TABLE_NAME2 + " SET DATE='" + date + "',TIME='" + time + "',DESCRIPTION='" + remarks + "',WAGES='" + wages + "',P1='" + p1 + "'" + ",P2='" + p2 + "'" + ",P3='" + p3 + "' WHERE ID= '" + data.getId() + "'" + " AND DATE= '" + data.getDate() + "'" + " AND TIME='" + data.getTime() + "'");
+                                     success=db.update_3_TABLE_NAME2(date,time,remarks,null,wages,p1,p2,p3,data.getId(),data.getDate(),data.getTime());
+                                 }
 
-
-                                 if (success == true) {
-                                     displResultAndRefresh(wages + "          " + p1 + "     " + p2 + "     " + p3, "\nDATE: " + date + "\n\n" + "REMARKS: " + remarks+"\n"+"MICPATH: "+micPath);
+                                 if (success) {
+                                     displResultAndRefresh(wages + "          " + p1 + "     " + p2 + "     " + p3, "\nDATE: " + date + "\n\n" + "REMARKS: " + remarks+"\n\n"+"MICPATH: "+micPath);
                                      fromIntentPersonId = data.getId();//update to send to other intent for refresh
                                      dialog.dismiss();//dialog will be dismiss after saved automatically
                                  } else
@@ -458,30 +464,31 @@ public class WagesDetailsAdapter extends RecyclerView.Adapter<WagesDetailsAdapte
                          } else if (indicator == 4) {
                              if (isDataPresent == true && isWrongData == false) {
                                  if (inputP2.getText().toString().length() >= 1) {//to prevent nullpointer exception.If user do not enter any data then that time it will save from crashing app.So due to this condition if field is empty then default value will be taken
-                                     p2 = Integer.parseInt(inputP2.getText().toString().trim());//converted to float and stored
+                                     p2 = Integer.parseInt(inputP2.getText().toString().trim());//converted to INT and stored
                                  }
                                  if (inputP3.getText().toString().length() >= 1) {//to prevent nullpointer exception
-                                     p3 = Integer.parseInt(inputP3.getText().toString().trim());//converted to float and stored
+                                     p3 = Integer.parseInt(inputP3.getText().toString().trim());//converted to INT and stored
                                  }
                                  if (inputP4.getText().toString().length() >= 1) {//to prevent nullpointer exception
-                                     p4 = Integer.parseInt(inputP4.getText().toString().trim());//converted to float and stored
+                                     p4 = Integer.parseInt(inputP4.getText().toString().trim());//converted to INT and stored
                                  }
                                  //UPDATE to database
                                  if(micPath != null){//if it is not null then update micpath
-                                     success = db.updateTable("UPDATE " + db.TABLE_NAME2 + " SET DATE='" + date + "',TIME='" + time + "',DESCRIPTION='" + remarks +"',MICPATH='"+micPath+ "',WAGES='" + wages + "',P1='" + p1 + "'" + ",P2='" + p2 + "'" + ",P3='" + p3 + "',P4='" + p4 + "' WHERE ID= '" + data.getId() + "'" + " AND DATE= '" + data.getDate() + "'" + " AND TIME='" + data.getTime() + "'");
-                                 }else//if micPath == null then we are not updating because null in text will be set to micpath and give wroing result like it will indicate that audio is present but actually audio is not present
-                                 success = db.updateTable("UPDATE " + db.TABLE_NAME2 + " SET DATE='" + date + "',TIME='" + time + "',DESCRIPTION='" + remarks + "',WAGES='" + wages + "',P1='" + p1 + "'" + ",P2='" + p2 + "'" + ",P3='" + p3 + "',P4='" + p4 + "' WHERE ID= '" + data.getId() + "'" + " AND DATE= '" + data.getDate() + "'" + " AND TIME='" + data.getTime() + "'");
+                                    // success = db.updateTable("UPDATE " + db.TABLE_NAME2 + " SET DATE='" + date + "',TIME='" + time + "',DESCRIPTION='" + remarks +"',MICPATH='"+micPath+ "',WAGES='" + wages + "',P1='" + p1 + "'" + ",P2='" + p2 + "'" + ",P3='" + p3 + "',P4='" + p4 + "' WHERE ID= '" + data.getId() + "'" + " AND DATE= '" + data.getDate() + "'" + " AND TIME='" + data.getTime() + "'");
+                                     success=db.update_4_TABLE_NAME2(date,time,remarks,micPath,wages,p1,p2,p3,p4,data.getId(),data.getDate(),data.getTime());
 
-                                 if (success == true) {
-                                     if (success == true) {
-                                         displResultAndRefresh(wages + "          " + p1 + "     " + p2 + "     " + p3 + "     " + p4, "\nDATE: " + date + "\n\n" + "REMARKS: " + remarks+"\n"+"MICPATH: "+micPath);
+                                 }else {//if micPath == null then we are not updating because null in text will be set to micpath and give wroing result like it will indicate that audio is present but actually audio is not present
+                                     //success = db.updateTable("UPDATE " + db.TABLE_NAME2 + " SET DATE='" + date + "',TIME='" + time + "',DESCRIPTION='" + remarks + "',WAGES='" + wages + "',P1='" + p1 + "'" + ",P2='" + p2 + "'" + ",P3='" + p3 + "',P4='" + p4 + "' WHERE ID= '" + data.getId() + "'" + " AND DATE= '" + data.getDate() + "'" + " AND TIME='" + data.getTime() + "'");
+                                     success=db.update_4_TABLE_NAME2(date,time,remarks,null,wages,p1,p2,p3,p4,data.getId(),data.getDate(),data.getTime());
+                                 }
+                                     if (success) {
+                                         displResultAndRefresh(wages + "          " + p1 + "     " + p2 + "     " + p3 + "     " + p4, "\nDATE: " + date + "\n\n" + "REMARKS: " + remarks+"\n\n"+"MICPATH: "+micPath);
                                          fromIntentPersonId = data.getId();//update to send to other intent for refresh
                                          dialog.dismiss();//dialog will be dismiss after saved automatically
                                      } else
                                          Toast.makeText(context, "FAILED TO UPDATE", Toast.LENGTH_LONG).show();
-                                 } else
-                                     Toast.makeText(context, "CORRECT THE DATA or CANCEL AND ENTER AGAIN", Toast.LENGTH_LONG).show();
-                             }
+                             } else
+                                 Toast.makeText(context, "CORRECT THE DATA or CANCEL AND ENTER AGAIN", Toast.LENGTH_LONG).show();
                          }
 
                          return false;
@@ -723,11 +730,10 @@ public class WagesDetailsAdapter extends RecyclerView.Adapter<WagesDetailsAdapte
                                  dateIcon.setEnabled(true);
 
                                  if(!isEnterDataIsWrong(arr)) {//this is important if in field data is wrong then save button will not enabled until data is right.if save button is enabled with wrong data then if user has record audio then it will not be saved it will store null so to check right or wrong data this condition is important
-                                     save.setEnabled(true);
+                                     save.setVisibility(View.VISIBLE);
                                   }
 
                                  cancel.setEnabled(true);
-
                                  playAudioChronometer.setTextColor(context.getColor(R.color.green));//changind text color to green to give feel that is saved
                                  micIcon.setBackgroundResource(R.drawable.ic_green_sharp_mic_20);//set background image to cancel
                                  stopAndSaveRecordingPathToDB();

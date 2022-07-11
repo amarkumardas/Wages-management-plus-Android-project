@@ -118,6 +118,7 @@ Boolean aboolean=false;
         btn3.setBackgroundColor(Color.WHITE);
 
         //setting background custom image of theres button
+        btn1.setBackgroundResource(R.drawable.graycolor_bg);
         btn3.setBackgroundResource(R.drawable.white_detailsbg);
         btn2.setBackgroundResource(R.drawable.white_detailsbg);
         btnData("SELECT ID,NAME,ACTIVE,LATESTDATE FROM "+db.TABLE_NAME1 +" WHERE TYPE='M'");
@@ -130,6 +131,7 @@ Boolean aboolean=false;
         btn3.setBackgroundColor(Color.WHITE);
 
         //setting background custom image of theres button
+        btn2.setBackgroundResource(R.drawable.graycolor_bg);
         btn3.setBackgroundResource(R.drawable.white_detailsbg);
         btn1.setBackgroundResource(R.drawable.white_detailsbg);
         btnData("SELECT ID,NAME,ACTIVE,LATESTDATE FROM "+db.TABLE_NAME1 +" WHERE TYPE='L'");
@@ -142,6 +144,7 @@ Boolean aboolean=false;
         btn2.setBackgroundColor(Color.WHITE);
 
         //setting background custom image of theres button
+        btn3.setBackgroundResource(R.drawable.graycolor_bg);
         btn1.setBackgroundResource(R.drawable.white_detailsbg);
         btn2.setBackgroundResource(R.drawable.white_detailsbg);
         btnData("SELECT ID,NAME,ACTIVE,LATESTDATE FROM "+db.TABLE_NAME1 +" WHERE TYPE='G'");
@@ -174,7 +177,7 @@ Boolean aboolean=false;
         searchRecycler.setAdapter(allMLGRecordAdapter);
         aboolean=true;//to set adapter recycler view on onQueryTextChange method
         db.close();//closing database to prevent dataleak
-        Toast.makeText(FindActivity.this, "TOTAL: "+allMLGRecordAdapter.getItemCount(), Toast.LENGTH_SHORT).show();
+       // Toast.makeText(FindActivity.this, "TOTAL: "+allMLGRecordAdapter.getItemCount(), Toast.LENGTH_SHORT).show();
     }
 
     public void goto_back(View view) {

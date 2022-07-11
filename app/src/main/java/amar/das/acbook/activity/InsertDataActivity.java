@@ -333,13 +333,13 @@ public class InsertDataActivity extends AppCompatActivity {
                 public void onClick(DialogInterface dialogInterface, int i) {
                     dialogInterface.dismiss();
 
-                    boolean  booleanvalue;
+                    boolean  success;
 
                     //update
                     if(getIntent().hasExtra("ID")){//will execute only when updating
                         //get data from db
-                        booleanvalue=personDb.updateDataTable1(personName, personAccount, personIfsccode, personBankName, personAadhar, personPhon, personType, personFathername, imagestore, personAccountHolderName,fromIntentPersonId);
-                        if(booleanvalue==true){//if it is updated then show successfull message
+                        success=personDb.updateDataTable1(personName, personAccount, personIfsccode, personBankName, personAadhar, personPhon, personType, personFathername, imagestore, personAccountHolderName,fromIntentPersonId);
+                        if(success){//if it is updated then show successfull message
                             Toast.makeText(InsertDataActivity.this, "ID: "+fromIntentPersonId+" UPDATED SUCCESSFULLY", Toast.LENGTH_SHORT).show();
 
                             //whenever user update its name,bank account,etc theN IF that account is inactive then that account will become active that is its latest date is updated to current date
@@ -355,16 +355,16 @@ public class InsertDataActivity extends AppCompatActivity {
                             finish();//destroy current activity
 
                         }else
-                            Toast.makeText(InsertDataActivity.this, "NOT UPDATED", Toast.LENGTH_LONG).show();
+                            Toast.makeText(InsertDataActivity.this, "DATA NOT UPDATED", Toast.LENGTH_LONG).show();
 
                     }else {//this will execute only when adding new person
 
                         //for (int k = 1; k <= 10; k++) {
                             //inserting data to sqlite database
-                             booleanvalue = personDb.insertDataTable1(personName, personAccount, personIfsccode, personBankName, personAadhar, personPhon, personType, personFathername, imagestore, personAccountHolderName);
+                             success = personDb.insertDataTable1(personName, personAccount, personIfsccode, personBankName, personAadhar, personPhon, personType, personFathername, imagestore, personAccountHolderName);
                         //}
 
-                        if ( booleanvalue == true) {//checking for duplicate
+                        if ( success == true) {//checking for duplicate
                             Cursor result = personDb.getId(personName, personAccount, personIfsccode, personBankName, personAadhar, personPhon, personType, personFathername, personAccountHolderName);
                             StringBuilder buffer;//because it is not synchronized and efficient then stringbuffer and no need to lock and unlock
                             String holdlastid="";

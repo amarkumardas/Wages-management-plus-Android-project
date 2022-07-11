@@ -19,6 +19,7 @@ import androidx.fragment.app.Fragment;
 
 import java.util.Locale;
 
+import amar.das.acbook.activity.CustomizeLayoutOrDepositAmount;
 import amar.das.acbook.activity.FindActivity;
 import amar.das.acbook.activity.InsertDataActivity;
 import amar.das.acbook.R;
@@ -31,8 +32,6 @@ public class SearchFragment extends Fragment  {
     //important
     //to store image in db we have to convert Bitmap to bytearray
     //to set in imageview we have to get from db as Blob known as large byte and convert it to Bitmap then set in imageview
-
-    String[] PERMISSIONS={"android.permission.WRITE_EXTERNAL_STORAGE","android.permission.CAMERA","android.permission.RECORD_AUDIO","android.permission.READ_EXTERNAL_STORAGE"};
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentSearchBinding.inflate(inflater, container, false);
@@ -42,12 +41,9 @@ public class SearchFragment extends Fragment  {
         //CHECKING ALL PERMISSION IS GRANTED OR NOT
         if((getContext().checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) && (getContext().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
         && (getContext().checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) && (getContext().checkSelfPermission(Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED)){
-        }else{//if user not granted permission then always execute this
-            requestPermissions(PERMISSIONS,80);//taking permission from user
+        }else{//if user not granted permission then request for permission
+            ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.CAMERA}, 80);
         }
-
-
-
         //ids
         searchBox=root.findViewById(R.id.search_click_tv);
 
@@ -92,34 +88,6 @@ public class SearchFragment extends Fragment  {
             }
         });
         return root;
-    }
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if(requestCode==80){
-
-            if(grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                Toast.makeText(getContext(), "Write External Storage Permission GRANTED", Toast.LENGTH_SHORT).show();
-            }else
-                Toast.makeText(getContext(), "Write External Storage Permission DENIED", Toast.LENGTH_SHORT).show();
-
-            if(grantResults [1]== PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(getContext(), "Camera Permission GRANTED", Toast.LENGTH_SHORT).show();
-            }else
-                Toast.makeText(getContext(), "Camera Permission DENIED", Toast.LENGTH_SHORT).show();
-
-
-            if(grantResults [2]== PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(getContext(), "Record Audio Permission GRANTED", Toast.LENGTH_SHORT).show();
-            } else
-                Toast.makeText(getContext(), "Record Audio Permission DENIED", Toast.LENGTH_SHORT).show();
-
-            if(grantResults [3]== PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(getContext(), "Read External Storage Permission GRANTED", Toast.LENGTH_SHORT).show();
-            } else
-                Toast.makeText(getContext(), "Read External Storage Permission DENIED", Toast.LENGTH_SHORT).show();
-
-        }
     }
 
     @Override

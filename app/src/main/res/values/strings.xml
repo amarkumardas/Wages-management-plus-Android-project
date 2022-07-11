@@ -19,7 +19,6 @@
     <string name="father_name">FATHER NAME</string>
 
 
-
     <string-array name="addOrRemoveMlG">
         <item>SELECT</item>
         <item>ADD M</item>

@@ -10,7 +10,7 @@ import android.widget.Toast;
 
 
 public class PersonRecordDatabase extends SQLiteOpenHelper {
-    public final static int Database_Version=1;
+    public final static int Database_Version=4;
     public final static String DATABASE_NAME="person_db";
 
     //table 1
@@ -60,6 +60,8 @@ public class PersonRecordDatabase extends SQLiteOpenHelper {
     public final static String COL_325="RATING";
     public final static String COL_326="LEAVINGDATE";
     public final static String COL_327="REFFERAL";
+    public final static String COL_328="PDF1";
+    public final static String COL_329="PDF2";
 
 
     SQLiteDatabase db;
@@ -73,7 +75,7 @@ public class PersonRecordDatabase extends SQLiteOpenHelper {
      try {//if some error occur it will handle
          sqLiteDatabase.execSQL("CREATE TABLE " + TABLE_NAME1 + " (ID INTEGER PRIMARY KEY AUTOINCREMENT,NAME VARCHAR(100) DEFAULT NULL,BANKACCOUNT VARCHAR(20) DEFAULT NULL,IFSCCODE VARCHAR(11) DEFAULT NULL,BANKNAME VARCHAR(38) DEFAULT NULL,AADHARCARD VARCHAR(12) DEFAULT NULL,PHONE VARCHAR(10) DEFAULT NULL,TYPE CHAR(1) DEFAULT NULL,FATHERNAME VARCHAR(100) DEFAULT NULL,IMAGE BLOB DEFAULT NULL,ACHOLDER VARCHAR(100) DEFAULT NULL,ACTIVE CHAR(1) DEFAULT 1,ADVANCE NUMERIC DEFAULT NULL,BALANCE NUMERIC DEFAULT NULL,LATESTDATE TEXT DEFAULT NULL);");
          sqLiteDatabase.execSQL("CREATE TABLE " + TABLE_NAME2 + " (ID INTEGER ,DATE TEXT DEFAULT NULL,TIME TEXT DEFAULT NULL,MICPATH TEXT DEFAULT NULL,DESCRIPTION TEXT DEFAULT NULL,WAGES NUMERIC DEFAULT NULL,DEPOSIT NUMERIC DEFAULT NULL,P1 INTEGER DEFAULT NULL,P2 INTEGER DEFAULT NULL,P3 INTEGER DEFAULT NULL,P4 INTEGER DEFAULT NULL,ISDEPOSITED CHAR(1) DEFAULT NULL);");
-         sqLiteDatabase.execSQL("CREATE TABLE " + TABLE_NAME3 + " (ID INTEGER PRIMARY KEY NOT NULL ,R1 INTEGER DEFAULT NULL,R2 INTEGER DEFAULT NULL,R3 INTEGER DEFAULT NULL,R4 INTEGER DEFAULT NULL,SKILL1 CHAR(1) DEFAULT NULL,SKILL2 CHAR(1) DEFAULT NULL,SKILL3 CHAR(1) DEFAULT NULL,INDICATOR CHAR(1) DEFAULT NULL,RATING CHAR(1) DEFAULT NULL,LEAVINGDATE VARCHAR(10) DEFAULT NULL,REFFERAL TEXT DEFAULT NULL);");//id is primary key because according to id only data is stored in table 3 so no duplicate
+         sqLiteDatabase.execSQL("CREATE TABLE " + TABLE_NAME3 + " (ID INTEGER PRIMARY KEY NOT NULL ,R1 INTEGER DEFAULT NULL,R2 INTEGER DEFAULT NULL,R3 INTEGER DEFAULT NULL,R4 INTEGER DEFAULT NULL,SKILL1 CHAR(1) DEFAULT NULL,SKILL2 CHAR(1) DEFAULT NULL,SKILL3 CHAR(1) DEFAULT NULL,INDICATOR CHAR(1) DEFAULT NULL,RATING CHAR(1) DEFAULT NULL,LEAVINGDATE VARCHAR(10) DEFAULT NULL,REFFERAL TEXT DEFAULT NULL,PDF1 BLOB DEFAULT NULL,PDF2 BLOB DEFAULT NULL);");//id is primary key because according to id only data is stored in table 3 so no duplicate
      }catch(Exception e){
          e.printStackTrace();
      }
@@ -82,9 +84,11 @@ public class PersonRecordDatabase extends SQLiteOpenHelper {
     @Override    //i is old version and i1 is new version.When we change version then this method is called
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
 
-      sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+ TABLE_NAME1);
-      sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+ TABLE_NAME2);
-      sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+ TABLE_NAME3);
+//      sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+ TABLE_NAME1);
+//      sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+ TABLE_NAME2);
+//      sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+ TABLE_NAME3);
+        sqLiteDatabase.execSQL("ALTER TABLE "+ TABLE_NAME3+" ADD COLUMN PDF1 BLOB DEFAULT NULL");//ADDED NEW COLUMN TO TABLE3 AND VERSION IS 4
+        sqLiteDatabase.execSQL("ALTER TABLE "+ TABLE_NAME3+" ADD COLUMN PDF2 BLOB DEFAULT NULL");
       Log.d("INDATABASE","ON UPGRADE DROP 3 TABLES");
       onCreate(sqLiteDatabase);
     }
@@ -106,7 +110,7 @@ public class PersonRecordDatabase extends SQLiteOpenHelper {
             cv.put(COL_12,"1");//when new user added then it will be active
             //-1 is returned if error occurred. .insert(...) returns the row id of the new inserted record
             long rowid = db.insert(TABLE_NAME1, null, cv);
-            db.close();//closing db after operation performed
+           // db.close();//closing db after operation performed
             if (rowid == -1)//data not inserted
                 return false;
             else
@@ -114,21 +118,23 @@ public class PersonRecordDatabase extends SQLiteOpenHelper {
         }catch (Exception e){
             e.printStackTrace();
             return false;
+        }finally {
+            if(db != null)
+                db.close();
         }
 
     }
      public  Cursor getId(String name, String bankaccount, String ifsccode, String bankname, String aadharcard, String phonenumber, String type, String fathername,String acholder){
-        db=this.getWritableDatabase() ;
-      String query="SELECT ID FROM "+ TABLE_NAME1 + " WHERE NAME='"+name+"'"+" AND FATHERNAME='"+fathername+"'"+ " AND BANKACCOUNT='"+bankaccount+"'"+" AND PHONE='"+phonenumber+"'"+" AND IFSCCODE='"+ifsccode+"'"+ " AND AADHARCARD='"+aadharcard+"'"+" AND TYPE='"+type+"'" + " AND BANKNAME='"+bankname+"'"+" AND ACHOLDER='"+acholder+"'";
-      Cursor cursor=db.rawQuery(query,null);
-      return cursor;
-    }
+            db = this.getWritableDatabase();//error when closing db or cursor
+            String query = "SELECT ID FROM " + TABLE_NAME1 + " WHERE NAME='" + name + "'" + " AND FATHERNAME='" + fathername + "'" + " AND BANKACCOUNT='" + bankaccount + "'" + " AND PHONE='" + phonenumber + "'" + " AND IFSCCODE='" + ifsccode + "'" + " AND AADHARCARD='" + aadharcard + "'" + " AND TYPE='" + type + "'" + " AND BANKNAME='" + bankname + "'" + " AND ACHOLDER='" + acholder + "'";
+            Cursor cursor = db.rawQuery(query, null);
+            return cursor;
+     }
 
-    public Cursor getData(String query){
-        db=this.getReadableDatabase();
-        Cursor cursor=db.rawQuery(query,null);
-        //db.close();//error connection pool has been closed
-        return cursor;
+    public Cursor getData(String query){//error when closing db or cursor
+            db = this.getReadableDatabase();
+            Cursor cursor = db.rawQuery(query, null);
+            return cursor;
     }
     //update to Table 1
     public boolean updateDataTable1(String name, String bankaccount, String ifsccode, String bankname, String aadharcard, String phonenumber, String skill, String fathername, byte[] image, String acholder, String Id ) {
@@ -147,15 +153,18 @@ public class PersonRecordDatabase extends SQLiteOpenHelper {
             cv.put(COL_11, acholder);
             cv.put(COL_12, "1");//when ever user update that usere will become active
             //0 is returned if no record updated and it return number of rows updated
-            long rowid = db.update(TABLE_NAME1, cv, "ID=?", new String[]{Id});
-            db.close();//closing db after operation performed
-            if (rowid == 0)//data not inserted
+            int rowid = db.update(TABLE_NAME1, cv, "ID=?", new String[]{Id});
+            //db.close();//closing db after operation performed
+            if(rowid!=1)//if update return 1 then data is updated else not updated
                 return false;
-            else
+
                 return true;
         } catch (Exception e) {
             e.printStackTrace();
             return false;
+        }finally {
+            if(db != null)
+                db.close();
         }
     }
     //insertdata TO table 3
@@ -174,7 +183,7 @@ public class PersonRecordDatabase extends SQLiteOpenHelper {
             cv.put(COL_39, indicator);
             //-1 is returned if error occurred. .insert(...) returns the row id of the new inserted record
             long rowid = db.insert(TABLE_NAME3, null, cv);
-            db.close();//closing db after operation performed
+           // db.close();//closing db after operation performed
             if (rowid == -1)//data not inserted
                 return false;
             else
@@ -182,6 +191,9 @@ public class PersonRecordDatabase extends SQLiteOpenHelper {
         }catch (Exception e){
             e.printStackTrace();
             return false;
+        }finally {
+            if(db != null)
+                db.close();
         }
     }
     //insertdata TO table 2
@@ -199,7 +211,7 @@ public class PersonRecordDatabase extends SQLiteOpenHelper {
            cv.put(COL_224, isDeposited);
             //-1 is returned if error occurred. .insert(...) returns the row id of the new inserted record
             long rowid = db.insert(TABLE_NAME2, null, cv);
-            db.close();//closing db after operation performed
+           // db.close();//closing db after operation performed
             if (rowid == -1)//data not inserted
                 return false;
             else
@@ -207,6 +219,9 @@ public class PersonRecordDatabase extends SQLiteOpenHelper {
         }catch (Exception e){
             e.printStackTrace();
             return false;
+        }finally {
+            if(db != null)
+                db.close();
         }
     }
     public boolean insert_2_Person_WithWagesTable2(String id, String date,String time, String micPath, String description, int wages, int p1,int p2, String isDeposited) {
@@ -224,7 +239,7 @@ public class PersonRecordDatabase extends SQLiteOpenHelper {
             cv.put(COL_224, isDeposited);
             //-1 is returned if error occurred. .insert(...) returns the row id of the new inserted record
             long rowid = db.insert(TABLE_NAME2, null, cv);
-            db.close();//closing db after operation performed
+           // db.close();//closing db after operation performed
             if (rowid == -1)//data not inserted
                 return false;
             else
@@ -232,6 +247,9 @@ public class PersonRecordDatabase extends SQLiteOpenHelper {
         }catch (Exception e){
             e.printStackTrace();
             return false;
+        }finally {
+            if(db != null)
+                db.close();
         }
     }
     public boolean insert_3_Person_WithWagesTable2(String id, String date,String time, String micPath, String description, int wages, int p1,int p2,int p3, String isDeposited) {
@@ -250,7 +268,7 @@ public class PersonRecordDatabase extends SQLiteOpenHelper {
             cv.put(COL_224, isDeposited);
             //-1 is returned if error occurred. .insert(...) returns the row id of the new inserted record
             long rowid = db.insert(TABLE_NAME2, null, cv);
-            db.close();//closing db after operation performed
+           // db.close();//closing db after operation performed
             if (rowid == -1)//data not inserted
                 return false;
             else
@@ -258,6 +276,9 @@ public class PersonRecordDatabase extends SQLiteOpenHelper {
         }catch (Exception e){
             e.printStackTrace();
             return false;
+        }finally {
+            if(db != null)
+                db.close();
         }
     }
     public boolean insert_4_Person_WithWagesTable2(String id, String date,String time, String micPath, String description, int wages, int p1,int p2,int p3,int p4, String isDeposited) {
@@ -277,7 +298,7 @@ public class PersonRecordDatabase extends SQLiteOpenHelper {
             cv.put(COL_224, isDeposited);
             //-1 is returned if error occurred. .insert(...) returns the row id of the new inserted record
             long rowid = db.insert(TABLE_NAME2, null, cv);
-            db.close();//closing db after operation performed
+           // db.close();//closing db after operation performed
             if (rowid == -1)//data not inserted
                 return false;
             else
@@ -285,6 +306,9 @@ public class PersonRecordDatabase extends SQLiteOpenHelper {
         }catch (Exception e){
             e.printStackTrace();
             return false;
+        }finally {
+            if(db != null)
+                db.close();
         }
     }
     public boolean insert_Deposit_Table2(String id, String date,String time, String micPath, String description,int deposite,String isDeposited) {
@@ -300,7 +324,7 @@ public class PersonRecordDatabase extends SQLiteOpenHelper {
             cv.put(COL_224, isDeposited);
             //-1 is returned if error occurred. .insert(...) returns the row id of the new inserted record
             long rowid = db.insert(TABLE_NAME2, null, cv);
-            db.close();//closing db after operation performed
+           // db.close();//closing db after operation performed
             if (rowid == -1)//data not inserted
                 return false;
             else
@@ -308,21 +332,212 @@ public class PersonRecordDatabase extends SQLiteOpenHelper {
         }catch (Exception e){
             e.printStackTrace();
             return false;
+        }finally {
+            if(db != null)
+                db.close();
         }
     }
-
-
     public boolean updateTable(String query){
         try{
             db=this.getWritableDatabase();
             db.execSQL(query);
-            db.close();
             return true;
         }catch(Exception e){
             e.printStackTrace();
             return false;
+        }finally {
+            if(db != null)
+                db.close();
         }
     }
+    public boolean update_1_TABLE_NAME2(String date, String time, String remarks, String micPath, int wages , int p1 , String id , String date2, String time2){
+        try {
+            db = this.getWritableDatabase();//getting permission
+            ContentValues cv = new ContentValues();//to enter data at once it is like hash map
+            cv.put(COL_22, date);
+            cv.put(COL_2221, time);
+            cv.put(COL_24, micPath);
+            cv.put(COL_26, remarks);
+            cv.put(COL_27, wages);
+            cv.put(COL_29, p1);
+            //100 % it will update
+            int rowid = db.update(TABLE_NAME2,cv,"ID= '"+id+"'"+" AND DATE= '"+date2+"'"+" AND TIME= '"+time2+"'",null);
+           // db.close();//closing db after operation performed
+            if(rowid!=1)//if update return 1 then data is updated else not updated
+                return false;
+             return  true;
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }finally {
+            if(db != null)
+                db.close();
+        }
+    }
+    public boolean update_2_TABLE_NAME2(String date, String time, String remarks, String micPath, int wages , int p1, int p2 , String id , String date2, String time2){
+        try {
+            db = this.getWritableDatabase();//getting permission
+            ContentValues cv = new ContentValues();//to enter data at once it is like hash map
+            cv.put(COL_22, date);
+            cv.put(COL_2221, time);
+            cv.put(COL_24, micPath);
+            cv.put(COL_26, remarks);
+            cv.put(COL_27, wages);
+            cv.put(COL_29, p1);
+            cv.put(COL_221, p2);
+            //100 % it will update
+            int rowid = db.update(TABLE_NAME2,cv,"ID= '"+id+"'"+" AND DATE= '"+date2+"'"+" AND TIME= '"+time2+"'",null);
+           // db.close();//closing db after operation performed
+            if(rowid!=1)//if update return 1 then data is updated else not updated
+                return false;
+            return  true;
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }finally {
+            if(db != null)
+                db.close();
+        }
+    }
+    public boolean update_3_TABLE_NAME2(String date, String time, String remarks, String micPath, int wages , int p1, int p2, int p3 , String id , String date2, String time2){
+        try {
+            db = this.getWritableDatabase();//getting permission
+            ContentValues cv = new ContentValues();//to enter data at once it is like hash map
+            cv.put(COL_22, date);
+            cv.put(COL_2221, time);
+            cv.put(COL_24, micPath);
+            cv.put(COL_26, remarks);
+            cv.put(COL_27, wages);
+            cv.put(COL_29, p1);
+            cv.put(COL_221, p2);
+            cv.put(COL_222, p3);
+            //100 % it will update
+            int rowid = db.update(TABLE_NAME2,cv,"ID= '"+id+"'"+" AND DATE= '"+date2+"'"+" AND TIME= '"+time2+"'",null);
+            //db.close();//closing db after operation performed
+            if(rowid!=1)//if update return 1 then data is updated else not updated
+                return false;
 
+            return  true;
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }finally {
+            if(db != null)
+                db.close();
+        }
+    }
+    public boolean update_4_TABLE_NAME2(String date, String time, String remarks, String micPath, int wages , int p1 , int p2, int p3, int p4, String id , String date2, String time2){
+        try {
+            db = this.getWritableDatabase();//getting permission
+            ContentValues cv = new ContentValues();//to enter data at once it is like hash map
+            cv.put(COL_22, date);
+            cv.put(COL_2221, time);
+            cv.put(COL_24, micPath);
+            cv.put(COL_26, remarks);
+            cv.put(COL_27, wages);
+            cv.put(COL_29, p1);
+            cv.put(COL_221, p2);
+            cv.put(COL_222, p3);
+            cv.put(COL_223, p4);
+            //100 % it will update
+            int rowid = db.update(TABLE_NAME2,cv,"ID= '"+id+"'"+" AND DATE= '"+date2+"'"+" AND TIME= '"+time2+"'",null);
+           // db.close();//closing db after operation performed
+            if(rowid!=1)//if update return 1 then data is updated else not updated
+                return false;
+
+            return  true;
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }finally {
+            if(db != null)
+                db.close();
+        }
+    }
+    public boolean update_Deposit_TABLE_NAME2(String date,String time, String micPath, String description,int deposite,String id , String date2, String time2) {
+        try {
+            db = this.getWritableDatabase();//getting permission
+            ContentValues cv = new ContentValues();//to enter data at once it is like hash map
+            cv.put(COL_22, date);
+            cv.put(COL_2221, time);
+            cv.put(COL_24, micPath);
+            cv.put(COL_26, description);
+            cv.put(COL_28, deposite);
+
+             //100 % it will update
+            int rowid = db.update(TABLE_NAME2,cv,"ID= '"+id+"'"+" AND DATE= '"+date2+"'"+" AND TIME= '"+time2+"'",null);
+           // db.close();//closing db after operation performed
+            if(rowid!=1)//if update return 1 then data is updated else not updated
+                return false;
+
+            return  true;
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }finally {
+            if(db != null)
+                db.close();
+        }
+    }
+    public boolean update_Rating_TABLE_NAME3(String rate,String referal,String leavingDate,String id){
+        try {
+            db = this.getWritableDatabase();//getting permission
+            ContentValues cv = new ContentValues();//to enter data at once it is like hash map
+            cv.put(COL_325, rate);
+            cv.put(COL_327, referal);
+            cv.put(COL_326, leavingDate);
+            //100 % it will update
+            int rowid = db.update(TABLE_NAME3,cv,"ID= '"+id+"'",null);
+            if(rowid!=1)//if update return 1 then data is updated else not updated
+                return false;
+
+            return  true;
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }finally {
+            if(db != null)
+                db.close();
+        }
+    }
+    public boolean insertPdf(String id,byte [] pdf,int whichPdf1or2){
+        try {
+            db = this.getWritableDatabase();//getting permission
+            ContentValues cv = new ContentValues();//to enter data at once it is like hash map
+            if(whichPdf1or2==1) {
+                cv.put(COL_328, pdf);//pdf1
+            }else {//if whichPdf1or2==2
+                cv.put(COL_329, pdf);//pdf2
+            }
+            //100 % it will update return 1 if updated
+             int rowid = db.update(TABLE_NAME3,cv,"ID= '"+id+"'",null);
+            // db.close();//closing db after operation performed
+            if(rowid!=1)//if update return 1 then data is updated else not updated
+                return false;
+            return  true;
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }finally {
+            if(db != null)
+                db.close();
+        }
+    }
+    public boolean deleteRows(String id,String tableName){
+        try {
+            db = this.getWritableDatabase();//getting permission
+            int row = db.delete(tableName, "ID= '" + id + "'", null);
+            if (row > 0)//delete method return number of record deleted
+                return true;
+
+            return false;
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }finally {
+            if(db != null)
+            db.close();
+        }
+    }
 
 }

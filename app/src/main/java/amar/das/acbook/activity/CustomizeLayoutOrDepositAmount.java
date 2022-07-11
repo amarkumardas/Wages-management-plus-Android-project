@@ -484,8 +484,7 @@ public class CustomizeLayoutOrDepositAmount extends AppCompatActivity {
 
 
                     //if user dont enter remarks or description then it is sure that previous data will be entered so no need to check null pointer exception
-                    String remarks = "[" + time + "]-[EDITED]\n\n*****PREVIOUS DATA WAS*****\n" + previousDataHold[0] + "  " + previousDataHold[1] + "\n" + previousDataHold[2] + "\n" + previousDataHold[3] +"\n\n" +
-                            "*****NEW EDITED DATA REMARKS*****" + "\n" + binding.customDescriptionEt.getText().toString().trim();//time is set automatically to remarks if user enter any remarks;
+                    String remarks = "[" + time + "]-[EDITED]\n\n"+binding.customDescriptionEt.getText().toString().trim()+"\n\n*****PREVIOUS DATA WAS*****\n" + previousDataHold[0] + "  " + previousDataHold[1] + "\n" + previousDataHold[2] + "\n" + previousDataHold[3] ;//time is set automatically to remarks if user enter any remarks;
                     arr[1] = 1;//this is important because when user do not enter any data while updating then atleast 1 field should be filled with data so this field will sure be filled automatically so this is important.
 
                     boolean isWrongData,isDataPresent,success;
@@ -498,11 +497,13 @@ public class CustomizeLayoutOrDepositAmount extends AppCompatActivity {
 
                         db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET ACTIVE='" + 1 + "'" + " WHERE ID='" + getIntent().getStringExtra("ID") + "'");//when ever user update then that person will become active
 
-                        if(micPath != null)//if it is not null then update micpath
-                          success =db.updateTable("UPDATE " + db.TABLE_NAME2 + " SET DATE='" + date + "',TIME='" + time + "',DESCRIPTION='" + remarks +"',MICPATH='"+micPath+ "',DEPOSIT='" + depositAmount + "' WHERE ID= '" + getIntent().getStringExtra("ID") + "'" + " AND DATE= '" + getIntent().getStringExtra("DATE") + "'" + " AND TIME='" + getIntent().getStringExtra("TIME") + "'");
-                        else//if micPath == null then we are not updating because null in text will be set to micpath and give wroing result like it will indicate that audio is present but actually audio is not present
-                            success =db.updateTable("UPDATE " + db.TABLE_NAME2 + " SET DATE='" + date + "',TIME='" + time + "',DESCRIPTION='" + remarks  + "',DEPOSIT='" + depositAmount + "' WHERE ID= '" + getIntent().getStringExtra("ID") + "'" + " AND DATE= '" + getIntent().getStringExtra("DATE") + "'" + " AND TIME='" + getIntent().getStringExtra("TIME") + "'");
-
+                        if(micPath != null) {//if it is not null then update micpath
+                          //  success = db.updateTable("UPDATE " + db.TABLE_NAME2 + " SET DATE='" + date + "',TIME='" + time + "',DESCRIPTION='" + remarks + "',MICPATH='" + micPath + "',DEPOSIT='" + depositAmount + "' WHERE ID= '" + getIntent().getStringExtra("ID") + "'" + " AND DATE= '" + getIntent().getStringExtra("DATE") + "'" + " AND TIME='" + getIntent().getStringExtra("TIME") + "'");
+                            success=db.update_Deposit_TABLE_NAME2(date,time,micPath,remarks,depositAmount,getIntent().getStringExtra("ID"),getIntent().getStringExtra("DATE"),getIntent().getStringExtra("TIME"));
+                        } else {//if micPath == null then we are not updating because null in text will be set to micpath and give wroing result like it will indicate that audio is present but actually audio is not present
+                           // success = db.updateTable("UPDATE " + db.TABLE_NAME2 + " SET DATE='" + date + "',TIME='" + time + "',DESCRIPTION='" + remarks + "',DEPOSIT='" + depositAmount + "' WHERE ID= '" + getIntent().getStringExtra("ID") + "'" + " AND DATE= '" + getIntent().getStringExtra("DATE") + "'" + " AND TIME='" + getIntent().getStringExtra("TIME") + "'");
+                            success=db.update_Deposit_TABLE_NAME2(date,time,null,remarks,depositAmount,getIntent().getStringExtra("ID"),getIntent().getStringExtra("DATE"),getIntent().getStringExtra("TIME"));
+                        }
                         if (success == true) {
                             displResult("DEPOSIT : "+depositAmount,"\nDATE:  "+date+"\n\nREMARKS: "+remarks+"\n\nMICPATH: "+micPath);
                         } else

@@ -44,8 +44,8 @@ public class ActiveMFragment extends Fragment {
          balance=root.findViewById(R.id.active_m_balance);
          Cursor advanceBalanceCursor=db.getData("SELECT SUM(ADVANCE),SUM(BALANCE) FROM "+db.TABLE_NAME1+" WHERE TYPE='M' AND ACTIVE='1'");
          advanceBalanceCursor.moveToFirst();
-        advance.setText(HtmlCompat.fromHtml("ADVANCE: "+"<b>"+advanceBalanceCursor.getInt(0)+"</b>",HtmlCompat.FROM_HTML_MODE_LEGACY));
-        balance.setText(HtmlCompat.fromHtml("BALANCE: "+"<b>"+advanceBalanceCursor.getInt(1)+"</b>",HtmlCompat.FROM_HTML_MODE_LEGACY));
+        advance.setText(HtmlCompat.fromHtml("ADVANCE: "+"<b>"+advanceBalanceCursor.getLong(0)+"</b>",HtmlCompat.FROM_HTML_MODE_LEGACY));
+        balance.setText(HtmlCompat.fromHtml("BALANCE: "+"<b>"+advanceBalanceCursor.getLong(1)+"</b>",HtmlCompat.FROM_HTML_MODE_LEGACY));
          advanceBalanceCursor.close();
 
         LocalDate todayDate = LocalDate.now();//current date; return 2022-05-01

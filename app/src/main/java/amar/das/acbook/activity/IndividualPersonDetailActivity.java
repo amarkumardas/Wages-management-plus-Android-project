@@ -49,6 +49,8 @@ import android.widget.Toast;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -100,7 +102,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
              sumCursor.moveToFirst();
 
              if( sumCursor.getInt(0) < 0 )//if total wages amount cross the  range of int the this message will be shown
-                 Toast.makeText(this, "INCORRECT CALCULATION PLEACE CHECK TOTAL WAGES", Toast.LENGTH_LONG).show();
+                 Toast.makeText(this, "INCORRECT CALCULATION PLEASE CHECK TOTAL WAGES", Toast.LENGTH_LONG).show();
 
              binding.blueTotalWagesTv.setText(sumCursor.getString(0));
              binding.blueTotalp1Tv.setText(sumCursor.getString(1));
@@ -121,8 +123,10 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                     binding.p1RateTv.setText(skillNRateCursor.getString(3));//default skill
                                                                        //    R1 * p1
                     binding.totalP1AmountTv.setText("= "+skillNRateCursor.getInt(3)*sumCursor.getInt(1));//default skill
-                }else
-                    binding.totalP1AmountTv.setText("= NO RATE NEW PERSON");//default skill
+                }else {
+                    binding.totalP1AmountTv.setText("= NEW PERSON PROVIDE RATE");//default skill
+                    Toast.makeText(this, "Long press FINAL TOTAL button to  provide rate", Toast.LENGTH_LONG).show();
+                }
                                //total wages
                 if(sumCursor.getString(0) !=null) {//if total wages is not null then set total wages
                     binding.wagesTotalAmountTv.setText(sumCursor.getString(0));//total wages set
@@ -142,8 +146,10 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                         binding.p2RateTv.setText(skillNRateCursor.getString(4));
                         //    R2 * p2
                         binding.totalP2AmountTv.setText("= "+skillNRateCursor.getInt(4)*sumCursor.getInt(2));
-                    }else
-                        binding.totalP2AmountTv.setText("= NO RATE NEW PERSON");
+                    }else {
+                        binding.totalP2AmountTv.setText("= NEW PERSON PROVIDE RATE");
+                        Toast.makeText(this, "Long press FINAL TOTAL button to  provide rate", Toast.LENGTH_LONG).show();
+                    }
 
                     binding.totalP2CountTv.setText(sumCursor.getString(2));//total p2 count
                     binding.skill1TextTv.setText(skillNRateCursor.getString(0)+"  =");//setting skill 1
@@ -158,16 +164,19 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                         binding.p2RateTv.setText(skillNRateCursor.getString(4));
                                                                                 //    R2 * p2
                         binding.totalP2AmountTv.setText("= "+skillNRateCursor.getInt(4)*sumCursor.getInt(2));
-                    }else
-                        binding.totalP2AmountTv.setText("= NO RATE NEW PERSON");
+                    }else {
+                        binding.totalP2AmountTv.setText("= NEW PERSON PROVIDE RATE");
+                        Toast.makeText(this, "Long press FINAL TOTAL button to  provide rate", Toast.LENGTH_LONG).show();
+                    }
 
                     if(skillNRateCursor.getInt(5) != 0) {
                         binding.p3RateTv.setText(skillNRateCursor.getString(5));
                                                                                  //    R3 * p3
                         binding.totalP3AmountTv.setText("= "+skillNRateCursor.getInt(5)*sumCursor.getInt(3));
-                    }else
-                        binding.totalP3AmountTv.setText("= NO RATE NEW PERSON");
-
+                    }else {
+                        binding.totalP3AmountTv.setText("= NEW PERSON PROVIDE RATE");
+                        Toast.makeText(this, "Long press FINAL TOTAL button to  provide rate", Toast.LENGTH_LONG).show();
+                    }
                     binding.totalP2CountTv.setText(sumCursor.getString(2));//total p2 count
                     binding.totalP3CountTv.setText(sumCursor.getString(3));//total p3 count
                     binding.skill1TextTv.setText(skillNRateCursor.getString(0)+"  =");//setting skill 1
@@ -186,22 +195,28 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                         binding.p2RateTv.setText(skillNRateCursor.getString(4));
                         //    R2 * p2
                         binding.totalP2AmountTv.setText("= "+skillNRateCursor.getInt(4)*sumCursor.getInt(2));
-                    }else
-                        binding.totalP2AmountTv.setText("= NO RATE NEW PERSON");
+                    }else {
+                        binding.totalP2AmountTv.setText("= NEW PERSON PROVIDE RATE");
+                        Toast.makeText(this, "Long press FINAL TOTAL button to  provide rate", Toast.LENGTH_LONG).show();
+                    }
 
                     if(skillNRateCursor.getInt(5) != 0) {
                         binding.p3RateTv.setText(skillNRateCursor.getString(5));
                         //    R3 * p3
                         binding.totalP3AmountTv.setText("= "+skillNRateCursor.getInt(5)*sumCursor.getInt(3));
-                    }else
-                        binding.totalP3AmountTv.setText("= NO RATE NEW PERSON");
+                    }else {
+                        binding.totalP3AmountTv.setText("= NEW PERSON PROVIDE RATE");
+                        Toast.makeText(this, "Long press FINAL TOTAL button to  provide rate", Toast.LENGTH_LONG).show();
+                    }
 
                     if(skillNRateCursor.getInt(6) != 0) {
                         binding.p4RateTv.setText(skillNRateCursor.getString(6));
                         //    R4 * p4
                         binding.totalP4AmountTv.setText("= "+skillNRateCursor.getInt(6)*sumCursor.getInt(4));
-                    }else
-                        binding.totalP4AmountTv.setText("= NO RATE NEW PERSON");
+                    }else {
+                        binding.totalP4AmountTv.setText("= NEW PERSON PROVIDE RATE");
+                        Toast.makeText(this, "Long press FINAL TOTAL button to  provide rate", Toast.LENGTH_LONG).show();
+                    }
 
                     binding.totalP2CountTv.setText(sumCursor.getString(2));//total p2 count
                     binding.totalP3CountTv.setText(sumCursor.getString(3));//total p3 count
@@ -340,7 +355,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                     ArrayAdapter<String> adapter = new ArrayAdapter<>(IndividualPersonDetailActivity.this, android.R.layout.simple_list_item_1,ratingStar);
                     starSpinner.setAdapter(adapter);
                     if(cursor2.getString(0) != null){//rating star
-                        int spinnerPosition = adapter.getPosition(cursor2.getString(0) );
+                        int spinnerPosition = adapter.getPosition(cursor2.getString(0));
                         starSpinner.setSelection(spinnerPosition);
                     }else if(cursor2.getString(0) == null){
                         int spinnerPosition = adapter.getPosition("1");//1 star by default
@@ -380,6 +395,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                         @Override
                         public void onClick(View view) {
                             boolean success2;
+                            String rate;
                             if(active.equals("1")) {//if user has pressed radio button then only it will execute
                                 //to automatically set today date so that it become active
                                 final Calendar current=Calendar.getInstance();//to get current date and time
@@ -387,17 +403,26 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                                 int cMonth=current.get(Calendar.MONTH);
                                 int cDayOfMonth=current.get(Calendar.DAY_OF_MONTH);
                                 String date=cDayOfMonth+"-"+(cMonth+1)+"-"+cYear;
-                                db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET ACTIVE='" + active +"', LATESTDATE='"+date+"' WHERE ID='" + fromIntentPersonId + "'");
+                                success2=db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET ACTIVE='" + active +"', LATESTDATE='"+date+"' WHERE ID='" + fromIntentPersonId + "'");
+                                if(!success2)
+                                    Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO UPDATE LATEST DATE", Toast.LENGTH_LONG).show();
                             }
-                            if(dateTv.getText().toString()=="")//by default if user dont enter anything then editText view contain nothing so checking "" it is important otherwise it will  produce error to other code due to nothing.so if nothing then dont update leavingdate
-                                 success2=db.updateTable("UPDATE "+db.TABLE_NAME3+" SET RATING='"+starSpinner.getSelectedItem().toString()+"',REFFERAL='"+refferal.getText().toString().trim()+"' WHERE ID='"+fromIntentPersonId+"'");
-                            else //if user dont enter anything then else will execute
-                                success2 = db.updateTable("UPDATE " + db.TABLE_NAME3 + " SET RATING='" + starSpinner.getSelectedItem().toString() + "',LEAVINGDATE='" + dateTv.getText().toString().trim() + "',REFFERAL='" + refferal.getText().toString().trim() + "' WHERE ID='" + fromIntentPersonId + "'");
 
-                             if(!success2){
-                                 Toast.makeText(IndividualPersonDetailActivity.this, "DATA NOT UPDATED", Toast.LENGTH_LONG).show();
+                             if(starSpinner.getSelectedItem().toString().equals("SELECT"))//if user bymistake click on SELECT then by default start set to 1
+                                 rate="1";//default value
+                             else
+                                 rate=starSpinner.getSelectedItem().toString();
+
+                             if(dateTv.getText().toString()=="") {//by default if user dont enter anything then editText view contain nothing so checking "" it is important otherwise it will  produce error to other code due to nothing.so if nothing then dont update leavingdate
+                                  success2=db.update_Rating_TABLE_NAME3(rate,refferal.getText().toString().trim(),null,fromIntentPersonId);
+                             } else { //if user dont enter anything then else will execute
+                                  success2=db.update_Rating_TABLE_NAME3(rate,refferal.getText().toString().trim(),dateTv.getText().toString().trim(),fromIntentPersonId);
                              }
-                             displResult("SAVED SUCCESSFULLY","RATING: "+starSpinner.getSelectedItem().toString()+"\nLEAVINGDATE: "+dateTv.getText().toString().trim()+"\n\nREFFERED TO: "+refferal.getText().toString().trim());
+                             if(success2)
+                                 displResult("SAVED SUCCESSFULLY", "RATING: " + rate + "\nLEAVINGDATE: " + dateTv.getText().toString().trim() + "\n\nREFFERED TO: " + refferal.getText().toString().trim());
+                             else
+                                 displResult("FAILED TO SAVE!!!","DATA NOT UPDATED- UPDATE QUERY FAILED- PLEASE TRY AGAIN");
+
                              dialog.dismiss();
                         }
                     });
@@ -741,23 +766,188 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                     saveAndCreatePdf.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            Toast.makeText(IndividualPersonDetailActivity.this, "M "+checkInternalStorageAvailability(), Toast.LENGTH_SHORT).show();
-                            if(checkInternalStorageAvailability() >= 2){//if Internal storage is greater then 2 GB then condition will be true
+                            Toast.makeText(IndividualPersonDetailActivity.this, "MB "+(checkInternalStorageAvailability()*1000), Toast.LENGTH_SHORT).show();
+
+                            if((checkInternalStorageAvailability()*1000) >= 50){//(checkInternalStorageAvailability()*1000) converted to MB so if it is greater or equal to 50 MB then true
                                 if(checkPermissionForReadAndWriteToExternalStorage()) {//Take permission
-                                    updateTotalToDatabase();
-                                    generatePDF();
+
+                                    if(updateTotalAdvanceOrBalanceToDatabase()) {
+
+                                        if(generatePDF()){
+
+                                            if(viewPDF(fileName)) {//fileName is global variable actually its pdfPathAbsolute ie.pdf created in device so path of pdf which is in device
+
+                                               if(modifyToDB(fileName)) {//fileName is global variable actually its pdfPathAbsolute ie.ie.pdf created in device so path of pdf which is in device
+                                                   Toast.makeText(IndividualPersonDetailActivity.this, "operation successfull", Toast.LENGTH_LONG).show();
+                                               }else {
+                                                   Toast.makeText(IndividualPersonDetailActivity.this, "operation failed", Toast.LENGTH_LONG).show();
+                                               }
+
+                                            }else{
+                                                Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO VIEW PDF", Toast.LENGTH_LONG).show();
+                                            }
+                                        }else{
+                                            Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO GENERATE PDF", Toast.LENGTH_LONG).show();
+                                        }
+
+                                    }else {
+                                        Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO UPDATE ADVANCE OR BALANCE TO DB", Toast.LENGTH_LONG).show();
+                                    }
+
                                 }else {//request for permission
                                     Toast.makeText(IndividualPersonDetailActivity.this, "READ,WRITE EXTERNAL STORAGE PERMISSION REQUIRED", Toast.LENGTH_LONG).show();
                                     ActivityCompat.requestPermissions(IndividualPersonDetailActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 20);
                                 }
                             }else//we will let user know what gone wrong
-                                Toast.makeText(IndividualPersonDetailActivity.this, "FAILED-NO SUFFICIENT MEMORY \nINTERNAL MEMORY AVAILABLE: "+checkInternalStorageAvailability()+" GB", Toast.LENGTH_LONG).show();
+                                Toast.makeText(IndividualPersonDetailActivity.this, "FAILED-NO SUFFICIENT MEMORY \nINTERNAL MEMORY AVAILABLE: "+(checkInternalStorageAvailability()*1000)+" MB", Toast.LENGTH_LONG).show();
                         }
                     });
                     dialog.show();
                     return false;
                 }
-                private void generatePDF() {
+
+                private boolean modifyToDB(String pdfPath) {
+                    try(PersonRecordDatabase personDb=new PersonRecordDatabase(getApplicationContext())) {//so that object close automatically
+                        byte[] pdfBytes = Files.readAllBytes(Paths.get(pdfPath));//CONVERTED pdf file to byte array if path is not found then catch block execute
+
+                        if (savePdfToDatabase(pdfBytes)){//store pdf to database
+                                //this function will be written when existing from pdf viewer
+//                                boolean deleted = deletePdfFromDevice(pdfPath);
+//                                if (!deleted) {
+//                                    Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO DELETE PDF FILE FROM DEVICE", Toast.LENGTH_SHORT).show();
+//                                }
+
+                                if(deleteWagesFromDBorRecyclerView(fromIntentPersonId)) {//delete records from recycle view this should be perform first so that update will be visible
+
+                                    if(!updateAdvanceOrBalanceToDBorRecyclerView(fromIntentPersonId)){ //update balance or advance to db
+                                        Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO UPDATE RECYCLER VIEW", Toast.LENGTH_LONG).show();
+                                        personDb.insert_1_Person_WithWagesTable2(fromIntentPersonId, "0-0-0", "0:0:0:0", null,   "3rd OPERATION FAILED TO UPDATE RECYCLER VIEW" , 0, 0, "0");
+                                        return false;
+                                    }
+                                }else{
+                                    Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO DELETE RECORD FROM DB", Toast.LENGTH_LONG).show();
+                                    personDb.insert_1_Person_WithWagesTable2(fromIntentPersonId, "0-0-0", "0:0:0:0", null,   "2nd OPERATION FAILED TO DELETE RECORD FROM DB" , 0, 0, "0");
+                                    return false;
+                                }
+                            }else{
+                                Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO SAVE PDF IN DB", Toast.LENGTH_LONG).show();
+                                personDb.insert_1_Person_WithWagesTable2(fromIntentPersonId, "0-0-0", "0:0:0:0", null,   "1st OPERATION FAILED TO SAVE PDF IN DB" , 0, 0, "0");
+                                return false;
+                            }
+                    }catch (IOException ex) {
+                        Toast.makeText(IndividualPersonDetailActivity.this, "PDF File not Found IOException", Toast.LENGTH_LONG).show();
+                        ex.printStackTrace();
+                        return false;
+                    }
+                    catch (Exception ex){
+                        Toast.makeText(IndividualPersonDetailActivity.this, "PDF File not Found Exception", Toast.LENGTH_LONG).show();
+                        ex.printStackTrace();
+                        return false;
+                    }
+                      return true;
+                }
+
+                private boolean deleteWagesFromDBorRecyclerView(String fromIntentPersonId) {
+                    try(PersonRecordDatabase personDb=new PersonRecordDatabase(getApplicationContext());
+                        Cursor cursor = personDb.getData("SELECT ID FROM " + db.TABLE_NAME2 + " WHERE ID= '" + fromIntentPersonId + "'");
+                       ){//so that object close automatically
+                        cursor.moveToFirst();
+                        if(cursor.getCount()==0){//if already record not presend then return true
+                            return true;
+                        }
+                        boolean success=personDb.deleteRows(fromIntentPersonId,personDb.TABLE_NAME2);
+                        if(success)
+                            return true;
+                        return false;
+                    }
+                }
+                private boolean updateAdvanceOrBalanceToDBorRecyclerView(String fromIntentPersonId) {
+                    PersonRecordDatabase db=null;
+                    Cursor cursor=null;
+                    try {
+                          db = new PersonRecordDatabase(getApplicationContext());//so db close automatically
+                        int amount=0;
+                        boolean success;
+                        final Calendar current = Calendar.getInstance();//to get current date
+                        String date = current.get(Calendar.DAY_OF_MONTH) + "-" + (current.get(Calendar.MONTH) + 1) + "-" + current.get(Calendar.YEAR);
+
+                        Date d = Calendar.getInstance().getTime(); //To get exact time so write code in save button
+                        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss a");//a stands for is AM or PM
+                        String time = sdf.format(d);
+                        cursor = db.getData("SELECT ADVANCE,BALANCE FROM " + db.TABLE_NAME1 + " WHERE ID= '" + fromIntentPersonId + "'");
+                        cursor.moveToFirst();//means only one row is returned
+                        if (cursor.getInt(0) != 0 && cursor.getInt(1) == 0) {
+                            amount = cursor.getInt(0);
+                            //insert to database taking just first person                                                      //remarks
+                            success = db.insert_1_Person_WithWagesTable2(fromIntentPersonId, date, time, null, "[" + time + "]-[ENTERED]\n\n" + "Advance after calculation: " + amount, amount, 0, "0");
+                            if (!success)
+                                return false;
+                        }
+                        if (cursor.getInt(0) == 0 && cursor.getInt(1) != 0) {
+                            amount = cursor.getInt(1);
+                            //insert to database taking just first person                                                      //remarks
+                            success = db.insert_Deposit_Table2(fromIntentPersonId, date, time, null, "[" + time + "]-[ENTERED]\n\n" + "Balance after calculation: " + amount, amount, "1");
+                            if (!success)
+                                return false;
+                        }
+                        return true;
+                    }finally {
+                        try {
+                            if (cursor != null)
+                                cursor.close();
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
+                        try {
+                            if (db != null)
+                                db.close();
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
+                    }
+
+                }
+                private boolean deletePdfFromDevice(String pdfPath) {
+                    File filePath= new File(pdfPath);//file to be delete
+                    if(filePath.exists()) {
+                        return filePath.delete();
+                    }
+                    return false;//file not deleted or file not existed
+                }
+                private boolean savePdfToDatabase(byte[] newPDF) {
+                    try(PersonRecordDatabase db=new PersonRecordDatabase(getApplicationContext());
+                        Cursor cursor= db.getData("SELECT PDF1 FROM " + db.TABLE_NAME3 + " WHERE ID= '" + fromIntentPersonId +"'");) {//so that object close automatically
+                        cursor.moveToFirst();
+                        if(cursor.getBlob(0)==null){//if pdf1 is null then store in pdf1
+                            Toast.makeText(IndividualPersonDetailActivity.this, "pdf not there", Toast.LENGTH_LONG).show();
+//                            cursor.close();
+                            return db.insertPdf(fromIntentPersonId, newPDF,1);
+                        }
+                        //if pdf1 is not null then store in pdf 2
+                        byte[] pdf1 = cursor.getBlob(0);
+                        Toast.makeText(IndividualPersonDetailActivity.this, "pdf there", Toast.LENGTH_LONG).show();
+                        db.insertPdf(fromIntentPersonId, pdf1,2);
+                        return db.insertPdf(fromIntentPersonId, newPDF,1);
+                    }catch (Exception e){
+                        e.printStackTrace();
+                        return false;
+                    }
+                }
+                private boolean viewPDF(String pdfPath) {
+                    try {//to view pdf
+                        Intent intent=new Intent(IndividualPersonDetailActivity.this, Final_Pdf_Viewer.class);
+                        intent.putExtra("pdfurl",pdfPath);
+                        intent.putExtra("ID",fromIntentPersonId);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        getApplication().startActivity(intent);
+                        return true;
+                    }catch(Exception e){
+                        Toast.makeText(IndividualPersonDetailActivity.this, "CANNOT FIND PATH", Toast.LENGTH_LONG).show();
+                        e.printStackTrace();
+                    }
+                    return  false;
+                }
+                private boolean generatePDF() {
                     //create PDF
                             /*PdfDocument myPdfDocument=new PdfDocument();//pdf instance
                             Paint myPaint=new Paint();//it is responsible for text color
@@ -775,75 +965,195 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                             Canvas canvas2=mypage2.getCanvas();
                             canvas2.drawText("WELCOME  AMAR KUMAR DAS 2 love you ................",10,50,myPaint);
                             myPdfDocument.finishPage(mypage2);*/
+                  try {
+                      PdfDocument myPdfDocument = new PdfDocument();//pdf instance
+                      Paint myPaint = new Paint();//it is responsible for text color
 
-                    PdfDocument myPdfDocument=new PdfDocument();//pdf instance
-                    Paint myPaint=new Paint();//it is responsible for text color
+                      PdfDocument.PageInfo myPageInfo = new PdfDocument.PageInfo.Builder(250, 400, 1).create();//meta data of pdf
+                      PdfDocument.Page mypage = myPdfDocument.startPage(myPageInfo);
 
-                    PdfDocument.PageInfo myPageInfo=new PdfDocument.PageInfo.Builder(250,400,1).create();//meta data of pdf
-                    PdfDocument.Page mypage1=myPdfDocument.startPage(myPageInfo);
-                    //to write in pdf page 1
-                    Canvas canvas=mypage1.getCanvas();
-                    myPaint.setTextAlign(Paint.Align.CENTER);
-                    myPaint.setTextSize(12.0f);                 //so that it will be in middle
-                    canvas.drawText("HR Enterprises",myPageInfo.getPageWidth()/2,30,myPaint);
+                      //to write in pdf page 1
+                      Canvas canvas = mypage.getCanvas();
+                      myPaint.setTextAlign(Paint.Align.CENTER);
+                      myPaint.setTextSize(12.0f);                 //so that it will be in middle
+                      canvas.drawText("HR Enterprises", myPageInfo.getPageWidth() / 2, 30, myPaint);
 
-                    myPaint.setTextSize(6.0f);
-                    //myPaint.setColor(Color.rgb(122,199,199));// myPaint.setColor(getResources().getColor(R.color.green)); or
-                    myPaint.setColor(ContextCompat.getColor(IndividualPersonDetailActivity.this,R.color.background));
-                    canvas.drawText("Street No. 15,Bharat Nagar,Haryana",myPageInfo.getPageWidth()/2,40,myPaint);
+                      myPaint.setTextSize(6.0f);
+                      //myPaint.setColor(Color.rgb(122,199,199));// myPaint.setColor(getResources().getColor(R.color.green)); or
+                      myPaint.setColor(ContextCompat.getColor(IndividualPersonDetailActivity.this, R.color.background));
+                      canvas.drawText("Street No. 15,Bharat Nagar,Haryana", myPageInfo.getPageWidth() / 2, 40, myPaint);
 
-                    myPaint.setTextAlign(Paint.Align.LEFT);
-                    myPaint.setTextSize(9.0f);
-                    myPaint.setColor(Color.rgb(122,199,199));//this is here because if in future upper color is changed then this link color will not change
-                    canvas.drawText("Customer Information",10,70,myPaint);
+                      myPaint.setTextAlign(Paint.Align.LEFT);
+                      myPaint.setTextSize(9.0f);
+                      myPaint.setColor(Color.rgb(122, 199, 199));//this is here because if in future upper color is changed then this link color will not change
+                      canvas.drawText("Customer Information", 10, 70, myPaint);
 
-                    myPaint.setTextAlign(Paint.Align.LEFT);
-                    myPaint.setTextSize(8.0f);
-                    myPaint.setColor(Color.BLACK);
+                      myPaint.setTextAlign(Paint.Align.LEFT);
+                      myPaint.setTextSize(8.0f);
+                      myPaint.setColor(Color.BLACK);
 
-                    String information[]=new String[]{"Name","Company Name","Address","Phone","Email" };
-                    int startXPosition=10;
-                    int endXPosition=myPageInfo.getPageWidth()-10;
-                    int startYPosition=100;
+                      String information[] = new String[]{"Name", "Company Name", "Address", "Phone", "Email"};
+                      int startXPosition = 10;
+                      int endXPosition = myPageInfo.getPageWidth() - 10;
+                      int startYPosition = 100;
 
-                    for(int i=0;i<5;i++){
-                        canvas.drawText(information[i],startXPosition,startYPosition,myPaint);
-                        canvas.drawLine(startXPosition,startYPosition+3,endXPosition,startYPosition+3,myPaint);
-                        startYPosition=startYPosition+20;
-                    }
-                    canvas.drawLine(80,92,80,190,myPaint);
+                      for (int i = 0; i < 5; i++) {
+                          canvas.drawText(information[i], startXPosition, startYPosition, myPaint);
+                          canvas.drawLine(startXPosition, startYPosition + 3, endXPosition, startYPosition + 3, myPaint);
+                          startYPosition = startYPosition + 20;
+                      }
+                      canvas.drawLine(80, 92, 80, 190, myPaint);
 
-                    myPaint.setStyle(Paint.Style.STROKE);
-                    myPaint.setStrokeWidth(2);
-                    canvas.drawRect(10,200,myPageInfo.getPageWidth()-10,300,myPaint);
-                    canvas.drawLine(85,200,85,300,myPaint);
-                    canvas.drawLine(163,200,163,300,myPaint);
-                    myPaint.setStrokeWidth(0);
-                    myPaint.setStyle(Paint.Style.FILL);//Geometry and text drawn with this style will be filled, ignoring all stroke-related settings in the paint.
+                      myPaint.setStyle(Paint.Style.STROKE);
+                      myPaint.setStrokeWidth(2);
+                      canvas.drawRect(10, 200, myPageInfo.getPageWidth() - 10, 300, myPaint);
+                      canvas.drawLine(85, 200, 85, 300, myPaint);
+                      canvas.drawLine(163, 200, 163, 300, myPaint);
+                      myPaint.setStrokeWidth(0);
+                      myPaint.setStyle(Paint.Style.FILL);//Geometry and text drawn with this style will be filled, ignoring all stroke-related settings in the paint.
 
-                    canvas.drawText("Photo",35,250,myPaint);
-                    canvas.drawText("Photo",110,250,myPaint);
-                    canvas.drawText("Photo",190,250,myPaint);
+                      canvas.drawText("Photo", 35, 250, myPaint);
+                      canvas.drawText("Photo", 110, 250, myPaint);
+                      canvas.drawText("Photo", 190, 250, myPaint);
 
-                    canvas.drawText("Note",10,320,myPaint);
-                    canvas.drawLine(35,325,myPageInfo.getPageWidth()-10,325,myPaint);
-                    canvas.drawLine(10,345,myPageInfo.getPageWidth()-10,345,myPaint);
-                    canvas.drawLine(10,365,myPageInfo.getPageWidth()-10,365,myPaint);
-                    myPdfDocument.finishPage(mypage1);
+                      canvas.drawText("Note", 10, 320, myPaint);
+                      canvas.drawLine(35, 325, myPageInfo.getPageWidth() - 10, 325, myPaint);
+                      canvas.drawLine(10, 345, myPageInfo.getPageWidth() - 10, 345, myPaint);
+                      canvas.drawLine(10, 365, myPageInfo.getPageWidth() - 10, 365, myPaint);
+                      myPdfDocument.finishPage(mypage);
+//----------------------------------------------------------------------------------------------------------------------
+                      PdfDocument.PageInfo myPageInfo3 = new PdfDocument.PageInfo.Builder(250, 400, 1).create();//meta data of pdf
+                      PdfDocument.Page mypage3 = myPdfDocument.startPage(myPageInfo3);
+                      //to write in pdf page 1
+                      Canvas canvas3 = mypage3.getCanvas();
+                      myPaint.setTextAlign(Paint.Align.CENTER);
+                      myPaint.setTextSize(12.0f);                 //so that it will be in middle
+                      canvas3.drawText("HR Enterprises", myPageInfo3.getPageWidth() / 2, 30, myPaint);
+
+                      myPaint.setTextSize(6.0f);
+                      //myPaint.setColor(Color.rgb(122,199,199));// myPaint.setColor(getResources().getColor(R.color.green)); or
+                      myPaint.setColor(ContextCompat.getColor(IndividualPersonDetailActivity.this, R.color.background));
+                      canvas3.drawText("Street No. 15,Bharat Nagar,Haryana", myPageInfo3.getPageWidth() / 2, 40, myPaint);
+
+                      myPaint.setTextAlign(Paint.Align.LEFT);
+                      myPaint.setTextSize(9.0f);
+                      myPaint.setColor(Color.rgb(122, 199, 199));//this is here because if in future upper color is changed then this link color will not change
+                      canvas3.drawText("Customer Information", 10, 70, myPaint);
+
+                      myPaint.setTextAlign(Paint.Align.LEFT);
+                      myPaint.setTextSize(8.0f);
+                      myPaint.setColor(Color.BLACK);
+
+                      String information3[] = new String[]{"Name", "Company Name", "Address", "Phone", "Email"};
+                      int startXPosition3 = 10;
+                      int endXPosition3 = myPageInfo.getPageWidth() - 10;
+                      int startYPosition3 = 100;
+
+                      for (int i = 0; i < 5; i++) {
+                          canvas3.drawText(information3[i], startXPosition, startYPosition3, myPaint);
+                          canvas3.drawLine(startXPosition3, startYPosition3 + 3, endXPosition3, startYPosition3 + 3, myPaint);
+                          startYPosition3 = startYPosition3 + 20;
+                      }
+                      canvas3.drawLine(80, 92, 80, 190, myPaint);
+
+                      myPaint.setStyle(Paint.Style.STROKE);
+                      myPaint.setStrokeWidth(2);
+                      canvas3.drawRect(10, 200, myPageInfo3.getPageWidth() - 10, 300, myPaint);
+                      canvas3.drawLine(85, 200, 85, 300, myPaint);
+                      canvas3.drawLine(163, 200, 163, 300, myPaint);
+                      myPaint.setStrokeWidth(0);
+                      myPaint.setStyle(Paint.Style.FILL);//Geometry and text drawn with this style will be filled, ignoring all stroke-related settings in the paint.
+
+                      canvas3.drawText("Photo", 35, 250, myPaint);
+                      canvas3.drawText("Photo", 110, 250, myPaint);
+                      canvas3.drawText("Photo", 190, 250, myPaint);
+
+                      canvas3.drawText("Note", 10, 320, myPaint);
+                      canvas3.drawLine(35, 325, myPageInfo3.getPageWidth() - 10, 325, myPaint);
+                      canvas3.drawLine(10, 345, myPageInfo3.getPageWidth() - 10, 345, myPaint);
+                      canvas3.drawLine(10, 365, myPageInfo3.getPageWidth() - 10, 365, myPaint);
+                      myPdfDocument.finishPage(mypage3);
+//----------------------------------------------------------------------------------
+                      PdfDocument.PageInfo myPageInfo4 = new PdfDocument.PageInfo.Builder(250, 400, 1).create();//meta data of pdf
+                      PdfDocument.Page mypage4 = myPdfDocument.startPage(myPageInfo4);
+                      //to write in pdf page 1
+                      Canvas canvas4 = mypage4.getCanvas();
+                      myPaint.setTextAlign(Paint.Align.CENTER);
+                      myPaint.setTextSize(12.0f);                 //so that it will be in middle
+                      canvas4.drawText("HR Enterprises", myPageInfo4.getPageWidth() / 2, 30, myPaint);
+
+                      myPaint.setTextSize(6.0f);
+                      //myPaint.setColor(Color.rgb(122,199,199));// myPaint.setColor(getResources().getColor(R.color.green)); or
+                      myPaint.setColor(ContextCompat.getColor(IndividualPersonDetailActivity.this, R.color.background));
+                      canvas4.drawText("Street No. 15,Bharat Nagar,Haryana", myPageInfo4.getPageWidth() / 2, 40, myPaint);
+
+                      myPaint.setTextAlign(Paint.Align.LEFT);
+                      myPaint.setTextSize(9.0f);
+                      myPaint.setColor(Color.rgb(122, 199, 199));//this is here because if in future upper color is changed then this link color will not change
+                      canvas4.drawText("Customer Information", 10, 70, myPaint);
+
+                      myPaint.setTextAlign(Paint.Align.LEFT);
+                      myPaint.setTextSize(8.0f);
+                      myPaint.setColor(Color.BLACK);
+
+                      String information4[] = new String[]{"Name", "Company Name", "Address", "Phone", "Email"};
+                      int startXPosition4 = 10;
+                      int endXPosition4 = myPageInfo.getPageWidth() - 10;
+                      int startYPosition4 = 100;
+
+                      for (int i = 0; i < 5; i++) {
+                          canvas4.drawText(information4[i], startXPosition, startYPosition4, myPaint);
+                          canvas4.drawLine(startXPosition4, startYPosition4 + 3, endXPosition4, startYPosition4 + 3, myPaint);
+                          startYPosition4 = startYPosition4 + 20;
+                      }
+                      canvas4.drawLine(80, 92, 80, 190, myPaint);
+
+                      myPaint.setStyle(Paint.Style.STROKE);
+                      myPaint.setStrokeWidth(2);
+                      canvas4.drawRect(10, 200, myPageInfo4.getPageWidth() - 10, 300, myPaint);
+                      canvas4.drawLine(85, 200, 85, 300, myPaint);
+                      canvas4.drawLine(163, 200, 163, 300, myPaint);
+                      myPaint.setStrokeWidth(0);
+                      myPaint.setStyle(Paint.Style.FILL);//Geometry and text drawn with this style will be filled, ignoring all stroke-related settings in the paint.
+
+                      canvas4.drawText("Photo", 35, 250, myPaint);
+                      canvas4.drawText("Photo", 110, 250, myPaint);
+                      canvas4.drawText("Photo", 190, 250, myPaint);
+
+                      canvas4.drawText("Note", 10, 320, myPaint);
+                      canvas4.drawLine(35, 325, myPageInfo4.getPageWidth() - 10, 325, myPaint);
+                      canvas4.drawLine(10, 345, myPageInfo4.getPageWidth() - 10, 345, myPaint);
+                      canvas4.drawLine(10, 365, myPageInfo4.getPageWidth() - 10, 365, myPaint);
+                      myPdfDocument.finishPage(mypage4);
 
 
+                      File folder = new File(getExternalFilesDir(null) + "/acBookPDF");
+                      if (!folder.exists()) {//of folder not exist then create folder
+                          folder.mkdir();//File createNewFile() method returns true if new file is created and false if file already exists.
+                          Toast.makeText(IndividualPersonDetailActivity.this, "Creating acBookPDF folder to store PDF", Toast.LENGTH_LONG).show();
+                      }
 
-                    File file=new File(getExternalFilesDir(null)+"/amar.pdf");//we do not need to create folder to store so it will directly create pdf file and store
-                    try{
-                        myPdfDocument.writeTo(new FileOutputStream(file));
-                    }catch(IOException e){
-                        Toast.makeText(IndividualPersonDetailActivity.this, "not created", Toast.LENGTH_SHORT).show();
-                        e.printStackTrace();
-                    }
-                    myPdfDocument.close();
+                      File filees = new File(getExternalFilesDir(null) + "/acBookPDF/" +generateFileName(fromIntentPersonId) + ".pdf");//path of pdf where it is saved in device
 
-
-                    Toast.makeText(IndividualPersonDetailActivity.this, "created", Toast.LENGTH_SHORT).show();
+                      try {
+                          myPdfDocument.writeTo(new FileOutputStream(filees.getAbsolutePath()));//if FileOutputStream cannot find file then it will create automatically
+                      } catch (IOException e) {
+                          Toast.makeText(IndividualPersonDetailActivity.this, "CREATED PDF NOT COPIED TO DEVICE PDF FILE", Toast.LENGTH_LONG).show();
+                          e.printStackTrace();
+                      }
+                      myPdfDocument.close();
+                      Toast.makeText(IndividualPersonDetailActivity.this, "created", Toast.LENGTH_SHORT).show();
+                      fileName = filees.getAbsolutePath();//fileName is global variable
+                  }catch (Exception i){
+                      return false;
+                  }
+                    return true;
+                }
+                private String generateFileName(String ID) {
+                    final Calendar current=Calendar.getInstance();//to get current date and time
+                    Date d=Calendar.getInstance().getTime();//To get time
+                    SimpleDateFormat sdf=new SimpleDateFormat("hhmma");//a stands for is AM or PM
+                    return "id"+ID+"date"+current.get(Calendar.DAY_OF_MONTH)+"_"+(current.get(Calendar.MONTH)+1)+"_"+current.get(Calendar.YEAR)+"at"+sdf.format(d);
                 }
                 private void displFinalResult(String title,String message) {
                     AlertDialog.Builder showDataFromDataBase=new AlertDialog.Builder(IndividualPersonDetailActivity.this);
@@ -885,45 +1195,58 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                     }else
                         return false;
                 }
-                private void updateTotalToDatabase( ) {
+                private boolean updateTotalAdvanceOrBalanceToDatabase( ) {
                     //updating rate
                     boolean success = db.updateTable("UPDATE " + db.TABLE_NAME3 + " SET R1='"+r1+"' , R2='"+r2+"' , R3='"+r3+"' , R4='"+r4+"'"+ " WHERE ID='" + fromIntentPersonId + "'");
-                   if(success==true){//if rate is updated then proceed
+                    if(success){//if rate is updated then proceed
                        if (!isEnterDataIsWrong(innerArray)) {//if data is right then only change fields.This condition is already checked but checking again
-
                            if (!isp1p2p3p4PresentAndRateNotPresent(r1, r2, r3, r4, p1, p2, p3, p4, indicate)) {//This condition is already checked but checking again
                                //if both wages and totalwork amount is less then 0 then dont save.This condition already checked but checking again
+
                                if (((totalDeposit + ((p1 * r1) + (p2 * r2) + (p3 * r3) + (p4 * r4))) < 0) || (totalWages < 0)) {//user cant enter negative number so when (totalDeposit + (totalr1r2r3r4sum1sum2sum3sum4)) is negative that means int range is exceeds so wrong result will be shown
                                    Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO SAVE DUE TO WRONG DATA", Toast.LENGTH_LONG).show();
+                                   return false;
                                } else if ((totalDeposit + ((p1 * r1) + (p2 * r2) + (p3 * r3) + (p4 * r4))) < totalWages) {
                                    //updating Advance to db
                                    success = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET ADVANCE='" + (totalWages - (totalDeposit + ((p1 * r1) + (p2 * r2) + (p3 * r3) + (p4 * r4)))) + "'" + "WHERE ID='" + fromIntentPersonId + "'");
-                                   if (success == false)
-                                       Toast.makeText(IndividualPersonDetailActivity.this, "ADVANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
-
+                                   if (!success) {
+                                       Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO UPDATE ADVANCE AMOUNT TO DB", Toast.LENGTH_LONG).show();
+                                       return false;
+                                   }
                                    //if there is advance then balance  column should be 0
                                    success = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET BALANCE='" + 0 + "'" + "WHERE ID='" + fromIntentPersonId + "'");
-                                   if (success == false)
-                                       Toast.makeText(IndividualPersonDetailActivity.this, "BALANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
-
+                                   if (!success) {
+                                       Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO UPDATE BALANCE AMOUNT TO DB", Toast.LENGTH_LONG).show();
+                                       return false;
+                                      }
                                } else if ((totalDeposit + ((p1 * r1) + (p2 * r2) + (p3 * r3) + (p4 * r4))) >= totalWages) {//>= is given because when totalWages and totalwork is same then this condition will be executed to set balance 0
 
                                    //updating balance to db if greater then 0
                                    success = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET BALANCE='" + ((totalDeposit + ((p1 * r1) + (p2 * r2) + (p3 * r3) + (p4 * r4))) - totalWages) + "'" + "WHERE ID='" + fromIntentPersonId + "'");
-                                   if (success == false)
-                                       Toast.makeText(IndividualPersonDetailActivity.this, "BALANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
-
+                                   if (!success) {
+                                       Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO UPDATE BALANCE AMOUNT TO DB", Toast.LENGTH_LONG).show();
+                                       return false;
+                                   }
                                    //if there is balance then update advance column should be 0
                                    success = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET ADVANCE='" + 0 + "'" + "WHERE ID='" + fromIntentPersonId + "'");
-                                   if (success == false)
-                                       Toast.makeText(IndividualPersonDetailActivity.this, "ADVANCE AMOUNT NOT UPDATED TO DATABASE", Toast.LENGTH_LONG).show();
+                                   if (!success) {
+                                       Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO UPDATE ADVANCE AMOUNT TO DB", Toast.LENGTH_LONG).show();
+                                       return false;
+                                   }
                                }
-                           } else
+                           } else {
                                Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO SAVE DUE TO RATE NOT PROVIDED", Toast.LENGTH_LONG).show();
-                       } else
+                               return false;
+                           }
+                       } else {
                            Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO SAVE DUE TO WRONG DATA", Toast.LENGTH_LONG).show();
-                   }else
-                       Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO UPDATE RATE", Toast.LENGTH_LONG).show();
+                           return false;
+                       }
+                   }else {
+                        Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO UPDATE RATE", Toast.LENGTH_LONG).show();
+                        return false;
+                    }
+                    return true;
                 }
                 public boolean isp1p2p3p4PresentAndRateNotPresent(int r1,int r2,int r3,int r4,int p1,int p2,int p3,int p4,int indicator){
                     if(indicator==1 && (p1 !=0 && r1==0)){
@@ -947,7 +1270,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                             saveAndCreatePdf.setVisibility(View.GONE);//its important otherwise save option will be unabled when user enter rate
                         }
                         if(totalWages < 0){//its important otherwise save option will be unabled when user enter rate
-                            Toast.makeText(IndividualPersonDetailActivity.this, "INCORRECT CALCULATION PLEACE CHECK TOTAL WAGES", Toast.LENGTH_LONG).show();
+                            Toast.makeText(IndividualPersonDetailActivity.this, "INCORRECT CALCULATION PLEASE CHECK TOTAL WAGES", Toast.LENGTH_LONG).show();
                             saveAndCreatePdf.setVisibility(View.GONE);
                         }
 
@@ -1061,7 +1384,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
             }
         });
     }
-    private void indicator1234CalculateAndUpdate(Cursor sumCursor, int rate1IntoSump1, int rate2IntoSump2, int rate3IntoSump3, int rate4IntoSump4) {
+    private void indicator1234CalculateAndUpdate(@NonNull Cursor sumCursor, int rate1IntoSump1, int rate2IntoSump2, int rate3IntoSump3, int rate4IntoSump4) {
         boolean bool;
         int  totalDeposit,totalWages;
         int totalr1r2r3r4sum1sum2sum3sum4=rate1IntoSump1+rate2IntoSump2+rate3IntoSump3+rate4IntoSump4;
@@ -1423,7 +1746,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
              }
             sum1DayAmountCursor.close();
         }else if(advanceAmountCursor.getInt(1) >= 0 ){//balance
-            advanceOrBalanceWarring.setTextColor(getResources().getColor(R.color.green));
+            advanceOrBalanceWarring.setTextColor(getColor(R.color.green));
             advanceOrBalanceWarring.setText(advanceAmountCursor.getString(1));
         }
         advanceAmountCursor.close();
@@ -1567,7 +1890,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                     if (isDataPresent == true && isWrongData == false) {//it is important means if data is present then check is it right data or not.if condition is false then this message will be displayed "Correct the Data or Cancel and Enter again"
                         //insert to database
                           success = db.insert_1_Person_WithWagesTable2(fromIntentPersonId, date,time, micPath, remarks, wages, p1, "0");
-                        if (success == true) {
+                        if (success) {
                             displResult(wages + "          " + p1, "\nDATE: " + date + "\n\n" + "REMARKS: " + remarks + "\n\nMICPATH: " + micPath);
                             dialog.dismiss();//dialog will be dismiss after saved automatically
                         } else
@@ -1583,7 +1906,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                         }
                         //insert to database
                           success = db.insert_2_Person_WithWagesTable2(fromIntentPersonId, date,time, micPath, remarks, wages, p1, p2, "0");
-                         if (success == true) {
+                         if (success) {
                             displResult(wages+"          "+p1+"     "+p2,"\nDATE: "+date+"\n\n"+"REMARKS: "+remarks+"\n\nMICPATH: "+micPath);
                             dialog.dismiss();//dialog will be dismiss after saved automatically
                         } else
@@ -1601,7 +1924,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                         }
                         //insert to database
                           success = db.insert_3_Person_WithWagesTable2(fromIntentPersonId, date,time, micPath, remarks, wages, p1, p2, p3, "0");
-                         if (success == true) {
+                         if (success) {
                             displResult(wages+"          "+p1+"     "+p2+"     "+p3,"\nDATE: "+date+"\n\n"+"REMARKS: "+remarks+"\n\nMICPATH: "+micPath);
                             dialog.dismiss();//dialog will be dismiss after saved automatically
                         } else
@@ -1623,14 +1946,13 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                         }
                         //insert to database
                           success = db.insert_4_Person_WithWagesTable2(fromIntentPersonId, date,time, micPath, remarks, wages, p1, p2, p3, p4, "0");
-                        if (success == true) {
+                        if (success) {
                             displResult(wages+"          "+p1+"     "+p2+"     "+p3+"     "+p4,"\nDATE: "+date+"\n\n"+"REMARKS: "+remarks+"\n\nMICPATH: "+micPath);
                             dialog.dismiss();//dialog will be dismiss after saved automatically
                         } else
                             Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO INSERT", Toast.LENGTH_LONG).show();
                     }else
                         Toast.makeText(IndividualPersonDetailActivity.this, "CORRECT THE DATA or CANCEL AND ENTER AGAIN", Toast.LENGTH_LONG).show();
-
                 }
             }
         });
@@ -1721,7 +2043,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                     cancel.setEnabled(true);
                     deposit_btn_tv.setEnabled(true);
 
-                    playAudioChronometer.setTextColor(getResources().getColor(R.color.green));//changind text color to green to give feel that is saved
+                    playAudioChronometer.setTextColor(getColor(R.color.green));//changind text color to green to give feel that is saved
                     micIcon.setBackgroundResource(R.drawable.ic_green_sharp_mic_20);//set background image to cancel
                     stopAndSaveRecordingPathToDB();
                     playAudioChronometer.stop();//stopping chronometer

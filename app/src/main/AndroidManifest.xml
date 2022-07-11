@@ -2,10 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="amar.das.acbook">
 
-    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /><!-- geting permission to read external storage ilke sd card -->
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/> <!-- geting permission to read external storage ilke sd card -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <application
         android:allowBackup="true"
@@ -18,21 +18,20 @@
             android:name=".activity.CustomizeLayoutOrDepositAmount"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateVisible"/><!--when activity start keyboard will open -->
-
+            android:windowSoftInputMode="stateVisible" /> <!-- when activity start keyboard will open -->
         <activity
             android:name=".activity.IndividualPersonDetailActivity"
             android:exported="false"
-            android:screenOrientation="portrait"
-             />
-
-        <!--to unable service -->
+            android:screenOrientation="portrait" /> <!-- to unable service -->
+        <activity
+            android:name=".activity.Final_Pdf_Viewer"
+            android:exported="false"
+            android:screenOrientation="portrait" /> <!-- to unable service -->
         <activity
             android:name=".activity.FindActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateVisible"/><!--when activity start keyboard will open -->
-
+            android:windowSoftInputMode="stateVisible" /> <!-- when activity start keyboard will open -->
         <activity
             android:name=".activity.NavigationActivity"
             android:exported="true"
@@ -55,6 +54,16 @@
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
     </application>
 
 </manifest>

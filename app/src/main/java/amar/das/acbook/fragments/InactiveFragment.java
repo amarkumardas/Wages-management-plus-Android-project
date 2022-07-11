@@ -61,8 +61,8 @@ public class InactiveFragment extends Fragment {
         balance=root.findViewById(R.id.inactive_balance);
         Cursor advanceBalanceCursor=db.getData("SELECT SUM(ADVANCE),SUM(BALANCE) FROM "+db.TABLE_NAME1+" WHERE (TYPE='M' OR TYPE='L' OR TYPE='G') AND (ACTIVE='0')");
         advanceBalanceCursor.moveToFirst();
-        advance.setText(HtmlCompat.fromHtml("ADVANCE: "+"<b>"+advanceBalanceCursor.getInt(0)+"</b>",HtmlCompat.FROM_HTML_MODE_LEGACY));
-        balance.setText(HtmlCompat.fromHtml("BALANCE: "+"<b>"+advanceBalanceCursor.getInt(1)+"</b>",HtmlCompat.FROM_HTML_MODE_LEGACY));
+        advance.setText(HtmlCompat.fromHtml("ADVANCE: "+"<b>"+advanceBalanceCursor.getLong(0)+"</b>",HtmlCompat.FROM_HTML_MODE_LEGACY));
+        balance.setText(HtmlCompat.fromHtml("BALANCE: "+"<b>"+advanceBalanceCursor.getLong(1)+"</b>",HtmlCompat.FROM_HTML_MODE_LEGACY));
         advanceBalanceCursor.close();
 
         //1-6000                                                                                                            // ACTIVE='0'
