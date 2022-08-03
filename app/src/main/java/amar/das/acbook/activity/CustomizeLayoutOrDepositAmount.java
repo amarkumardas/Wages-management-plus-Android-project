@@ -351,7 +351,7 @@ public class CustomizeLayoutOrDepositAmount extends AppCompatActivity {
                     else
                         arr[1]=0;
                     if(binding.customDescriptionEt.getText().toString().length() >=1){//to prevent nullpointer exception
-                        remarks="["+binding.customTimeTv.getText().toString()+"]-[ENTERED]\n\n"+binding.customDescriptionEt.getText().toString().trim();//time is set automatically to remarks if user enter any remarks
+                        remarks="["+binding.customTimeTv.getText().toString()+"-ENTERED]\n\n"+binding.customDescriptionEt.getText().toString().trim();//time is set automatically to remarks if user enter any remarks
                         arr[2]=1;
                     }
                     else
@@ -484,7 +484,7 @@ public class CustomizeLayoutOrDepositAmount extends AppCompatActivity {
 
 
                     //if user dont enter remarks or description then it is sure that previous data will be entered so no need to check null pointer exception
-                    String remarks = "[" + time + "]-[EDITED]\n\n"+binding.customDescriptionEt.getText().toString().trim()+"\n\n*****PREVIOUS DATA WAS*****\n" + previousDataHold[0] + "  " + previousDataHold[1] + "\n" + previousDataHold[2] + "\n" + previousDataHold[3] ;//time is set automatically to remarks if user enter any remarks;
+                    String remarks = "[" + time + "-EDITED]\n\n"+binding.customDescriptionEt.getText().toString().trim()+"\n\n*****PREVIOUS DATA WAS*****\n" + previousDataHold[0] + "  " + previousDataHold[1] + "\n" + previousDataHold[2] + "\n" + previousDataHold[3] ;//time is set automatically to remarks if user enter any remarks;
                     arr[1] = 1;//this is important because when user do not enter any data while updating then atleast 1 field should be filled with data so this field will sure be filled automatically so this is important.
 
                     boolean isWrongData,isDataPresent,success;

@@ -358,7 +358,7 @@ public class WagesDetailsAdapter extends RecyclerView.Adapter<WagesDetailsAdapte
                          String time = inputTime.getText().toString();//time will be inserted automatically
 
                          //if user dont enter remarks or description then it is sure that previous data will be entered so no need to check null pointer exception
-                         String remarks = "[" + time + "]-[EDITED]\n\n"+ description.getText().toString().trim()+"\n\n*****PREVIOUS DATA WAS*****\n" + previousDataHold[5] + "  " + previousDataHold[6] + "\n" + previousDataHold[0] + " " + previousDataHold[1] + " " + previousDataHold[2] + " " + previousDataHold[3] + "\n" + previousDataHold[4] + "\n" + previousDataHold[7];//time is set automatically to remarks if user enter any remarks;
+                         String remarks = "[" + time + "-EDITED]\n\n"+ description.getText().toString().trim()+"\n\n*****PREVIOUS DATA WAS*****\n" + previousDataHold[5] + "  " + previousDataHold[6] + "\n" + previousDataHold[0] + " " + previousDataHold[1] + " " + previousDataHold[2] + " " + previousDataHold[3] + "\n" + previousDataHold[4] + "\n" + previousDataHold[7];//time is set automatically to remarks if user enter any remarks;
                          arr[5] = 1;//this is important because when user do not enter any data while updating then atleast 1 field should be filled with data so this field will sure be filled automatically so this is important.
 
                          String date = inputDate.getText().toString();//date will be inserted automatically

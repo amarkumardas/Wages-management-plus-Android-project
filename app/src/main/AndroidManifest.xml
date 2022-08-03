@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="amar.das.acbook">
-
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/> <!-- geting permission to read external storage ilke sd card -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+     <!-- Allows an application a broad access to external storage in scoped storage. Intended to be used by few apps that need to manage files on behalf of the users.-->
 
-    <application
-        android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
-        android:supportsRtl="true"
-        android:theme="@style/Theme.ACBook">
-        <activity
-            android:name=".activity.CustomizeLayoutOrDepositAmount"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateVisible" /> <!-- when activity start keyboard will open -->
+ <application
+     android:allowBackup="true"
+     android:icon="@mipmap/ic_launcher"
+     android:label="@string/app_name"
+     android:roundIcon="@mipmap/ic_launcher_round"
+     android:supportsRtl="true"
+     android:theme="@style/Theme.ACBook">
+     <activity
+         android:name=".activity.CustomizeLayoutOrDepositAmount"
+         android:exported="false"
+         android:screenOrientation="portrait"
+         android:windowSoftInputMode="stateVisible" /> <!-- when activity start keyboard will open -->
         <activity
             android:name=".activity.IndividualPersonDetailActivity"
             android:exported="false"

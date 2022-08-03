@@ -486,7 +486,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
 
                         //if both wages and totalwork amount is less then 0 then both message have to show so if statement two times
                         if(sumCursor.getInt(0) < 0 ) {//if total wages amount cross the  range of int the this message will be shown.its important
-                            Toast.makeText(IndividualPersonDetailActivity.this, "INCORRECT CALCULATION PLEACE CHECK TOTAL WAGES", Toast.LENGTH_LONG).show();
+                            Toast.makeText(IndividualPersonDetailActivity.this, "INCORRECT CALCULATION PLEASE CHECK TOTAL WAGES", Toast.LENGTH_LONG).show();
                             saveAndCreatePdf.setVisibility(View.GONE);
                         }
                         if ((totalDeposit + ((p1 * r1) + (p2 * r2) + (p3 * r3) + (p4 * r4))) < 0) {//user cant enter negative number so when (totalDeposit + (totalr1r2r3r4sum1sum2sum3sum4)) is negative that means int range is exceeds so wrong result will be shown
@@ -766,32 +766,31 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                     saveAndCreatePdf.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            Toast.makeText(IndividualPersonDetailActivity.this, "MB "+(checkInternalStorageAvailability()*1000), Toast.LENGTH_SHORT).show();
-
                             if((checkInternalStorageAvailability()*1000) >= 50){//(checkInternalStorageAvailability()*1000) converted to MB so if it is greater or equal to 50 MB then true
                                 if(checkPermissionForReadAndWriteToExternalStorage()) {//Take permission
 
                                     if(updateTotalAdvanceOrBalanceToDatabase()) {
-
                                         if(generatePDF()){
+                                            if (savePdfToDatabase(fileName)) {//fileName is global variable actually its pdf Absolute path ie.pdf created in device so absolute path of pdf which is in device.First store pdf to database so that if deleteWagesFromDBorRecyclerView failed then this pdf can be used to see previous data
+                                                if (viewPDFFromDb((byte) 2,fromIntentPersonId)) {//column name should be correct
 
-                                            if(viewPDF(fileName)) {//fileName is global variable actually its pdfPathAbsolute ie.pdf created in device so path of pdf which is in device
-
-                                               if(modifyToDB(fileName)) {//fileName is global variable actually its pdfPathAbsolute ie.ie.pdf created in device so path of pdf which is in device
-                                                   Toast.makeText(IndividualPersonDetailActivity.this, "operation successfull", Toast.LENGTH_LONG).show();
-                                               }else {
-                                                   Toast.makeText(IndividualPersonDetailActivity.this, "operation failed", Toast.LENGTH_LONG).show();
-                                               }
-
+                                                    if (modifyToDB()) {
+                                                        Toast.makeText(IndividualPersonDetailActivity.this, "operation successfull", Toast.LENGTH_LONG).show();
+                                                    } else {
+                                                        Toast.makeText(IndividualPersonDetailActivity.this, "operation failed", Toast.LENGTH_LONG).show();
+                                                    }
+                                                } else {
+                                                    Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO VIEW PDF\n(NOTHING LOST)", Toast.LENGTH_LONG).show();
+                                                }
                                             }else{
-                                                Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO VIEW PDF", Toast.LENGTH_LONG).show();
+                                                Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO SAVE PDF IN DB\n(NOTHING LOST)", Toast.LENGTH_LONG).show();
                                             }
                                         }else{
-                                            Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO GENERATE PDF", Toast.LENGTH_LONG).show();
+                                            Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO GENERATE PDF\n(NOTHING LOST)", Toast.LENGTH_LONG).show();
                                         }
 
                                     }else {
-                                        Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO UPDATE ADVANCE OR BALANCE TO DB", Toast.LENGTH_LONG).show();
+                                        Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO UPDATE ADVANCE OR BALANCE TO DB\n(NOTHING LOST)", Toast.LENGTH_LONG).show();
                                     }
 
                                 }else {//request for permission
@@ -805,63 +804,82 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                     dialog.show();
                     return false;
                 }
-
-                private boolean modifyToDB(String pdfPath) {
+                private boolean modifyToDB() {
                     try(PersonRecordDatabase personDb=new PersonRecordDatabase(getApplicationContext())) {//so that object close automatically
-                        byte[] pdfBytes = Files.readAllBytes(Paths.get(pdfPath));//CONVERTED pdf file to byte array if path is not found then catch block execute
-
-                        if (savePdfToDatabase(pdfBytes)){//store pdf to database
-                                //this function will be written when existing from pdf viewer
+                         boolean success;
+                            //this function will be written when existing from pdf viewer
 //                                boolean deleted = deletePdfFromDevice(pdfPath);
 //                                if (!deleted) {
 //                                    Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO DELETE PDF FILE FROM DEVICE", Toast.LENGTH_SHORT).show();
 //                                }
+                            if (deleteAudios(fromIntentPersonId)) {
+                            if (deleteWagesFromDBorRecyclerView(fromIntentPersonId)) {//delete records from recycle view this should be perform first so that update will be visible else update message will also be deleted //if this failed then recycler view still contain previous data
 
-                                if(deleteWagesFromDBorRecyclerView(fromIntentPersonId)) {//delete records from recycle view this should be perform first so that update will be visible
-
-                                    if(!updateAdvanceOrBalanceToDBorRecyclerView(fromIntentPersonId)){ //update balance or advance to db
-                                        Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO UPDATE RECYCLER VIEW", Toast.LENGTH_LONG).show();
-                                        personDb.insert_1_Person_WithWagesTable2(fromIntentPersonId, "0-0-0", "0:0:0:0", null,   "3rd OPERATION FAILED TO UPDATE RECYCLER VIEW" , 0, 0, "0");
-                                        return false;
-                                    }
-                                }else{
-                                    Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO DELETE RECORD FROM DB", Toast.LENGTH_LONG).show();
-                                    personDb.insert_1_Person_WithWagesTable2(fromIntentPersonId, "0-0-0", "0:0:0:0", null,   "2nd OPERATION FAILED TO DELETE RECORD FROM DB" , 0, 0, "0");
+                                if (!addMessageAfterFinalCalculationToRecyclerview(fromIntentPersonId)) { //update balance or advance to db
+                                    Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO ADD MESSAGE AFTER FINAL CALCULATION IN RECYCLER VIEW.\nCHECK PREVIOUS PDF2 TO KNOW ABOUT PREVIOUS CALCULATION", Toast.LENGTH_LONG).show();
+                                    success = personDb.insert_1_Person_WithWagesTable2(fromIntentPersonId, "0-0-0", "0:0:0:0", null, "[FAILED TO ADD MESSAGE AFTER FINAL CALCULATION IN RECYCLER VIEW. CHECK PREVIOUS PDF2 TO KNOW ABOUT PREVIOUS CALCULATION]", 0, 0, "0");
+                                    if (!success)
+                                        Toast.makeText(IndividualPersonDetailActivity.this, "CHECK PREVIOUS PDF2 TO KNOW ABOUT PREVIOUS CALCULATION", Toast.LENGTH_LONG).show();
                                     return false;
                                 }
-                            }else{
-                                Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO SAVE PDF IN DB", Toast.LENGTH_LONG).show();
-                                personDb.insert_1_Person_WithWagesTable2(fromIntentPersonId, "0-0-0", "0:0:0:0", null,   "1st OPERATION FAILED TO SAVE PDF IN DB" , 0, 0, "0");
-                                return false;
+                            }else{ //once more try to delete data from db
+                                if (deleteWagesFromDBorRecyclerView(fromIntentPersonId)) {
+                                    if (!addMessageAfterFinalCalculationToRecyclerview(fromIntentPersonId)) { //update balance or advance to db
+                                        Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO ADD MESSAGE AFTER FINAL CALCULATION IN RECYCLER VIEW.\nCHECK PREVIOUS PDF2 TO KNOW ABOUT PREVIOUS CALCULATION", Toast.LENGTH_LONG).show();
+                                        success = personDb.insert_1_Person_WithWagesTable2(fromIntentPersonId, "0-0-0", "0:0:0:0", null, "[FAILED TO ADD MESSAGE AFTER FINAL CALCULATION IN RECYCLER VIEW. CHECK PREVIOUS PDF2 TO KNOW ABOUT PREVIOUS CALCULATION]", 0, 0, "0");
+                                        if (!success)
+                                            Toast.makeText(IndividualPersonDetailActivity.this, "CHECK PREVIOUS PDF2 TO KNOW ABOUT PREVIOUS CALCULATION", Toast.LENGTH_LONG).show();
+                                        return false;
+                                    }
+                                }else{//if again it fail then return false
+                                    Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO DELETE RECORD FROM DB. CURRENT DATA IS SAVED TO PREVIOUS PDF2 \nSO MANUALLY EDIT ABOVE ALL DATA TO 0 IN RECYCLER VIEW", Toast.LENGTH_LONG).show();
+                                    success = personDb.insert_1_Person_WithWagesTable2(fromIntentPersonId, "0-0-0", "0:0:0:0", null, "[FAILED TO DELETE RECORD FROM DB.CURRENT DATA IS SAVED TO PREVIOUS PDF2 SO MANUALLY EDIT ABOVE ALL DATA TO 0 IN RECYCLER VIEW OTHERWISE IT WILL CALCULATE TWICE AND GIVE INCORRECT RESULT]", 0, 0, "0");
+                                    if (!success)
+                                        Toast.makeText(IndividualPersonDetailActivity.this, "CURRENT DATA IS SAVED TO PREVIOUS PDF2 \nSO MANUALLY EDIT ABOVE ALL DATA TO 0 IN RECYCLER VIEW", Toast.LENGTH_LONG).show();//because data is deleted so set all data to 0
+                                    return false;
+                                }
                             }
-                    }catch (IOException ex) {
-                        Toast.makeText(IndividualPersonDetailActivity.this, "PDF File not Found IOException", Toast.LENGTH_LONG).show();
-                        ex.printStackTrace();
-                        return false;
-                    }
-                    catch (Exception ex){
-                        Toast.makeText(IndividualPersonDetailActivity.this, "PDF File not Found Exception", Toast.LENGTH_LONG).show();
+                        }else{
+                                Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO DELETE AUDIOS FROM DEVICE\n(NOTHING LOST)", Toast.LENGTH_LONG).show();
+                               return false;
+                            }
+
+                    }catch (Exception ex){
+                        Toast.makeText(IndividualPersonDetailActivity.this, "File not Found Exception", Toast.LENGTH_LONG).show();
                         ex.printStackTrace();
                         return false;
                     }
                       return true;
                 }
-
+                private boolean deleteAudios(String fromIntentPersonId) {
+                    try(PersonRecordDatabase personDb=new PersonRecordDatabase(getApplicationContext());
+                        Cursor cursor = personDb.getData("SELECT MICPATH FROM " + db.TABLE_NAME2 + " WHERE ID= '" + fromIntentPersonId + "'");
+                    ){//so that object close automatically
+                         while(cursor.moveToNext()){
+                             if(cursor.getString(0) != null) {//checking path may be null
+                                 if (!dontPassNullPathDeletePdfOrRecordingsFromDevice(cursor.getString(0))) {
+                                      return false;
+                                 }
+                             }
+                         }
+                        return true;
+                    }
+                }
                 private boolean deleteWagesFromDBorRecyclerView(String fromIntentPersonId) {
                     try(PersonRecordDatabase personDb=new PersonRecordDatabase(getApplicationContext());
                         Cursor cursor = personDb.getData("SELECT ID FROM " + db.TABLE_NAME2 + " WHERE ID= '" + fromIntentPersonId + "'");
                        ){//so that object close automatically
                         cursor.moveToFirst();
-                        if(cursor.getCount()==0){//if already record not presend then return true
+                        if(cursor.getCount()==0){//if already record not present then return true
                             return true;
                         }
-                        boolean success=personDb.deleteRows(fromIntentPersonId,personDb.TABLE_NAME2);
-                        if(success)
+                        if(personDb.deleteRows(fromIntentPersonId,personDb.TABLE_NAME2))
                             return true;
+
                         return false;
                     }
                 }
-                private boolean updateAdvanceOrBalanceToDBorRecyclerView(String fromIntentPersonId) {
+                private boolean addMessageAfterFinalCalculationToRecyclerview(String fromIntentPersonId) {
                     PersonRecordDatabase db=null;
                     Cursor cursor=null;
                     try {
@@ -879,73 +897,91 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                         if (cursor.getInt(0) != 0 && cursor.getInt(1) == 0) {
                             amount = cursor.getInt(0);
                             //insert to database taking just first person                                                      //remarks
-                            success = db.insert_1_Person_WithWagesTable2(fromIntentPersonId, date, time, null, "[" + time + "]-[ENTERED]\n\n" + "Advance after calculation: " + amount, amount, 0, "0");
+                            success = db.insert_1_Person_WithWagesTable2(fromIntentPersonId, date, time, null, "[" + time + "-ENTERED]\n\n" + "[Advance after calculation Rs. " + amount+" ]", amount, 0, "0");
                             if (!success)
                                 return false;
-                        }
-                        if (cursor.getInt(0) == 0 && cursor.getInt(1) != 0) {
+                        }else if (cursor.getInt(0) == 0 && cursor.getInt(1) != 0) {
                             amount = cursor.getInt(1);
                             //insert to database taking just first person                                                      //remarks
-                            success = db.insert_Deposit_Table2(fromIntentPersonId, date, time, null, "[" + time + "]-[ENTERED]\n\n" + "Balance after calculation: " + amount, amount, "1");
+                            success = db.insert_Deposit_Table2(fromIntentPersonId, date, time, null, "[" + time + "-ENTERED]\n\n" + "[Balance after calculation Rs. " + amount+" ]", amount, "1");
+                            if (!success)
+                                return false;
+                        }else if(cursor.getInt(0) == 0 && cursor.getInt(1) == 0){
+                            //insert to database taking just first person                                                      //remarks
+                            success = db.insert_1_Person_WithWagesTable2(fromIntentPersonId, date, time, null, "[" + time + "-ENTERED]\n\n" + "[All cleared after calculation Rs. " + amount+" ]", amount, 0, "0");
                             if (!success)
                                 return false;
                         }
+                        else
+                            return false;
+
                         return true;
                     }finally {
                         try {
-                            if (cursor != null)
+                            if (cursor != null) {
                                 cursor.close();
+                            }
                         }catch (Exception e){
                             e.printStackTrace();
+                            return false;
                         }
                         try {
-                            if (db != null)
+                            if (db != null) {
                                 db.close();
+                            }
                         }catch (Exception e){
                             e.printStackTrace();
+                            return false;
                         }
                     }
 
                 }
-                private boolean deletePdfFromDevice(String pdfPath) {
+                private boolean dontPassNullPathDeletePdfOrRecordingsFromDevice(String pdfPath) {
                     File filePath= new File(pdfPath);//file to be delete
-                    if(filePath.exists()) {
-                        return filePath.delete();
+                    if(filePath.exists()) {//checks file is present in device  or not
+                        return filePath.delete();//only this can return false
                     }
-                    return false;//file not deleted or file not existed
+                    return true;//if user deleted file from device then also code will work so passing true
                 }
-                private boolean savePdfToDatabase(byte[] newPDF) {
+                private boolean savePdfToDatabase(String pdfAbsolutePath) {
                     try(PersonRecordDatabase db=new PersonRecordDatabase(getApplicationContext());
-                        Cursor cursor= db.getData("SELECT PDF1 FROM " + db.TABLE_NAME3 + " WHERE ID= '" + fromIntentPersonId +"'");) {//so that object close automatically
+                        Cursor cursor= db.getData("SELECT PDF2 FROM " + db.TABLE_NAME3 + " WHERE ID= '" + fromIntentPersonId +"'")) {//so that object close automatically
                         cursor.moveToFirst();
-                        if(cursor.getBlob(0)==null){//if pdf1 is null then store in pdf1
+                        byte[] newPDF = Files.readAllBytes(Paths.get(pdfAbsolutePath));//CONVERTED pdf file to byte array if path is not found then catch block execute
+
+                        if(cursor.getBlob(0)==null){//if pdf2 is null then store in pdf2
                             Toast.makeText(IndividualPersonDetailActivity.this, "pdf not there", Toast.LENGTH_LONG).show();
-//                            cursor.close();
-                            return db.insertPdf(fromIntentPersonId, newPDF,1);
+                            return db.insertPdf(fromIntentPersonId, newPDF,2);
                         }
                         //if pdf1 is not null then store in pdf 2
-                        byte[] pdf1 = cursor.getBlob(0);
                         Toast.makeText(IndividualPersonDetailActivity.this, "pdf there", Toast.LENGTH_LONG).show();
-                        db.insertPdf(fromIntentPersonId, pdf1,2);
-                        return db.insertPdf(fromIntentPersonId, newPDF,1);
-                    }catch (Exception e){
-                        e.printStackTrace();
+                        if(db.insertPdf(fromIntentPersonId, cursor.getBlob(0),1)) {//store pdf2 in pdf1
+                            return db.insertPdf(fromIntentPersonId, newPDF, 2);//store newpdf in pdf2
+                        }
+                        return false;
+                    }catch (IOException ex) {
+                        Toast.makeText(IndividualPersonDetailActivity.this, "File not Found IOException", Toast.LENGTH_LONG).show();
+                        ex.printStackTrace();
+                        return false;
+                    }
+                    catch (Exception ex){
+                        Toast.makeText(IndividualPersonDetailActivity.this, "File not Found Exception", Toast.LENGTH_LONG).show();
+                        ex.printStackTrace();
                         return false;
                     }
                 }
-                private boolean viewPDF(String pdfPath) {
+                private boolean viewPDFFromDb(byte whichPdf,String fromIntentPersonId) {
                     try {//to view pdf
                         Intent intent=new Intent(IndividualPersonDetailActivity.this, Final_Pdf_Viewer.class);
-                        intent.putExtra("pdfurl",pdfPath);
+                        intent.putExtra("pdf1orpdf2",whichPdf);
                         intent.putExtra("ID",fromIntentPersonId);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         getApplication().startActivity(intent);
                         return true;
                     }catch(Exception e){
-                        Toast.makeText(IndividualPersonDetailActivity.this, "CANNOT FIND PATH", Toast.LENGTH_LONG).show();
                         e.printStackTrace();
+                        return false;
                     }
-                    return  false;
                 }
                 private boolean generatePDF() {
                     //create PDF
@@ -1140,11 +1176,14 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                       } catch (IOException e) {
                           Toast.makeText(IndividualPersonDetailActivity.this, "CREATED PDF NOT COPIED TO DEVICE PDF FILE", Toast.LENGTH_LONG).show();
                           e.printStackTrace();
+                          return false;
                       }
                       myPdfDocument.close();
                       Toast.makeText(IndividualPersonDetailActivity.this, "created", Toast.LENGTH_SHORT).show();
                       fileName = filees.getAbsolutePath();//fileName is global variable
                   }catch (Exception i){
+                      Toast.makeText(IndividualPersonDetailActivity.this, "PDF GENERATION ERROR", Toast.LENGTH_LONG).show();
+                      i.printStackTrace();
                       return false;
                   }
                     return true;
@@ -1867,7 +1906,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                     arr[5]=0;
 
                 if(description.getText().toString().length() >=1){//to prevent nullpointer exception
-                    remarks="["+time+"]-[ENTERED]\n\n"+description.getText().toString().trim();//time is set automatically to remarks if user enter any remarks
+                    remarks="["+time+"-ENTERED]\n\n"+description.getText().toString().trim();//time is set automatically to remarks if user enter any remarks
                     arr[6]=1;
                 }
                 else

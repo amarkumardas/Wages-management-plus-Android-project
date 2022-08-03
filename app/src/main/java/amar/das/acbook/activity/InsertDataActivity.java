@@ -376,8 +376,8 @@ public class InsertDataActivity extends AppCompatActivity {
 
                                     insertDataToTable3(result.getString(0));//update R1,R2,R3,R4 TO 0
 
-                                    buffer.append("\n" + "New Person ID: " + result.getString(0));
-                                    displResult("ADDED SUCCESSFULLY", buffer.toString());
+                                    buffer.append("\n" + "NEW PERSON ID: " + result.getString(0));
+                                    displResult("CREATED SUCCESSFULLY", buffer.toString());
                                     add.setVisibility(View.VISIBLE);
                                 }
 
@@ -435,7 +435,7 @@ public class InsertDataActivity extends AppCompatActivity {
     private void insertDataToTable3(String id) {
         boolean bool=personDb.insertDataTable3( id,0,0,0,0,null,null,null,null);
         if(bool== false)
-            Toast.makeText(this, "Not Inserted to table 3", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Not Inserted to table 3", Toast.LENGTH_LONG).show();
     }
     private byte[] convertBitmapToByteArray(Bitmap bitmap) {
         ByteArrayOutputStream byteArrayOutputStream=new ByteArrayOutputStream();

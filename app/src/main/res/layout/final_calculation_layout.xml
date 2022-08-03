@@ -51,8 +51,7 @@
                 android:layout_weight="4"
                 android:textAlignment="textEnd"
                 android:textColor="@color/black"
-
-                android:textSize="18dp"
+                android:textSize="17dp"
                 android:textStyle="bold" />
             <TextView
                 android:layout_weight="1"
@@ -75,7 +74,7 @@
                 android:singleLine="true"
                 android:textAlignment="center"
                 android:textColor="@color/purple_700"
-                android:textSize="18dp"
+                android:textSize="17dp"
                 android:text="RATE"
                 android:inputType="numberDecimal"
                 android:id="@+id/p1_rate_tv_final"/>
@@ -126,7 +125,7 @@
                 android:textAlignment="textEnd"
                 android:textColor="@color/black"
 
-                android:textSize="18dp"
+                android:textSize="17dp"
                 android:textStyle="bold" />
             <TextView
                 android:layout_weight="1"
@@ -149,7 +148,7 @@
                 android:singleLine="true"
                 android:textAlignment="center"
                 android:textColor="@color/purple_700"
-                android:textSize="18dp"
+                android:textSize="17dp"
                 android:text="RATE"
                 android:inputType="numberDecimal"
                 android:id="@+id/p2_rate_tv_final"/>
@@ -200,7 +199,7 @@
                 android:textAlignment="textEnd"
                 android:textColor="@color/black"
 
-                android:textSize="18dp"
+                android:textSize="17dp"
                 android:textStyle="bold" />
             <TextView
                 android:layout_weight="1"
@@ -223,7 +222,7 @@
                 android:singleLine="true"
                 android:textAlignment="center"
                 android:textColor="@color/purple_700"
-                android:textSize="18dp"
+                android:textSize="17dp"
                 android:text="RATE"
                 android:inputType="numberDecimal"
                 android:id="@+id/p3_rate_tv_final"/>
@@ -273,7 +272,7 @@
                 android:textAlignment="textEnd"
                 android:textColor="@color/black"
 
-                android:textSize="18dp"
+                android:textSize="17dp"
                 android:textStyle="bold" />
             <TextView
                 android:layout_weight="1"
@@ -296,7 +295,7 @@
                 android:singleLine="true"
                 android:textAlignment="center"
                 android:textColor="@color/purple_700"
-                android:textSize="18dp"
+                android:textSize="17dp"
                 android:text="RATE"
                 android:inputType="numberDecimal"
                 android:id="@+id/p4_rate_tv_final"/>
@@ -339,7 +338,7 @@
             android:textColor="@color/black"
             android:textStyle="bold"
 
-             android:textSize="18dp"
+             android:textSize="17dp"
             android:id="@+id/total_deposit_amount_tv_final"/>
     </LinearLayout>
     <LinearLayout
@@ -394,7 +393,7 @@
             android:layout_weight="5"
             android:textAlignment="textStart"
             android:textColor="#000000"
-            android:textSize="18dp"
+            android:textSize="17dp"
 
             android:textStyle="bold" />
     </LinearLayout>

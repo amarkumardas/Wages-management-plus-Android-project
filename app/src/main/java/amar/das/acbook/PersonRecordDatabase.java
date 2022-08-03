@@ -10,7 +10,7 @@ import android.widget.Toast;
 
 
 public class PersonRecordDatabase extends SQLiteOpenHelper {
-    public final static int Database_Version=4;
+    public final static int Database_Version=5;
     public final static String DATABASE_NAME="person_db";
 
     //table 1
@@ -87,8 +87,8 @@ public class PersonRecordDatabase extends SQLiteOpenHelper {
 //      sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+ TABLE_NAME1);
 //      sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+ TABLE_NAME2);
 //      sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+ TABLE_NAME3);
-        sqLiteDatabase.execSQL("ALTER TABLE "+ TABLE_NAME3+" ADD COLUMN PDF1 BLOB DEFAULT NULL");//ADDED NEW COLUMN TO TABLE3 AND VERSION IS 4
-        sqLiteDatabase.execSQL("ALTER TABLE "+ TABLE_NAME3+" ADD COLUMN PDF2 BLOB DEFAULT NULL");
+//        sqLiteDatabase.execSQL("ALTER TABLE "+ TABLE_NAME3+" ADD COLUMN PDF1 BLOB DEFAULT NULL");//ADDED NEW COLUMN TO TABLE3 AND VERSION IS 4
+//        sqLiteDatabase.execSQL("ALTER TABLE "+ TABLE_NAME3+" ADD COLUMN PDF2 BLOB DEFAULT NULL");
       Log.d("INDATABASE","ON UPGRADE DROP 3 TABLES");
       onCreate(sqLiteDatabase);
     }
@@ -512,9 +512,10 @@ public class PersonRecordDatabase extends SQLiteOpenHelper {
             //100 % it will update return 1 if updated
              int rowid = db.update(TABLE_NAME3,cv,"ID= '"+id+"'",null);
             // db.close();//closing db after operation performed
-            if(rowid!=1)//if update return 1 then data is updated else not updated
-                return false;
-            return  true;
+            if(rowid==1)//if update return 1 then data is updated else not updated
+                return true;
+
+            return  false;
         }catch (Exception e){
             e.printStackTrace();
             return false;
