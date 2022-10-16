@@ -44,9 +44,9 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
        SearchModel data=arrayList.get(position);
 
 
-       holder.id.setText("ID: "+data.getId());
-       holder.name.setText(HtmlCompat.fromHtml("NAME:"+"<b>"+data.getName()+"</b>",HtmlCompat.FROM_HTML_MODE_LEGACY));
-       holder.father.setText("FATHER:"+data.getFather());
+       holder.id.setText("ID- "+data.getId());
+       holder.name.setText(HtmlCompat.fromHtml("NAME-"+"<b>"+data.getName()+"</b>",HtmlCompat.FROM_HTML_MODE_LEGACY));
+       holder.father.setText("FATHER-"+data.getFather());
        //user may enter only account no or aadhar so if else is use separately
        //account and aadhar length should be greater than 4 or 5 otherwise stringoutofboundexception because we r using this method (data.getAccount().length() - 4 or 5)so checking in if statement.we are viewing last 4 and 5 letters to user
         if(data.getAccount().length()>4  ) {
@@ -114,9 +114,9 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
                     }
                 }
             }else if(keyword.toString().matches("[\\s*[a-zA-Z]+\\s*]+")){
-               // if(obj.getName().contain(keyword.toString().toUpperCase().trim())) if we use this then name may be duplicate so using contain method so that it store when it match like patter match
-                for (SearchModel obj : backup) {             //front and last spaces are removed using trim()
-                    if(obj.getName().startsWith(keyword.toString().toUpperCase().trim()))//if we enter A the it will show result whose first letter is A followed by other letters so we will get exact name
+                 for (SearchModel obj : backup) {             //front and last spaces are removed using trim()
+                   // if(obj.getName().startsWith(keyword.toString().toUpperCase().trim()))//if we enter A the it will show result whose first letter is A followed by other letters so we will get exact name
+                    if(obj.getName().contains(keyword.toString().toUpperCase().trim()))//if we use this then name may be duplicate so using contain method so that it store when it match like patter match
                     {//if it matches then store in filtereddtaa ie arraylist
                         filteredData.add(obj);
                     }

@@ -311,15 +311,15 @@ public class InsertDataActivity extends AppCompatActivity {
             AlertDialog.Builder detailsReview = new AlertDialog.Builder(this);
             detailsReview.setCancelable(false);
             detailsReview.setTitle("REVIEW DETAILS");// Html tags video- https://www.youtube.com/watch?v=98BD6IjQQkE
-            detailsReview.setMessage(HtmlCompat.fromHtml("Name:-" +"<b>"+ personName+"</b>"+"<br>"+"<br>"+
-                    "Father Name:-" +"<b>"+ personFathername+"</b>" +"<br>"+"<br>"+
-                    "Account No:-" +"<b>"+ personAccount +"</b>" +"<br>"+"<br>"+
-                    "A/C Holder:-" +"<b>"+personAccountHolderName+"</b>" +"<br>"+"<br>"+
-                    "Bank Name:-" +"<b>"+ personBankName+"</b>"+"<br>" +"<br>"+
-                    "IFSC Code:--- " +"<b>"+ personIfsccode+"</b>"  +"<br>"+"<br>"+
-                    "Phone No:---- " +"<b>"+ personPhon +"</b>" +"<br>"+"<br>"+
-                    "Aadhar No:-- " +"<b>"+ personAadhar+"</b>"  +"<br>"+"<br>"+
-                    "Person Skill:-" +"<b>"+ personType+"</b>"  +"<br>",HtmlCompat.FROM_HTML_MODE_LEGACY));
+            detailsReview.setMessage(HtmlCompat.fromHtml("Name-" +"<b>"+ personName+"</b>"+"<br>"+"<br>"+
+                    "Father Name-" +"<b>"+ personFathername+"</b>" +"<br>"+"<br>"+
+                    "Account No--" +"<b>"+ personAccount +"</b>" +"<br>"+"<br>"+
+                    "A/C Holder-" +"<b>"+personAccountHolderName+"</b>" +"<br>"+"<br>"+
+                    "Bank Name-" +"<b>"+ personBankName+"</b>"+"<br>" +"<br>"+
+                    "IFSC Code---  " +"<b>"+ personIfsccode+"</b>"  +"<br>"+"<br>"+
+                    "Phone No----  " +"<b>"+ personPhon +"</b>" +"<br>"+"<br>"+
+                    "Aadhar No--  " +"<b>"+ personAadhar+"</b>"  +"<br>"+"<br>"+
+                    "Person Skill- " +"<b>"+ personType+"</b>"  +"<br>",HtmlCompat.FROM_HTML_MODE_LEGACY));
 
             detailsReview.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
                 @Override
@@ -340,7 +340,7 @@ public class InsertDataActivity extends AppCompatActivity {
                         //get data from db
                         success=personDb.updateDataTable1(personName, personAccount, personIfsccode, personBankName, personAadhar, personPhon, personType, personFathername, imagestore, personAccountHolderName,fromIntentPersonId);
                         if(success){//if it is updated then show successfull message
-                            Toast.makeText(InsertDataActivity.this, "ID: "+fromIntentPersonId+" UPDATED SUCCESSFULLY", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(InsertDataActivity.this, "ID- "+fromIntentPersonId+" UPDATED SUCCESSFULLY", Toast.LENGTH_SHORT).show();
 
                             //whenever user update its name,bank account,etc theN IF that account is inactive then that account will become active that is its latest date is updated to current date
                             final Calendar current=Calendar.getInstance();//to get current date
@@ -376,22 +376,22 @@ public class InsertDataActivity extends AppCompatActivity {
 
                                     insertDataToTable3(result.getString(0));//update R1,R2,R3,R4 TO 0
 
-                                    buffer.append("\n" + "NEW PERSON ID: " + result.getString(0));
+                                    buffer.append("\n" + "NEW PERSON ID- " + result.getString(0));
                                     displResult("CREATED SUCCESSFULLY", buffer.toString());
                                     add.setVisibility(View.VISIBLE);
                                 }
 
                                 if(result.getCount() > 1){//this will be true when user all details is same to others means DUPLICATE
-                                    buffer.append("Matching "+result.getCount()+" Person with same Details:"+"\n");
+                                    buffer.append("Matching "+result.getCount()+" Person with same Details-"+"\n");
                                     result.moveToPrevious();//it help to start from first othervise 1 item is not displayed
                                     while(result.moveToNext()){
                                         holdlastid=""+result.getString(0);//to diaplay new added person ids comes at last when loop
-                                        buffer.append("\nPerson ID: "+result.getString(0));
+                                        buffer.append("\nPerson ID- "+result.getString(0));
                                     }
                                     //update R1,R2,R3,R4 TO 0
                                     insertDataToTable3(holdlastid);//holdlastid variable has newly added id.If this insertDataToTable3(holdlastid);  method is placed in while loop then all matching duplicate then have to  execute which is useless and produce exception
 
-                                    displResult("Successfully Added New Person ID: "+holdlastid,buffer.toString());
+                                    displResult("Successfully Added New Person ID- "+holdlastid,buffer.toString());
                                     add.setVisibility(View.VISIBLE);
                                 }
                                 result.close();//closing cursor

@@ -1,6 +1,9 @@
 package amar.das.acbook.model;
 
-public class WagesDetailsModel {
+import java.io.Serializable;
+
+public class WagesDetailsModel implements Serializable {
+    private static final long serialVersionUID = 42345L;
     private String date;
 
     public String getIsdeposited() {

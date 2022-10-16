@@ -155,7 +155,7 @@ public class CustomizeLayoutOrDepositAmount extends AppCompatActivity {
                     binding.customCancelBtn.setEnabled(true);
                     binding.customSpinnerSetting.setEnabled(true);
 
-                    binding.customChronometer.setTextColor(getResources().getColor(R.color.green));//changind text color to green to give feel that is saved
+                    binding.customChronometer.setTextColor(getColor(R.color.green));//changind text color to green to give feel that is saved
                     binding.customMicIconTv.setBackgroundResource(R.drawable.ic_green_sharp_mic_20);//set background image to cancel
                     stopAndSaveRecordingPathToDB();
                     binding.customChronometer.stop();//stopping chronometer
@@ -368,7 +368,7 @@ public class CustomizeLayoutOrDepositAmount extends AppCompatActivity {
                         db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET ACTIVE='" + 1 + "'" +" WHERE ID='" + fromIntentPersonId + "'");//when ever user update then that person will become active
                         success = db.insert_Deposit_Table2(fromIntentPersonId,binding.customDateTv.getText().toString(),binding.customTimeTv.getText().toString(),micPath,remarks,depositAmount,"1");
                         if (success == true) {
-                            displResult("DEPOSIT : "+depositAmount,"\nDATE:  "+binding.customDateTv.getText().toString()+"\n\nREMARKS: "+remarks+"\n\nMICPATH: "+micPath);
+                            displResult("DEPOSIT - "+depositAmount,"\nDATE-  "+binding.customDateTv.getText().toString()+"\n\nREMARKS- "+remarks+"\n\nMICPATH- "+micPath);
                         } else
                             Toast.makeText(CustomizeLayoutOrDepositAmount.this, "FAILED TO INSERT", Toast.LENGTH_LONG).show();
 
@@ -418,10 +418,10 @@ public class CustomizeLayoutOrDepositAmount extends AppCompatActivity {
 
             binding.customDepositEt.setText(cdeposit);//fetching deposit
 
-             previousDataHold[0]="DATE: "+getIntent().getStringExtra("DATE");
-             previousDataHold[1]="TIME: "+getIntent().getStringExtra("TIME");
-             previousDataHold[2]="DEPOSIT: "+cdeposit;
-             previousDataHold[3]="REMARKS: "+cdescription;
+             previousDataHold[0]="DATE- "+getIntent().getStringExtra("DATE");
+             previousDataHold[1]="TIME- "+getIntent().getStringExtra("TIME");
+             previousDataHold[2]="DEPOSIT- "+cdeposit;
+             previousDataHold[3]="REMARKS- "+cdescription;
 
             if(cmicpath != null) {//if there is audio then set to color  green
                 binding.customMicIconTv.setVisibility(View.GONE);//user wound be able to save voice for second time if there is already voice because we want to keep previous voice save we dont want to delete previous voice
@@ -455,65 +455,62 @@ public class CustomizeLayoutOrDepositAmount extends AppCompatActivity {
                         Toast.makeText(CustomizeLayoutOrDepositAmount.this, "TAB ON MIC TO START RECORDING", Toast.LENGTH_SHORT).show();
                 }
             });
-            binding.customSaveBtn.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View view) {
-                    int depositAmount=0;
-                    String micPath=cmicpath;//default value if we dont fetch previous data then null will be inserted and previous voice will be deleted when we try to update only deposit so it is important
+            binding.customSaveBtn.setOnLongClickListener(view -> {
+                int depositAmount=0;
+                String micPath=cmicpath;//default value if we dont fetch previous data then null will be inserted and previous voice will be deleted when we try to update only deposit so it is important
 
 
-                    //To get exact time so write code in save button
-                    Date d=Calendar.getInstance().getTime();
-                    SimpleDateFormat sdf=new SimpleDateFormat("hh:mm:ss a");//a stands for is AM or PM
-                    String onlyTime = sdf.format(d);
-                    binding.customTimeTv.setText(onlyTime);//setting time to take time and store in db
-                    String time=binding.customTimeTv.getText().toString();
-                    String date=binding.customDateTv.getText().toString();
+                //To get exact time so write code in save button
+                Date d=Calendar.getInstance().getTime();
+                SimpleDateFormat sdf=new SimpleDateFormat("hh:mm:ss a");//a stands for is AM or PM
+                String onlyTime = sdf.format(d);
+                binding.customTimeTv.setText(onlyTime);//setting time to take time and store in db
+                String time=binding.customTimeTv.getText().toString();
+                String date=binding.customDateTv.getText().toString();
 
-                    //this will store latest date in db if that date is current date
-                    final Calendar current=Calendar.getInstance();//to get current date
-                    String currentDate =current.get(Calendar.DAY_OF_MONTH)+"-"+(current.get(Calendar.MONTH)+1)+"-"+current.get(Calendar.YEAR);
-                    if(date.equals(currentDate)) {//if it is true then store
-                        db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET  LATESTDATE='" +date + "'" +" WHERE ID='" + getIntent().getStringExtra("ID") + "'");
+                //this will store latest date in db if that date is current date
+                final Calendar current1 =Calendar.getInstance();//to get current date
+                String currentDate = current1.get(Calendar.DAY_OF_MONTH)+"-"+(current1.get(Calendar.MONTH)+1)+"-"+ current1.get(Calendar.YEAR);
+                if(date.equals(currentDate)) {//if it is true then store
+                    db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET  LATESTDATE='" +date + "'" +" WHERE ID='" + getIntent().getStringExtra("ID") + "'");
+                }
+
+
+                if(file !=null){//if file is not null then only it execute otherwise nothing will be inserted
+                    micPath=file.getAbsolutePath();
+                 }
+
+
+                //if user dont enter remarks or description then it is sure that previous data will be entered so no need to check null pointer exception
+                String remarks = "[" + time + "-EDITED]\n\n"+binding.customDescriptionEt.getText().toString().trim()+"\n\n*****PREVIOUS DATA WAS*****\n" + previousDataHold[0] + "  " + previousDataHold[1] + "\n" + previousDataHold[2] + "\n" + previousDataHold[3] ;//time is set automatically to remarks if user enter any remarks;
+                arr[1] = 1;//this is important because when user do not enter any data while updating then atleast 1 field should be filled with data so this field will sure be filled automatically so this is important.
+
+                boolean isWrongData,isDataPresent,success;
+                  isWrongData= isEnterDataIsWrong(arr);//it should be here to get updated result
+                  isDataPresent= isDataPresent(arr);
+                if(isDataPresent==true && isWrongData==false ) {  //means if data is present then check is it right data or not
+                    if(binding.customDepositEt.getText().toString().trim().length() >= 1) {
+                        depositAmount = Integer.parseInt(binding.customDepositEt.getText().toString().trim());
                     }
 
+                    db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET ACTIVE='" + 1 + "'" + " WHERE ID='" + getIntent().getStringExtra("ID") + "'");//when ever user update then that person will become active
 
-                    if(file !=null){//if file is not null then only it execute otherwise nothing will be inserted
-                        micPath=file.getAbsolutePath();
-                     }
+                    if(micPath != null) {//if it is not null then update micpath
+                      //  success = db.updateTable("UPDATE " + db.TABLE_NAME2 + " SET DATE='" + date + "',TIME='" + time + "',DESCRIPTION='" + remarks + "',MICPATH='" + micPath + "',DEPOSIT='" + depositAmount + "' WHERE ID= '" + getIntent().getStringExtra("ID") + "'" + " AND DATE= '" + getIntent().getStringExtra("DATE") + "'" + " AND TIME='" + getIntent().getStringExtra("TIME") + "'");
+                        success=db.update_Deposit_TABLE_NAME2(date,time,micPath,remarks,depositAmount,getIntent().getStringExtra("ID"),getIntent().getStringExtra("DATE"),getIntent().getStringExtra("TIME"));
+                    } else {//if micPath == null then we are not updating because null in text will be set to micpath and give wroing result like it will indicate that audio is present but actually audio is not present
+                       // success = db.updateTable("UPDATE " + db.TABLE_NAME2 + " SET DATE='" + date + "',TIME='" + time + "',DESCRIPTION='" + remarks + "',DEPOSIT='" + depositAmount + "' WHERE ID= '" + getIntent().getStringExtra("ID") + "'" + " AND DATE= '" + getIntent().getStringExtra("DATE") + "'" + " AND TIME='" + getIntent().getStringExtra("TIME") + "'");
+                        success=db.update_Deposit_TABLE_NAME2(date,time,null,remarks,depositAmount,getIntent().getStringExtra("ID"),getIntent().getStringExtra("DATE"),getIntent().getStringExtra("TIME"));
+                    }
+                    if (success == true) {
+                        displResult("DEPOSIT - "+depositAmount,"\nDATE-  "+date+"\n\nREMARKS- "+remarks+"\n\nMICPATH- "+micPath);
+                    } else
+                        Toast.makeText(CustomizeLayoutOrDepositAmount.this, "FAILED TO INSERT", Toast.LENGTH_LONG).show();
 
+                }else
+                    Toast.makeText(CustomizeLayoutOrDepositAmount.this, "CORRECT THE DATA or CANCEL AND ENTER AGAIN", Toast.LENGTH_LONG).show();
 
-                    //if user dont enter remarks or description then it is sure that previous data will be entered so no need to check null pointer exception
-                    String remarks = "[" + time + "-EDITED]\n\n"+binding.customDescriptionEt.getText().toString().trim()+"\n\n*****PREVIOUS DATA WAS*****\n" + previousDataHold[0] + "  " + previousDataHold[1] + "\n" + previousDataHold[2] + "\n" + previousDataHold[3] ;//time is set automatically to remarks if user enter any remarks;
-                    arr[1] = 1;//this is important because when user do not enter any data while updating then atleast 1 field should be filled with data so this field will sure be filled automatically so this is important.
-
-                    boolean isWrongData,isDataPresent,success;
-                      isWrongData= isEnterDataIsWrong(arr);//it should be here to get updated result
-                      isDataPresent= isDataPresent(arr);
-                    if(isDataPresent==true && isWrongData==false ) {  //means if data is present then check is it right data or not
-                        if(binding.customDepositEt.getText().toString().trim().length() >= 1) {
-                            depositAmount = Integer.parseInt(binding.customDepositEt.getText().toString().trim());
-                        }
-
-                        db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET ACTIVE='" + 1 + "'" + " WHERE ID='" + getIntent().getStringExtra("ID") + "'");//when ever user update then that person will become active
-
-                        if(micPath != null) {//if it is not null then update micpath
-                          //  success = db.updateTable("UPDATE " + db.TABLE_NAME2 + " SET DATE='" + date + "',TIME='" + time + "',DESCRIPTION='" + remarks + "',MICPATH='" + micPath + "',DEPOSIT='" + depositAmount + "' WHERE ID= '" + getIntent().getStringExtra("ID") + "'" + " AND DATE= '" + getIntent().getStringExtra("DATE") + "'" + " AND TIME='" + getIntent().getStringExtra("TIME") + "'");
-                            success=db.update_Deposit_TABLE_NAME2(date,time,micPath,remarks,depositAmount,getIntent().getStringExtra("ID"),getIntent().getStringExtra("DATE"),getIntent().getStringExtra("TIME"));
-                        } else {//if micPath == null then we are not updating because null in text will be set to micpath and give wroing result like it will indicate that audio is present but actually audio is not present
-                           // success = db.updateTable("UPDATE " + db.TABLE_NAME2 + " SET DATE='" + date + "',TIME='" + time + "',DESCRIPTION='" + remarks + "',DEPOSIT='" + depositAmount + "' WHERE ID= '" + getIntent().getStringExtra("ID") + "'" + " AND DATE= '" + getIntent().getStringExtra("DATE") + "'" + " AND TIME='" + getIntent().getStringExtra("TIME") + "'");
-                            success=db.update_Deposit_TABLE_NAME2(date,time,null,remarks,depositAmount,getIntent().getStringExtra("ID"),getIntent().getStringExtra("DATE"),getIntent().getStringExtra("TIME"));
-                        }
-                        if (success == true) {
-                            displResult("DEPOSIT : "+depositAmount,"\nDATE:  "+date+"\n\nREMARKS: "+remarks+"\n\nMICPATH: "+micPath);
-                        } else
-                            Toast.makeText(CustomizeLayoutOrDepositAmount.this, "FAILED TO INSERT", Toast.LENGTH_LONG).show();
-
-                    }else
-                        Toast.makeText(CustomizeLayoutOrDepositAmount.this, "CORRECT THE DATA or CANCEL AND ENTER AGAIN", Toast.LENGTH_LONG).show();
-
-                    return false;
-                }
+                return false;
             });
         }else
             Toast.makeText(this, "No ID from other Intent", Toast.LENGTH_SHORT).show();

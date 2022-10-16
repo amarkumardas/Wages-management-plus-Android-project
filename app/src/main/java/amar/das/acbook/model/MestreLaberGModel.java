@@ -1,6 +1,9 @@
 package amar.das.acbook.model;
 
-public class MestreLaberGModel {
+import java.io.Serializable;
+
+public class MestreLaberGModel implements Serializable {
+    private static final long serialVersionUID = 42L;
     public int getAdvanceAmount() {
         return advanceAmount;
     }

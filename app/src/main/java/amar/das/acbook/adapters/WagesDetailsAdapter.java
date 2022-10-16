@@ -260,7 +260,7 @@ public class WagesDetailsAdapter extends RecyclerView.Adapter<WagesDetailsAdapte
                  Cursor cursordefault = db.getData("SELECT TYPE FROM " + db.TABLE_NAME1 + " WHERE ID= '" + data.getId() + "'");//for sure it will return type or skill
                  cursordefault.moveToFirst();//no need to check  cursordefault !=null because for sure TYPE data is present
                  hardcodedP1.setText(cursordefault.getString(0));
-                 previousDataHold[0] = cursordefault.getString(0) + ": " + cursorData.getString(5);//to write previous record in description
+                 previousDataHold[0] = cursordefault.getString(0) + "- " + cursorData.getString(5);//to write previous record in description
                  toGive_Amount.setText("" + cursorData.getInt(4));//setting wages
                  inputP1.setText("" + cursorData.getInt(5));//setting same data to p1
                  cursordefault.close();
@@ -273,19 +273,19 @@ public class WagesDetailsAdapter extends RecyclerView.Adapter<WagesDetailsAdapte
                          hardcodedP2.setVisibility(View.VISIBLE);
                          inputP2.setVisibility(View.VISIBLE);
                          hardcodedP2.setText(skillsCursor.getString(0));
-                         previousDataHold[1] = skillsCursor.getString(0) + ": " + cursorData.getString(6);//to write previous record in description
+                         previousDataHold[1] = skillsCursor.getString(0) + "- " + cursorData.getString(6);//to write previous record in description
                          inputP2.setText("" + cursorData.getInt(6));//setting same data to p2
                      } else if (indicator == 3) {//three person
                          //hardcodedP1,inputP1 by default visible so no need to mention
                          hardcodedP2.setVisibility(View.VISIBLE);
                          inputP2.setVisibility(View.VISIBLE);
                          hardcodedP2.setText(skillsCursor.getString(0));
-                         previousDataHold[1] = skillsCursor.getString(0) + ": " + cursorData.getString(6);//to write previous record in description
+                         previousDataHold[1] = skillsCursor.getString(0) + "- " + cursorData.getString(6);//to write previous record in description
                          inputP2.setText("" + cursorData.getInt(6));//setting same data to p2
 
                          hardcodedP3.setVisibility(View.VISIBLE);
                          hardcodedP3.setText(skillsCursor.getString(1));
-                         previousDataHold[2] = skillsCursor.getString(1) + ": " + cursorData.getString(7);//to write previous record in description
+                         previousDataHold[2] = skillsCursor.getString(1) + "- " + cursorData.getString(7);//to write previous record in description
                          inputP3.setText("" + cursorData.getInt(7));//setting same data to p3
                          inputP3.setVisibility(View.VISIBLE);
                      } else if (indicator == 4) {////two person
@@ -293,18 +293,18 @@ public class WagesDetailsAdapter extends RecyclerView.Adapter<WagesDetailsAdapte
                          hardcodedP2.setVisibility(View.VISIBLE);
                          inputP2.setVisibility(View.VISIBLE);
                          hardcodedP2.setText(skillsCursor.getString(0));
-                         previousDataHold[1] = skillsCursor.getString(0) + ": " + cursorData.getString(6);//to write previous record in description
+                         previousDataHold[1] = skillsCursor.getString(0) + "- " + cursorData.getString(6);//to write previous record in description
                          inputP2.setText("" + cursorData.getInt(6));//setting same data to p2
 
                          hardcodedP3.setVisibility(View.VISIBLE);
                          hardcodedP3.setText(skillsCursor.getString(1));
-                         previousDataHold[2] = skillsCursor.getString(1) + ": " + cursorData.getString(7);//to write previous record in description
+                         previousDataHold[2] = skillsCursor.getString(1) + "- " + cursorData.getString(7);//to write previous record in description
                          inputP3.setVisibility(View.VISIBLE);
                          inputP3.setText("" + cursorData.getInt(7));//setting same data to p3
 
                          hardcodedP4.setVisibility(View.VISIBLE);
                          hardcodedP4.setText(skillsCursor.getString(2));
-                         previousDataHold[3] = skillsCursor.getString(2) + ": " + cursorData.getString(8);//to write previous record in description
+                         previousDataHold[3] = skillsCursor.getString(2) + "- " + cursorData.getString(8);//to write previous record in description
                          inputP4.setText("" + cursorData.getInt(8));//setting same data to p3
                          inputP4.setVisibility(View.VISIBLE);
                      }
@@ -313,10 +313,10 @@ public class WagesDetailsAdapter extends RecyclerView.Adapter<WagesDetailsAdapte
                  skillsCursor.close();
 //********************************Done CUSTOMIZATION*******************************************************************************************
 
-                 previousDataHold[4] = "WAGES: " + cursorData.getString(4);//wages to write previous record in description
-                 previousDataHold[5] = "DATE: " + cursorData.getString(1);//date to write previous record in description
-                 previousDataHold[6] = "TIME: " + cursorData.getString(2);//time to write previous record in description
-                 previousDataHold[7] = "REMARKS: " + cursorData.getString(3);//descriprion or remarks
+                 previousDataHold[4] = "WAGES- " + cursorData.getString(4);//wages to write previous record in description
+                 previousDataHold[5] = "DATE- " + cursorData.getString(1);//date to write previous record in description
+                 previousDataHold[6] = "TIME- " + cursorData.getString(2);//time to write previous record in description
+                 previousDataHold[7] = "REMARKS- " + cursorData.getString(3);//descriprion or remarks
 
                      datearray=cursorData.getString(1).split("-");
                      int cDayOfMonth=Integer.parseInt(datearray[0]);
@@ -404,7 +404,7 @@ public class WagesDetailsAdapter extends RecyclerView.Adapter<WagesDetailsAdapte
                                       success=db.update_1_TABLE_NAME2(date,time,remarks,null,wages,p1,data.getId(),data.getDate(),data.getTime());
                                   }
                                  if (success) {
-                                     displResultAndRefresh(wages + "          " + p1, "\nDATE: " + date + "\n\n" + "REMARKS: " + remarks+"\n\n"+"MICPATH: "+micPath);
+                                     displResultAndRefresh(wages + "          " + p1, "\nDATE- " + date + "\n\n" + "REMARKS- " + remarks+"\n\n"+"MICPATH- "+micPath);
                                      fromIntentPersonId = data.getId();//update to send to other intent for refresh
                                      dialog.dismiss();//dialog will be dismiss after saved automatically
                                  } else
@@ -427,7 +427,7 @@ public class WagesDetailsAdapter extends RecyclerView.Adapter<WagesDetailsAdapte
                                      success=db.update_2_TABLE_NAME2(date,time,remarks,null,wages,p1,p2,data.getId(),data.getDate(),data.getTime());
                                  }
                                  if (success) {
-                                     displResultAndRefresh(wages + "          " + p1 + "     " + p2, "\nDATE: " + date + "\n\n" + "REMARKS: " + remarks+"\n\n"+"MICPATH: "+micPath);
+                                     displResultAndRefresh(wages + "          " + p1 + "     " + p2, "\nDATE- " + date + "\n\n" + "REMARKS- " + remarks+"\n\n"+"MICPATH- "+micPath);
                                      fromIntentPersonId = data.getId();//update to send to other intent for refresh
                                      dialog.dismiss();//dialog will be dismiss after saved automatically
                                  } else
@@ -453,7 +453,7 @@ public class WagesDetailsAdapter extends RecyclerView.Adapter<WagesDetailsAdapte
                                  }
 
                                  if (success) {
-                                     displResultAndRefresh(wages + "          " + p1 + "     " + p2 + "     " + p3, "\nDATE: " + date + "\n\n" + "REMARKS: " + remarks+"\n\n"+"MICPATH: "+micPath);
+                                     displResultAndRefresh(wages + "          " + p1 + "     " + p2 + "     " + p3, "\nDATE- " + date + "\n\n" + "REMARKS- " + remarks+"\n\n"+"MICPATH- "+micPath);
                                      fromIntentPersonId = data.getId();//update to send to other intent for refresh
                                      dialog.dismiss();//dialog will be dismiss after saved automatically
                                  } else
@@ -482,7 +482,7 @@ public class WagesDetailsAdapter extends RecyclerView.Adapter<WagesDetailsAdapte
                                      success=db.update_4_TABLE_NAME2(date,time,remarks,null,wages,p1,p2,p3,p4,data.getId(),data.getDate(),data.getTime());
                                  }
                                      if (success) {
-                                         displResultAndRefresh(wages + "          " + p1 + "     " + p2 + "     " + p3 + "     " + p4, "\nDATE: " + date + "\n\n" + "REMARKS: " + remarks+"\n\n"+"MICPATH: "+micPath);
+                                         displResultAndRefresh(wages + "          " + p1 + "     " + p2 + "     " + p3 + "     " + p4, "\nDATE- " + date + "\n\n" + "REMARKS- " + remarks+"\n\n"+"MICPATH- "+micPath);
                                          fromIntentPersonId = data.getId();//update to send to other intent for refresh
                                          dialog.dismiss();//dialog will be dismiss after saved automatically
                                      } else
@@ -967,7 +967,7 @@ public class WagesDetailsAdapter extends RecyclerView.Adapter<WagesDetailsAdapte
             } else
                 return Integer.parseInt(cursor.getString(0));
         }else
-            Toast.makeText(context.getApplicationContext(), "No indicator: ", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context.getApplicationContext(), "No indicator- ", Toast.LENGTH_SHORT).show();
 
         return 1;//by default 1
     }

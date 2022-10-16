@@ -1,6 +1,9 @@
 package amar.das.acbook.model;
 
-public class MLGAllRecordModel {
+import java.io.Serializable;
+
+public class MLGAllRecordModel implements Serializable {
+    private static final long serialVersionUID = 423L;
    private String name, latestDate,id,active;
 
     public String getActive() {

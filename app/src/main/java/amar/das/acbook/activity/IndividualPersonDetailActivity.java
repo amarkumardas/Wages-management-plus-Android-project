@@ -270,12 +270,12 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
             if (cursor != null) {
                 cursor.moveToFirst();
                 binding.nameTv.setText(cursor.getString(0));
-                binding.accountTv.setText(HtmlCompat.fromHtml("A/C:  " + "<b>" + cursor.getString(1) + "</b>",HtmlCompat.FROM_HTML_MODE_LEGACY));
-                binding.ifscCodeTv.setText("IFSC:  " + cursor.getString(2));
-                binding.bankNameTv.setText("Bank: " + cursor.getString(3));
-                binding.aadharTv.setText(HtmlCompat.fromHtml("Aadhar Card:  " + "<b>" + cursor.getString(4) + "</b>",HtmlCompat.FROM_HTML_MODE_LEGACY));
-                binding.phoneTv.setText("Phone:  " + cursor.getString(5));
-                binding.fatherNameTv.setText("Father: " + cursor.getString(6));
+                binding.accountTv.setText(HtmlCompat.fromHtml("A/C-  " + "<b>" + cursor.getString(1) + "</b>",HtmlCompat.FROM_HTML_MODE_LEGACY));
+                binding.ifscCodeTv.setText("IFSC-  " + cursor.getString(2));
+                binding.bankNameTv.setText("Bank- " + cursor.getString(3));
+                binding.aadharTv.setText(HtmlCompat.fromHtml("Aadhar Card-  " + "<b>" + cursor.getString(4) + "</b>",HtmlCompat.FROM_HTML_MODE_LEGACY));
+                binding.phoneTv.setText("Phone-  " + cursor.getString(5));
+                binding.fatherNameTv.setText("Father- " + cursor.getString(6));
 
                 if (cursor.getString(5).length() == 10) {//if there is no phone number then show default icon color black else green icon
                     binding.callTv.setBackgroundResource(R.drawable.ic_outline_call_24);
@@ -286,8 +286,8 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                 Bitmap bitmap = BitmapFactory.decodeByteArray(image, 0, image.length);
                 binding.imageImg.setImageBitmap(bitmap);
 
-                binding.acHolderTv.setText("A/C Holder: " + cursor.getString(8));
-                binding.idTv.setText("ID: " + cursor.getString(9));
+                binding.acHolderTv.setText("A/C Holder- " + cursor.getString(8));
+                binding.idTv.setText("ID- " + cursor.getString(9));
             } else {
                 Toast.makeText(this, "NO DATA IN CURSOR", Toast.LENGTH_SHORT).show();
             }
@@ -419,7 +419,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                                   success2=db.update_Rating_TABLE_NAME3(rate,refferal.getText().toString().trim(),dateTv.getText().toString().trim(),fromIntentPersonId);
                              }
                              if(success2)
-                                 displResult("SAVED SUCCESSFULLY", "RATING: " + rate + "\nLEAVINGDATE: " + dateTv.getText().toString().trim() + "\n\nREFFERED TO: " + refferal.getText().toString().trim());
+                                 displResult("SAVED SUCCESSFULLY", "RATING- " + rate + "\nLEAVINGDATE- " + dateTv.getText().toString().trim() + "\n\nREFFERED TO- " + refferal.getText().toString().trim());
                              else
                                  displResult("FAILED TO SAVE!!!","DATA NOT UPDATED- UPDATE QUERY FAILED- PLEASE TRY AGAIN");
 
@@ -798,7 +798,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                                     ActivityCompat.requestPermissions(IndividualPersonDetailActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 20);
                                 }
                             }else//we will let user know what gone wrong
-                                Toast.makeText(IndividualPersonDetailActivity.this, "FAILED-NO SUFFICIENT MEMORY \nINTERNAL MEMORY AVAILABLE: "+(checkInternalStorageAvailability()*1000)+" MB", Toast.LENGTH_LONG).show();
+                                Toast.makeText(IndividualPersonDetailActivity.this, "FAILED-NO SUFFICIENT MEMORY \nINTERNAL MEMORY AVAILABLE- "+(checkInternalStorageAvailability()*1000)+" MB", Toast.LENGTH_LONG).show();
                         }
                     });
                     dialog.show();
@@ -1930,7 +1930,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                         //insert to database
                           success = db.insert_1_Person_WithWagesTable2(fromIntentPersonId, date,time, micPath, remarks, wages, p1, "0");
                         if (success) {
-                            displResult(wages + "          " + p1, "\nDATE: " + date + "\n\n" + "REMARKS: " + remarks + "\n\nMICPATH: " + micPath);
+                            displResult(wages + "          " + p1, "\nDATE- " + date + "\n\n" + "REMARKS- " + remarks + "\n\nMICPATH- " + micPath);
                             dialog.dismiss();//dialog will be dismiss after saved automatically
                         } else
                             Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO INSERT", Toast.LENGTH_LONG).show();
@@ -1946,7 +1946,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                         //insert to database
                           success = db.insert_2_Person_WithWagesTable2(fromIntentPersonId, date,time, micPath, remarks, wages, p1, p2, "0");
                          if (success) {
-                            displResult(wages+"          "+p1+"     "+p2,"\nDATE: "+date+"\n\n"+"REMARKS: "+remarks+"\n\nMICPATH: "+micPath);
+                            displResult(wages+"          "+p1+"     "+p2,"\nDATE- "+date+"\n\n"+"REMARKS- "+remarks+"\n\nMICPATH- "+micPath);
                             dialog.dismiss();//dialog will be dismiss after saved automatically
                         } else
                             Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO INSERT", Toast.LENGTH_LONG).show();
@@ -1964,7 +1964,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                         //insert to database
                           success = db.insert_3_Person_WithWagesTable2(fromIntentPersonId, date,time, micPath, remarks, wages, p1, p2, p3, "0");
                          if (success) {
-                            displResult(wages+"          "+p1+"     "+p2+"     "+p3,"\nDATE: "+date+"\n\n"+"REMARKS: "+remarks+"\n\nMICPATH: "+micPath);
+                            displResult(wages+"          "+p1+"     "+p2+"     "+p3,"\nDATE- "+date+"\n\n"+"REMARKS- "+remarks+"\n\nMICPATH- "+micPath);
                             dialog.dismiss();//dialog will be dismiss after saved automatically
                         } else
                             Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO INSERT", Toast.LENGTH_LONG).show();
@@ -1986,7 +1986,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                         //insert to database
                           success = db.insert_4_Person_WithWagesTable2(fromIntentPersonId, date,time, micPath, remarks, wages, p1, p2, p3, p4, "0");
                         if (success) {
-                            displResult(wages+"          "+p1+"     "+p2+"     "+p3+"     "+p4,"\nDATE: "+date+"\n\n"+"REMARKS: "+remarks+"\n\nMICPATH: "+micPath);
+                            displResult(wages+"          "+p1+"     "+p2+"     "+p3+"     "+p4,"\nDATE- "+date+"\n\n"+"REMARKS- "+remarks+"\n\nMICPATH- "+micPath);
                             dialog.dismiss();//dialog will be dismiss after saved automatically
                         } else
                             Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO INSERT", Toast.LENGTH_LONG).show();

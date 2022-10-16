@@ -1,8 +1,10 @@
 package amar.das.acbook.model;
 
-public class SearchModel {
-   private String name,id,account,aadhar,father;
+import java.io.Serializable;
 
+public class SearchModel implements Serializable {
+   private String name,id,account,aadhar,father;
+    private static final long serialVersionUID = 4234L;
     public String getName() {
         return name;
     }
