@@ -336,12 +336,14 @@ public class CustomizeLayoutOrDepositAmount extends AppCompatActivity {
                     String onlyTime = sdf.format(d);
                     binding.customTimeTv.setText(onlyTime);//setting time to take time and store in db
 
-                    //this will store latest date in db if that date is current date
+                    //this will store latest date by taking current date
                     final Calendar current=Calendar.getInstance();//to get current date
                     String currentDate =current.get(Calendar.DAY_OF_MONTH)+"-"+(current.get(Calendar.MONTH)+1)+"-"+current.get(Calendar.YEAR);
-                    if(binding.customDateTv.getText().toString().equals(currentDate)) {//if it is true then store
-                        db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET  LATESTDATE='" + binding.customDateTv.getText().toString() + "'" +" WHERE ID='" + fromIntentPersonId + "'");
-                    }
+//                    if(binding.customDateTv.getText().toString().equals(currentDate)) {//if it is true then store
+//                        db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET  LATESTDATE='" + binding.customDateTv.getText().toString() + "'" +" WHERE ID='" + fromIntentPersonId + "'");
+//                    }
+                    db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET  LATESTDATE='" + currentDate + "'" +" WHERE ID='" + fromIntentPersonId + "'");//when ever user insert its wages or deposit then latest date will be updated to current date not user entered date
+
 
 
                     if(file !=null){//if file is not null then only it execute otherwise nothing will be inserted
@@ -468,12 +470,14 @@ public class CustomizeLayoutOrDepositAmount extends AppCompatActivity {
                 String time=binding.customTimeTv.getText().toString();
                 String date=binding.customDateTv.getText().toString();
 
-                //this will store latest date in db if that date is current date
+                //this will store latest date by taking current date
                 final Calendar current1 =Calendar.getInstance();//to get current date
                 String currentDate = current1.get(Calendar.DAY_OF_MONTH)+"-"+(current1.get(Calendar.MONTH)+1)+"-"+ current1.get(Calendar.YEAR);
-                if(date.equals(currentDate)) {//if it is true then store
-                    db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET  LATESTDATE='" +date + "'" +" WHERE ID='" + getIntent().getStringExtra("ID") + "'");
-                }
+//                if(date.equals(currentDate)) {//if it is true then store
+//                    db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET  LATESTDATE='" +date + "'" +" WHERE ID='" + getIntent().getStringExtra("ID") + "'");
+//                }
+                 db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET  LATESTDATE='" +currentDate + "'" +" WHERE ID='" + getIntent().getStringExtra("ID") + "'");////when ever user insert its wages or deposit then latest date will be updated to current date not user entered date
+
 
 
                 if(file !=null){//if file is not null then only it execute otherwise nothing will be inserted

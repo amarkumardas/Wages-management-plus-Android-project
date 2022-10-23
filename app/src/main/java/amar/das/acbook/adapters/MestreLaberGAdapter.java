@@ -105,7 +105,7 @@ public class MestreLaberGAdapter extends RecyclerView.Adapter<MestreLaberGAdapte
 
                 Cursor cursor5 = db.getData("SELECT LATESTDATE FROM " + db.TABLE_NAME1 + " WHERE ID='" + data.getId() + "'");
                 cursor5.moveToFirst();
-                Toast.makeText(contex, ""+cursor5.getString(0), Toast.LENGTH_SHORT).show();
+                Toast.makeText(contex, "showLatestdate"+cursor5.getString(0), Toast.LENGTH_SHORT).show();
 
                 //************************leaving date updation if days is 0 between two date then update SET LEAVINGDATE="+null+
                 Cursor cursor2 = db.getData("SELECT LEAVINGDATE FROM " + db.TABLE_NAME3 + " WHERE ID='" + data.getId() + "'");

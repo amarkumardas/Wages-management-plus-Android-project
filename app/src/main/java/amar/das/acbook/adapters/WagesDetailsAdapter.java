@@ -70,7 +70,6 @@ public class WagesDetailsAdapter extends RecyclerView.Adapter<WagesDetailsAdapte
 
     final Calendar current=Calendar.getInstance();//to get current date
     String currentDate =current.get(Calendar.DAY_OF_MONTH)+"-"+(current.get(Calendar.MONTH)+1)+"-"+current.get(Calendar.YEAR);
-
     //OR to get current date
 //    final Calendar currentDate=Calendar.getInstance();//to get current date
 //    SimpleDateFormat dateFormat1=new SimpleDateFormat("dd-MM-yyyy");//formatting in like 19-03-2022
@@ -89,6 +88,7 @@ public class WagesDetailsAdapter extends RecyclerView.Adapter<WagesDetailsAdapte
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
        WagesDetailsModel data=arrayList.get(position);
+
        holder.date.setText(data.getDate());
        if(data.getWages() !=0 && data.getDeposit() == 0) {//if wages is there and deposit not there then set wages
            holder.wages.setText(""+data.getWages());
@@ -186,10 +186,10 @@ public class WagesDetailsAdapter extends RecyclerView.Adapter<WagesDetailsAdapte
         }
          //************************SETTING BACKGROUND COLOR ACCORDING TO PREVIOUS AND TODAYS DATE*******************************
          if (data.getDate().equals(getPreviousDate()))//if data has enterded yesterday then set background to gray
-       holder.singleRecordLayout.setBackgroundColor(context.getColor(R.color.background));
+            holder.singleRecordLayout.setBackgroundColor(context.getColor(R.color.background));
        else if(currentDate.equals(data.getDate()))//if data has enterded today then set background to yellow
        holder.singleRecordLayout.setBackgroundColor(context.getColor(R.color.yellow));
-    else//if we dont put else statement then other layout also color get change so else is important
+       else//if we dont put else statement then other layout also color get change so else is important
        holder.singleRecordLayout.setBackgroundColor(Color.WHITE);
         //************************ DONE SETTING BACKGROUND COLOR ACCORDING TO PREVIOUS AND TODAYS DATE*******************************
 
@@ -364,11 +364,15 @@ public class WagesDetailsAdapter extends RecyclerView.Adapter<WagesDetailsAdapte
                          String date = inputDate.getText().toString();//date will be inserted automatically
 
                          //this will store latest date in db if that date is current date
-                         final Calendar current=Calendar.getInstance();//to get current date
-                         String currentDate =current.get(Calendar.DAY_OF_MONTH)+"-"+(current.get(Calendar.MONTH)+1)+"-"+current.get(Calendar.YEAR);
-                         if(date.equals(currentDate)) {//if it is true then store
-                             db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET  LATESTDATE='" + date + "'" + " WHERE ID='" + data.getId() + "'");
-                         }
+//                         final Calendar current=Calendar.getInstance();//to get current date
+//                       // String currentDate =current.get(Calendar.DAY_OF_MONTH)+"-"+(current.get(Calendar.MONTH)+1)+"-"+current.get(Calendar.YEAR);
+//                         if(date.equals(currentDate)) {//if it is true then store
+//                             db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET  LATESTDATE='" + date + "'" + " WHERE ID='" + data.getId() + "'");
+//                         }
+
+                        // Can outer Java classes access inner class?
+                        // You can access any field of outer class from inner class directly. Even Outer class can access any field of Inner class but through object of inner class.
+                         db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET  LATESTDATE='" + currentDate + "'" + " WHERE ID='" + data.getId() + "'");//when ever user insert its wages or deposit then latest date will be updated to current date not user entered date
 
                          if(file !=null){//if file is not null then only it execute otherwise nothing will be inserted
                              micPath=file.getAbsolutePath();

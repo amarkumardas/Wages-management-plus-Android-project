@@ -131,7 +131,7 @@ public class PersonRecordDatabase extends SQLiteOpenHelper {
             return cursor;
      }
 
-    public Cursor getData(String query){//error when closing db or cursor
+    public Cursor getData(String query){//error when closing db or cursor so dont close cursor
             db = this.getReadableDatabase();
             Cursor cursor = db.rawQuery(query, null);
             return cursor;
