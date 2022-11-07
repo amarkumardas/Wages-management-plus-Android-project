@@ -6,23 +6,18 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 
 import amar.das.acbook.PersonRecordDatabase;
 import amar.das.acbook.R;
-import amar.das.acbook.adapters.AllMLGRecordAdapter;
+import amar.das.acbook.adapters.SeparateAllMLGRecordAdapter;
 import amar.das.acbook.adapters.SearchAdapter;
 import amar.das.acbook.model.MLGAllRecordModel;
 import amar.das.acbook.model.SearchModel;
@@ -172,7 +167,7 @@ Boolean aboolean=false;
             }
         });
 
-        AllMLGRecordAdapter allMLGRecordAdapter=new AllMLGRecordAdapter(this,allMLGList);
+        SeparateAllMLGRecordAdapter allMLGRecordAdapter=new SeparateAllMLGRecordAdapter(this,allMLGList);
         searchRecycler.setHasFixedSize(true);
         searchRecycler.setAdapter(allMLGRecordAdapter);
         aboolean=true;//to set adapter recycler view on onQueryTextChange method

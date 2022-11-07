@@ -17,7 +17,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:background="@color/purple_700">
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="25dp"
@@ -26,7 +25,6 @@
                 android:paddingRight="2dp"
                 android:paddingTop="2dp"
                 android:textColor="@color/black"
-
                 android:layout_gravity="end"
                 android:background="@drawable/green_color_bg"
                 android:id="@+id/to_deposit_tv"/>
@@ -110,8 +108,6 @@
             android:id="@+id/input_p1_et">
             <requestFocus></requestFocus><!--cursor will focus here when this activity is open and to open keyboard code is written in manifest file writing focus here is important otherwise keyboard will not open-->
         </EditText>
-
-
         <EditText
             android:layout_weight="1"
             android:layout_width="0dp"

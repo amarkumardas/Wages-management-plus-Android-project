@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="40dp"
     android:orientation="horizontal"
     android:layout_marginTop="4dp"
     android:layout_marginLeft="2dp"
@@ -45,56 +46,56 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textAlignment="center"
-        android:layout_gravity="center_horizontal"
+        android:layout_gravity="center_vertical"
 
         android:textColor="@color/black"
         android:textStyle="bold"
         android:textSize="15dp"
         android:id="@+id/wages_in_recycler_tv"
-        />
+        tools:ignore="RtlCompat" />
     <TextView
         android:layout_weight="2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textAlignment="center"
-
+        android:layout_gravity="center_vertical"
         android:textColor="@color/black"
         android:textStyle="bold"
         android:background="@drawable/light_gray_color_bg"
         android:textSize="15dp"
         android:id="@+id/p1_in_recycler_tv"
-        />
+        tools:ignore="RtlCompat" />
     <TextView
         android:layout_weight="2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textAlignment="center"
-
+        android:layout_gravity="center_vertical"
         android:textColor="@color/black"
         android:textStyle="bold"
         android:textSize="15dp"
         android:id="@+id/p2_in_recycler_tv"
-        />
+        tools:ignore="RtlCompat" />
     <TextView
         android:layout_weight="2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textAlignment="center"
-
+        android:layout_gravity="center_vertical"
         android:textColor="@color/black"
         android:textStyle="bold"
         android:textSize="15dp"
         android:id="@+id/p3_in_recycler_tv"
-        />
+        tools:ignore="RtlCompat" />
     <TextView
         android:layout_weight="2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textAlignment="center"
-
+        android:layout_gravity="center_vertical"
         android:textColor="@color/black"
         android:textStyle="bold"
         android:textSize="15dp"
         android:id="@+id/p4_in_recycler_tv"
-        />
+        tools:ignore="RtlCompat" />
 </LinearLayout>

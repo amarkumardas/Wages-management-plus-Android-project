@@ -125,7 +125,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                     binding.totalP1AmountTv.setText("= "+skillNRateCursor.getInt(3)*sumCursor.getInt(1));//default skill
                 }else {
                     binding.totalP1AmountTv.setText("= NEW PERSON PROVIDE RATE");//default skill
-                    Toast.makeText(this, "Long press FINAL TOTAL button to  provide rate", Toast.LENGTH_LONG).show();
+                    //Toast.makeText(this, "Long press FINAL TOTAL button to  provide rate", Toast.LENGTH_LONG).show();
                 }
                                //total wages
                 if(sumCursor.getString(0) !=null) {//if total wages is not null then set total wages
@@ -148,7 +148,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                         binding.totalP2AmountTv.setText("= "+skillNRateCursor.getInt(4)*sumCursor.getInt(2));
                     }else {
                         binding.totalP2AmountTv.setText("= NEW PERSON PROVIDE RATE");
-                        Toast.makeText(this, "Long press FINAL TOTAL button to  provide rate", Toast.LENGTH_LONG).show();
+                        //Toast.makeText(this, "Long press FINAL TOTAL button to  provide rate", Toast.LENGTH_LONG).show();
                     }
 
                     binding.totalP2CountTv.setText(sumCursor.getString(2));//total p2 count
@@ -166,7 +166,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                         binding.totalP2AmountTv.setText("= "+skillNRateCursor.getInt(4)*sumCursor.getInt(2));
                     }else {
                         binding.totalP2AmountTv.setText("= NEW PERSON PROVIDE RATE");
-                        Toast.makeText(this, "Long press FINAL TOTAL button to  provide rate", Toast.LENGTH_LONG).show();
+                        //Toast.makeText(this, "Long press FINAL TOTAL button to  provide rate", Toast.LENGTH_LONG).show();
                     }
 
                     if(skillNRateCursor.getInt(5) != 0) {
@@ -175,7 +175,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                         binding.totalP3AmountTv.setText("= "+skillNRateCursor.getInt(5)*sumCursor.getInt(3));
                     }else {
                         binding.totalP3AmountTv.setText("= NEW PERSON PROVIDE RATE");
-                        Toast.makeText(this, "Long press FINAL TOTAL button to  provide rate", Toast.LENGTH_LONG).show();
+                        //Toast.makeText(this, "Long press FINAL TOTAL button to  provide rate", Toast.LENGTH_LONG).show();
                     }
                     binding.totalP2CountTv.setText(sumCursor.getString(2));//total p2 count
                     binding.totalP3CountTv.setText(sumCursor.getString(3));//total p3 count
@@ -197,7 +197,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                         binding.totalP2AmountTv.setText("= "+skillNRateCursor.getInt(4)*sumCursor.getInt(2));
                     }else {
                         binding.totalP2AmountTv.setText("= NEW PERSON PROVIDE RATE");
-                        Toast.makeText(this, "Long press FINAL TOTAL button to  provide rate", Toast.LENGTH_LONG).show();
+                       // Toast.makeText(this, "Long press FINAL TOTAL button to  provide rate", Toast.LENGTH_LONG).show();
                     }
 
                     if(skillNRateCursor.getInt(5) != 0) {
@@ -206,7 +206,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                         binding.totalP3AmountTv.setText("= "+skillNRateCursor.getInt(5)*sumCursor.getInt(3));
                     }else {
                         binding.totalP3AmountTv.setText("= NEW PERSON PROVIDE RATE");
-                        Toast.makeText(this, "Long press FINAL TOTAL button to  provide rate", Toast.LENGTH_LONG).show();
+                       // Toast.makeText(this, "Long press FINAL TOTAL button to  provide rate", Toast.LENGTH_LONG).show();
                     }
 
                     if(skillNRateCursor.getInt(6) != 0) {
@@ -215,7 +215,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                         binding.totalP4AmountTv.setText("= "+skillNRateCursor.getInt(6)*sumCursor.getInt(4));
                     }else {
                         binding.totalP4AmountTv.setText("= NEW PERSON PROVIDE RATE");
-                        Toast.makeText(this, "Long press FINAL TOTAL button to  provide rate", Toast.LENGTH_LONG).show();
+                        //Toast.makeText(this, "Long press FINAL TOTAL button to  provide rate", Toast.LENGTH_LONG).show();
                     }
 
                     binding.totalP2CountTv.setText(sumCursor.getString(2));//total p2 count
@@ -273,7 +273,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                 binding.accountTv.setText(HtmlCompat.fromHtml("A/C-  " + "<b>" + cursor.getString(1) + "</b>",HtmlCompat.FROM_HTML_MODE_LEGACY));
                 binding.ifscCodeTv.setText("IFSC-  " + cursor.getString(2));
                 binding.bankNameTv.setText("Bank- " + cursor.getString(3));
-                binding.aadharTv.setText(HtmlCompat.fromHtml("Aadhar Card-  " + "<b>" + cursor.getString(4) + "</b>",HtmlCompat.FROM_HTML_MODE_LEGACY));
+                binding.aadharTv.setText(HtmlCompat.fromHtml("Aadhaar Card-  " + "<b>" + cursor.getString(4) + "</b>",HtmlCompat.FROM_HTML_MODE_LEGACY));
                 binding.phoneTv.setText("Phone-  " + cursor.getString(5));
                 binding.fatherNameTv.setText("Father- " + cursor.getString(6));
 
@@ -317,9 +317,8 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                     RadioButton activeRadio=myView.findViewById(R.id.active_metadata);
                     RadioGroup radioGroup=myView.findViewById(R.id.skill_radiogp_metadata);
                     Spinner starSpinner= myView.findViewById(R.id.starSpinner_metadata);
-                    TextView dateIcon=myView.findViewById(R.id.date_icon_metadata);
                     TextView dateTv=myView.findViewById(R.id.dateTv_metadata);
-                    EditText refferal=myView.findViewById(R.id.refferal_metadata);
+                    EditText remarksMetaData=myView.findViewById(R.id.refferal_metadata);
                     Button save=myView.findViewById(R.id.save_btn_metadata);
                     Button  cancel=myView.findViewById(R.id.cancel_btn_metadata);
                     cancel.setOnClickListener(new View.OnClickListener() {
@@ -373,7 +372,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                     cMonth=current.get(Calendar.MONTH);
                     cDayOfMonth=current.get(Calendar.DAY_OF_MONTH);
 
-                    dateIcon.setOnClickListener(new View.OnClickListener() {
+                    dateTv.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             //To show calendar dialog
@@ -387,8 +386,8 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                         }
                     });
 
-                    if(cursor2.getString(2) != null){//refferal
-                        refferal.setText(cursor2.getString(2));
+                    if(cursor2.getString(2) != null){//remarksMetaData
+                        remarksMetaData.setText(cursor2.getString(2));
                     }
                     cursor2.close();
                     save.setOnClickListener(new View.OnClickListener() {
@@ -414,12 +413,12 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                                  rate=starSpinner.getSelectedItem().toString();
 
                              if(dateTv.getText().toString()=="") {//by default if user dont enter anything then editText view contain nothing so checking "" it is important otherwise it will  produce error to other code due to nothing.so if nothing then dont update leavingdate
-                                  success2=db.update_Rating_TABLE_NAME3(rate,refferal.getText().toString().trim(),null,fromIntentPersonId);
+                                  success2=db.update_Rating_TABLE_NAME3(rate,remarksMetaData.getText().toString().trim(),null,fromIntentPersonId);
                              } else { //if user dont enter anything then else will execute
-                                  success2=db.update_Rating_TABLE_NAME3(rate,refferal.getText().toString().trim(),dateTv.getText().toString().trim(),fromIntentPersonId);
+                                  success2=db.update_Rating_TABLE_NAME3(rate,remarksMetaData.getText().toString().trim(),dateTv.getText().toString().trim(),fromIntentPersonId);
                              }
                              if(success2)
-                                 displResult("SAVED SUCCESSFULLY", "RATING- " + rate + "\nLEAVINGDATE- " + dateTv.getText().toString().trim() + "\n\nREFFERED TO- " + refferal.getText().toString().trim());
+                                 displResult("SAVED SUCCESSFULLY", "RATING- " + rate + "\nLEAVINGDATE- " + dateTv.getText().toString().trim() + "\n\nREMARKS- " + remarksMetaData.getText().toString().trim());
                              else
                                  displResult("FAILED TO SAVE!!!","DATA NOT UPDATED- UPDATE QUERY FAILED- PLEASE TRY AGAIN");
 
@@ -615,7 +614,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                                 p1RateTv.setTextColor(Color.RED);
                                 saveAndCreatePdf.setVisibility(View.GONE);
                                 innerArray[0]=2;//means data is inserted wrong
-                                Toast.makeText(IndividualPersonDetailActivity.this, "NOT ALLOWED(space  .  ,  -)\nPLEASE CORRECT", Toast.LENGTH_LONG).show();
+                              //  Toast.makeText(IndividualPersonDetailActivity.this, "NOT ALLOWED(space  .  ,  -)\nPLEASE CORRECT", Toast.LENGTH_LONG).show();
                             }
                         }
                         @Override
@@ -658,7 +657,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                                 p2RateTv.setTextColor(Color.RED);
                                 saveAndCreatePdf.setVisibility(View.GONE);
                                 innerArray[1]=2;//means data is inserted wrong
-                                Toast.makeText(IndividualPersonDetailActivity.this, "NOT ALLOWED(space  .  ,  -)\nPLEASE CORRECT", Toast.LENGTH_LONG).show();
+                               // Toast.makeText(IndividualPersonDetailActivity.this, "NOT ALLOWED(space  .  ,  -)\nPLEASE CORRECT", Toast.LENGTH_LONG).show();
                             }
                         }
                         @Override
@@ -699,7 +698,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                                 p3RateTv.setTextColor(Color.RED);
                                 saveAndCreatePdf.setVisibility(View.GONE);
                                 innerArray[2]=2;//means data is inserted wrong
-                                Toast.makeText(IndividualPersonDetailActivity.this, "NOT ALLOWED(space  .  ,  -)\nPLEASE CORRECT", Toast.LENGTH_LONG).show();
+                                //Toast.makeText(IndividualPersonDetailActivity.this, "NOT ALLOWED(space  .  ,  -)\nPLEASE CORRECT", Toast.LENGTH_LONG).show();
                             }
                         }
                         @Override
@@ -739,7 +738,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                                 p4RateTv.setTextColor(Color.RED);
                                 saveAndCreatePdf.setVisibility(View.GONE);
                                 innerArray[3]=2;//means data is inserted wrong
-                                Toast.makeText(IndividualPersonDetailActivity.this, "NOT ALLOWED(space  .  ,  -)\nPLEASE CORRECT", Toast.LENGTH_LONG).show();
+                               // Toast.makeText(IndividualPersonDetailActivity.this, "NOT ALLOWED(space  .  ,  -)\nPLEASE CORRECT", Toast.LENGTH_LONG).show();
                             }
                         }
                         @Override
@@ -775,7 +774,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                                                 if (viewPDFFromDb((byte) 2,fromIntentPersonId)) {//column name should be correct
 
                                                     if (modifyToDB()) {
-                                                        Toast.makeText(IndividualPersonDetailActivity.this, "operation successfull", Toast.LENGTH_LONG).show();
+                                                        Toast.makeText(IndividualPersonDetailActivity.this, "operation successful", Toast.LENGTH_LONG).show();
                                                     } else {
                                                         Toast.makeText(IndividualPersonDetailActivity.this, "operation failed", Toast.LENGTH_LONG).show();
                                                     }
@@ -1888,7 +1887,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                  }
 
                 if(!amount.matches("[0-9]+")){//no space or . or ,
-                    Toast.makeText(IndividualPersonDetailActivity.this, "NOT ALLOWED(space  .  ,  -)\nPlease Correct", Toast.LENGTH_LONG).show();
+                    //Toast.makeText(IndividualPersonDetailActivity.this, "NOT ALLOWED(space  .  ,  -)\nPlease Correct", Toast.LENGTH_LONG).show();
                     toGive_Amount.setTextColor(Color.RED);
                     save.setVisibility(View.GONE);
                     arr[4]=2;//means wrong data
@@ -1915,7 +1914,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                     inputP1.setTextColor(Color.RED);
                     save.setVisibility(View.GONE);
                     arr[0]=2;//means wrong data
-                     Toast.makeText(IndividualPersonDetailActivity.this, "NOT ALLOWED(space  .  ,  -)\nPLEASE CORRECT", Toast.LENGTH_LONG).show();
+                     //Toast.makeText(IndividualPersonDetailActivity.this, "NOT ALLOWED(space  .  ,  -)\nPLEASE CORRECT", Toast.LENGTH_LONG).show();
                 }
             }
             @Override
@@ -1943,7 +1942,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                     inputP2.setTextColor(Color.RED);
                     save.setVisibility(View.GONE);
                     arr[1]=2;//means wrong data
-                    Toast.makeText(IndividualPersonDetailActivity.this, "NOT ALLOWED(space  .  ,  -)\nPLEASE CORRECT", Toast.LENGTH_LONG).show();
+                   // Toast.makeText(IndividualPersonDetailActivity.this, "NOT ALLOWED(space  .  ,  -)\nPLEASE CORRECT", Toast.LENGTH_LONG).show();
                 }
             }
             @Override
@@ -1972,7 +1971,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                     inputP3.setTextColor(Color.RED);
                     save.setVisibility(View.GONE);
                     arr[2]=2;//means wrong data
-                    Toast.makeText(IndividualPersonDetailActivity.this, "NOT ALLOWED(space  .  ,  -)\nPLEASE CORRECT", Toast.LENGTH_LONG).show();
+                   // Toast.makeText(IndividualPersonDetailActivity.this, "NOT ALLOWED(space  .  ,  -)\nPLEASE CORRECT", Toast.LENGTH_LONG).show();
                 }
             }
             @Override
@@ -1998,7 +1997,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                     inputP4.setTextColor(Color.RED);
                     save.setVisibility(View.GONE);
                     arr[3]=2;//means wrong data
-                    Toast.makeText(IndividualPersonDetailActivity.this, "NOT ALLOWED(space  .  ,  -)\nPLEASE CORRECT", Toast.LENGTH_LONG).show();
+                    //Toast.makeText(IndividualPersonDetailActivity.this, "NOT ALLOWED(space  .  ,  -)\nPLEASE CORRECT", Toast.LENGTH_LONG).show();
                 }
             }
             @Override

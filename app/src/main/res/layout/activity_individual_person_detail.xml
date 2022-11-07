@@ -315,94 +315,105 @@
             android:layout_marginRight="1dp">
 
         </androidx.recyclerview.widget.RecyclerView>
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="20dp"
-            android:orientation="horizontal"
-            android:weightSum="22"
-            android:background="#3F60EA"
-            android:id="@+id/subtotal_layout">
-            <TextView
-                android:layout_weight="8"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="SUB TOTAL ="
-                android:textAlignment="textEnd"
-                android:textColor="@color/black"
-                android:textSize="12dp"
-                />
-            <TextView
-                android:layout_weight="6"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:textAlignment="center"
-                android:paddingTop="1dp"
-                android:textColor="#DD8503"
-                android:textStyle="bold"
-                android:textSize="13dp"
-                android:id="@+id/blue_total_wages_tv"/>
 
-            <TextView
-                android:id="@+id/blue_totalp1_tv"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_gravity="center_vertical"
-                android:layout_marginRight="3dp"
-                android:layout_weight="2"
-                android:background="#7EE8EBF1"
-                android:textAlignment="center"
-                android:textColor="@color/black"
-                android:textSize="13dp"
-                android:textStyle="bold"
-                tools:ignore="RtlCompat" />
-            <TextView
-                android:layout_weight="2"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:textAlignment="center"
-                android:paddingTop="1dp"
-                android:textColor="@color/black"
-                android:textStyle="bold"
-                android:textSize="13dp"
-                android:id="@+id/blue_totalp2_tv"/>
-            <TextView
-                android:layout_weight="2"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:textAlignment="center"
-                android:paddingTop="1dp"
-                android:textColor="@color/black"
-                android:textStyle="bold"
-                android:textSize="13dp"
-                android:id="@+id/blue_totalp3_tv"/>
+            <LinearLayout
+                android:id="@+id/subtotal_layout"
+                android:layout_width="match_parent"
+                android:layout_height="23dp"
+                android:background="#3F60EA"
+                android:orientation="horizontal"
+                android:weightSum="22">
 
-            <TextView
-                android:id="@+id/blue_totalp4_tv"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:paddingTop="1dp"
-                android:textAlignment="center"
-                android:textColor="@color/black"
-                android:textSize="13dp"
-                android:textStyle="bold" />
-        </LinearLayout>
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="6"
+                    android:text="SUB TOTAL ="
+                    android:textAlignment="textEnd"
+                    android:textColor="@color/black"
+                    android:textSize="12dp" />
+
+                <TextView
+                    android:id="@+id/blue_total_wages_tv"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="8"
+                    android:paddingTop="1dp"
+
+                    android:textAlignment="center"
+                    android:textColor="#DD8503"
+                    android:textSize="14dp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/blue_totalp1_tv"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="3dp"
+                    android:layout_weight="2"
+                    android:background="#7EE8EBF1"
+                    android:paddingTop="1dp"
+                    android:textAlignment="center"
+                    android:textColor="@color/black"
+                    android:textSize="14dp"
+                    android:textStyle="bold"
+                    tools:ignore="RtlCompat"/>
+
+                <TextView
+                    android:id="@+id/blue_totalp2_tv"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:paddingTop="1dp"
+
+                    android:textAlignment="center"
+                    android:textColor="@color/black"
+                    android:textSize="14dp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/blue_totalp3_tv"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:paddingTop="1dp"
+
+                    android:textAlignment="center"
+                    android:textColor="@color/black"
+                    android:textSize="14dp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/blue_totalp4_tv"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:paddingTop="1dp"
+
+                    android:textAlignment="center"
+                    android:textColor="@color/black"
+                    android:textSize="14dp"
+                    android:textStyle="bold" />
+            </LinearLayout>
 
         <LinearLayout
             android:layout_below="@+id/subtotal_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="20dp"
             android:orientation="horizontal"
             android:layout_marginLeft="2dp"
             android:layout_marginRight="2dp"
-            android:weightSum="8"
+            android:layout_marginTop="1dp"
+            android:weightSum="16"
             android:background="@color/white"
             android:id="@+id/p1_layout">
             <TextView
-                android:layout_weight="1"
+                android:layout_weight="2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
@@ -411,7 +422,7 @@
                 android:textSize="13dp"
                 android:id="@+id/default_skill_text_tv"/>
             <LinearLayout
-                android:layout_weight="2"
+                android:layout_weight="5"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
@@ -424,7 +435,7 @@
                     android:layout_weight="2"
                     android:textAlignment="textEnd"
                     android:textColor="@color/black"
-                    android:textSize="13dp"
+                    android:textSize="14dp"
                     android:textStyle="bold" />
                 <TextView
                     android:layout_weight="1"
@@ -442,18 +453,18 @@
                     android:textAlignment="textStart"
                     android:textColor="@color/purple_700"
                     android:textStyle="bold"
-                    android:textSize="13dp"
+                    android:textSize="14dp"
                     android:id="@+id/p1_rate_tv"/>
             </LinearLayout>
             <TextView
-                android:layout_weight="5"
+                android:layout_weight="9"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textAlignment="textStart"
                 android:background="@drawable/grey_line_bg_forlayout"
                 android:textColor="@color/black"
                 android:textStyle="bold"
-                android:textSize="13dp"
+                android:textSize="14dp"
                 android:id="@+id/total_p1_amount_tv"/>
         </LinearLayout>
             <LinearLayout
@@ -464,15 +475,15 @@
             android:id="@+id/two_layout_together">
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="20dp"
             android:orientation="horizontal"
             android:layout_marginLeft="2dp"
             android:layout_marginRight="2dp"
-            android:weightSum="8"
+            android:weightSum="16"
             android:background="@color/white"
             android:id="@+id/p2_layout">
             <TextView
-                android:layout_weight="1"
+                android:layout_weight="2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
@@ -480,7 +491,7 @@
                 android:textSize="13dp"
                 android:id="@+id/skill1_text_tv"/>
             <LinearLayout
-                android:layout_weight="2"
+                android:layout_weight="5"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
@@ -492,7 +503,7 @@
                     android:textAlignment="textEnd"
                     android:textColor="@color/black"
                     android:textStyle="bold"
-                    android:textSize="13dp"
+                    android:textSize="14dp"
                     android:id="@+id/total_p2_count_tv"/>
                 <TextView
                     android:layout_weight="1"
@@ -510,31 +521,31 @@
                     android:textAlignment="textStart"
                     android:textColor="@color/purple_700"
                     android:textStyle="bold"
-                    android:textSize="13dp"
+                    android:textSize="14dp"
                     android:id="@+id/p2_rate_tv"/>
             </LinearLayout>
             <TextView
-                android:layout_weight="5"
+                android:layout_weight="9"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textAlignment="textStart"
                 android:background="@drawable/grey_line_bg_forlayout"
                 android:textColor="@color/black"
                 android:textStyle="bold"
-                android:textSize="13dp"
+                android:textSize="14dp"
                 android:id="@+id/total_p2_amount_tv"/>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="20dp"
             android:orientation="horizontal"
             android:layout_marginLeft="2dp"
             android:layout_marginRight="2dp"
-            android:weightSum="8"
+            android:weightSum="16"
             android:background="@color/white"
             android:id="@+id/p3_layout">
             <TextView
-                android:layout_weight="1"
+                android:layout_weight="2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
@@ -542,7 +553,7 @@
                 android:textSize="13dp"
                 android:id="@+id/skill2_text_tv"/>
             <LinearLayout
-                android:layout_weight="2"
+                android:layout_weight="5"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
@@ -554,7 +565,7 @@
                     android:textAlignment="textEnd"
                     android:textColor="@color/black"
                     android:textStyle="bold"
-                    android:textSize="13dp"
+                    android:textSize="14dp"
                     android:id="@+id/total_p3_count_tv"/>
                 <TextView
                     android:layout_weight="1"
@@ -572,18 +583,18 @@
                     android:textAlignment="textStart"
                     android:textColor="@color/purple_700"
                     android:textStyle="bold"
-                    android:textSize="13dp"
+                    android:textSize="14dp"
                     android:id="@+id/p3_rate_tv"/>
             </LinearLayout>
             <TextView
-                android:layout_weight="5"
+                android:layout_weight="9"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textAlignment="textStart"
                 android:background="@drawable/grey_line_bg_forlayout"
                 android:textColor="@color/black"
                 android:textStyle="bold"
-                android:textSize="13dp"
+                android:textSize="14dp"
                 android:id="@+id/total_p3_amount_tv"/>
         </LinearLayout>
         </LinearLayout>
@@ -593,15 +604,15 @@
         <LinearLayout
             android:layout_below="@id/two_layout_together"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="20dp"
             android:orientation="horizontal"
             android:layout_marginLeft="2dp"
             android:layout_marginRight="2dp"
-            android:weightSum="8"
+            android:weightSum="16"
             android:background="@color/white"
             android:id="@+id/p4_layout">
             <TextView
-                android:layout_weight="1"
+                android:layout_weight="2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
@@ -609,7 +620,7 @@
                 android:textSize="13dp"
                 android:id="@+id/skill3_text_tv"/>
             <LinearLayout
-                android:layout_weight="2"
+                android:layout_weight="5"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
@@ -621,7 +632,7 @@
                     android:textAlignment="textEnd"
                     android:textColor="@color/black"
                     android:textStyle="bold"
-                    android:textSize="13dp"
+                    android:textSize="14dp"
                     android:id="@+id/total_p4_count_tv"/>
                 <TextView
                     android:layout_weight="1"
@@ -639,32 +650,32 @@
                     android:textAlignment="textStart"
                     android:textColor="@color/purple_700"
                     android:textStyle="bold"
-                    android:textSize="13dp"
+                    android:textSize="14dp"
                     android:id="@+id/p4_rate_tv"/>
             </LinearLayout>
             <TextView
-                android:layout_weight="5"
+                android:layout_weight="9"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textAlignment="textStart"
                 android:textColor="@color/black"
                 android:textStyle="bold"
                 android:background="@drawable/grey_line_bg_forlayout"
-                android:textSize="13dp"
+                android:textSize="14dp"
                 android:id="@+id/total_p4_amount_tv"/>
         </LinearLayout>
         <LinearLayout
             android:layout_below="@id/p4_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="20dp"
             android:orientation="horizontal"
             android:layout_marginLeft="2dp"
             android:layout_marginRight="2dp"
-            android:weightSum="8"
+            android:weightSum="16"
             android:background="@color/white"
             android:id="@+id/total_deposit_amount_layout">
             <TextView
-                android:layout_weight="3"
+                android:layout_weight="7"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="DEPOSIT AMOUNT "
@@ -672,33 +683,33 @@
                 android:textAlignment="textEnd"
                 android:textSize="12dp" />
             <TextView
-                android:layout_weight="5"
+                android:layout_weight="9"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textAlignment="textStart"
                 android:textColor="@color/black"
                 android:textStyle="bold"
                 android:background="@drawable/grey_line_bg_forlayout"
-                android:textSize="13dp"
+                android:textSize="14dp"
                 android:id="@+id/total_deposit_amount_tv"/>
         </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/total_calculation_layout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="25dp"
                 android:layout_below="@+id/total_deposit_amount_layout"
                 android:layout_marginLeft="2dp"
                 android:layout_marginRight="2dp"
                 android:background="@color/white"
                 android:orientation="horizontal"
                 android:padding="2dp"
-                android:weightSum="14">
+                android:weightSum="28">
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="2"
+                    android:layout_weight="4"
                     android:text="TOTAL =  "
                     android:textAlignment="textEnd"
                     android:textSize="12dp" />
@@ -707,7 +718,7 @@
                     android:id="@+id/wages_total_amount_tv"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="3"
+                    android:layout_weight="7"
                     android:background="#7EE8EBF1"
                     android:textAlignment="textEnd"
                     android:textColor="#FF9800"
@@ -718,7 +729,7 @@
                     android:id="@+id/work_total_amount_tv"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="3"
+                    android:layout_weight="8"
                     android:background="#7EE8EBF1"
                     android:textAlignment="textStart"
                     android:textColor="@color/black"
@@ -728,7 +739,7 @@
                     android:id="@+id/advance_or_balance_tv"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="6"
+                    android:layout_weight="9"
                     android:textAlignment="textStart"
                     android:textColor="#000000"
                     android:textSize="17dp"

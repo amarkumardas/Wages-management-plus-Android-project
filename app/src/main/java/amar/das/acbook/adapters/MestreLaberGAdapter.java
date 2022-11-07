@@ -88,11 +88,14 @@ public class MestreLaberGAdapter extends RecyclerView.Adapter<MestreLaberGAdapte
 //                m = Integer.parseInt(dateArray[1]);
 //                y = Integer.parseInt(dateArray[2]);
                 dbDate = LocalDate.of(Integer.parseInt(dateArray[2]),Integer.parseInt(dateArray[1]),Integer.parseInt(dateArray[0]));//it convert 2022-05-01 it add 0 automatically
-              // checking active or inactive using latest date (2022-05-01,2022-05-01)
-              if(ChronoUnit.MONTHS.between(dbDate, todayDate) >= 1) //ChronoUnit.MONTHS it give total months.here dbDate is first and dbDate will always be lower then today date even if we miss to open app for long days
+              // making it active or inactive using latest date (2022-05-01,2022-05-01)
+              if(ChronoUnit.MONTHS.between(dbDate, todayDate) >= 1) { //ChronoUnit.MONTHS it give total months.here dbDate is first and dbDate will always be lower then today date even if we miss to open app for long days
                   db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET ACTIVE='" + 0 + "'" + " WHERE ID='" + data.getId() + "'");//user has no permission to make it inactive it is automatically
-                  else
+
+              }else {
                   db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET ACTIVE='" + 1 + "'" + " WHERE ID='" + data.getId() + "'");
+
+              }
           }else
               holder.yellowBg.setBackgroundColor(Color.WHITE);
 

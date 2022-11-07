@@ -318,7 +318,7 @@ public class InsertDataActivity extends AppCompatActivity {
                     "Bank Name-" +"<b>"+ personBankName+"</b>"+"<br>" +"<br>"+
                     "IFSC Code---  " +"<b>"+ personIfsccode+"</b>"  +"<br>"+"<br>"+
                     "Phone No----  " +"<b>"+ personPhon +"</b>" +"<br>"+"<br>"+
-                    "Aadhar No--  " +"<b>"+ personAadhar+"</b>"  +"<br>"+"<br>"+
+                    "Aadhaar No- " +"<b>"+ personAadhar+"</b>"  +"<br>"+"<br>"+
                     "Person Skill- " +"<b>"+ personType+"</b>"  +"<br>",HtmlCompat.FROM_HTML_MODE_LEGACY));
 
             detailsReview.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {

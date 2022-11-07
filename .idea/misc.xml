@@ -61,6 +61,7 @@
         <entry key="..\:/ACBook/app/src/main/res/drawable/update_buttonbg.xml" value="0.2703125" />
         <entry key="..\:/ACBook/app/src/main/res/drawable/white_detailsbg.xml" value="0.2345" />
         <entry key="..\:/ACBook/app/src/main/res/layout-hdpi/activity_individual_person_detail_activity.xml" value="0.25052083333333336" />
+        <entry key="..\:/ACBook/app/src/main/res/layout-land/final_calculation_layout.xml" value="0.43963963963963965" />
         <entry key="..\:/ACBook/app/src/main/res/layout-large/activity_individual_person_detail_activity.xml" value="0.1" />
         <entry key="..\:/ACBook/app/src/main/res/layout-large/activity_individual_person_detailactivity.xml" value="0.176" />
         <entry key="..\:/ACBook/app/src/main/res/layout-ldpi/activity_individual_person_detail_activity.xml" value="0.9230769230769231" />
@@ -68,6 +69,7 @@
         <entry key="..\:/ACBook/app/src/main/res/layout-normal/activity_individual_person_detail_activity.xml" value="0.2" />
         <entry key="..\:/ACBook/app/src/main/res/layout-normal/activity_individual_person_detailactivity.xml" value="0.176" />
         <entry key="..\:/ACBook/app/src/main/res/layout-small/activity_individual_person_detailactivity.xml" value="0.72" />
+        <entry key="..\:/ACBook/app/src/main/res/layout-sw600dp/final_calculation_layout.xml" value="0.12708333333333333" />
         <entry key="..\:/ACBook/app/src/main/res/layout-xhdpi/activity_individual_person_detail_activity.xml" value="0.2" />
         <entry key="..\:/ACBook/app/src/main/res/layout-xlarge/activity_individual_person_detail.xml" value="0.1" />
         <entry key="..\:/ACBook/app/src/main/res/layout-xlarge/activity_individual_person_detailactivity.xml" value="0.1" />
@@ -86,7 +88,7 @@
         <entry key="..\:/ACBook/app/src/main/res/layout/activity_navigation.xml" value="0.2" />
         <entry key="..\:/ACBook/app/src/main/res/layout/activity_pdf_viewer.xml" value="0.264" />
         <entry key="..\:/ACBook/app/src/main/res/layout/activity_single_detail.xml" value="0.264" />
-        <entry key="..\:/ACBook/app/src/main/res/layout/final_calculation_layout.xml" value="0.264" />
+        <entry key="..\:/ACBook/app/src/main/res/layout/final_calculation_layout.xml" value="0.4" />
         <entry key="..\:/ACBook/app/src/main/res/layout/fragment_active_l_g.xml" value="0.2" />
         <entry key="..\:/ACBook/app/src/main/res/layout/fragment_active_m.xml" value="0.16" />
         <entry key="..\:/ACBook/app/src/main/res/layout/fragment_dashboard.xml" value="0.25416666666666665" />
@@ -98,7 +100,7 @@
         <entry key="..\:/ACBook/app/src/main/res/layout/fragment_searches.xml" value="0.25416666666666665" />
         <entry key="..\:/ACBook/app/src/main/res/layout/ii.xml" value="0.25416666666666665" />
         <entry key="..\:/ACBook/app/src/main/res/layout/inactive_single_person_profile.xml" value="0.2" />
-        <entry key="..\:/ACBook/app/src/main/res/layout/input_data_to_recycler.xml" value="0.2" />
+        <entry key="..\:/ACBook/app/src/main/res/layout/input_data_to_recycler.xml" value="0.264" />
         <entry key="..\:/ACBook/app/src/main/res/layout/l_m_g_singlerecord.xml" value="0.2" />
         <entry key="..\:/ACBook/app/src/main/res/layout/meta_data.xml" value="0.264" />
         <entry key="..\:/ACBook/app/src/main/res/layout/pdf_view.xml" value="0.19581017528858485" />

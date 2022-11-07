@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +23,7 @@ import amar.das.acbook.R;
 import amar.das.acbook.activity.IndividualPersonDetailActivity;
 import amar.das.acbook.model.MLGAllRecordModel;
 
-public class AllMLGRecordAdapter extends RecyclerView.Adapter<AllMLGRecordAdapter.ViewHolder> {
+public class SeparateAllMLGRecordAdapter extends RecyclerView.Adapter<SeparateAllMLGRecordAdapter.ViewHolder> {
 
     Context context;
     ArrayList<MLGAllRecordModel> arrayList;//because more operation is retrieving
@@ -34,7 +33,7 @@ public class AllMLGRecordAdapter extends RecyclerView.Adapter<AllMLGRecordAdapte
     LocalDate dbLatestDate, currentDate =LocalDate.now();
     PersonRecordDatabase db;
    //array lis has data name id and active
-    public AllMLGRecordAdapter(Context context,ArrayList<MLGAllRecordModel> data){
+    public SeparateAllMLGRecordAdapter(Context context, ArrayList<MLGAllRecordModel> data){
         this.arrayList=data;
         this.context=context;
         db=new PersonRecordDatabase(context);//we cant give this at class level
@@ -42,13 +41,13 @@ public class AllMLGRecordAdapter extends RecyclerView.Adapter<AllMLGRecordAdapte
 
     @NonNull
     @Override
-    public AllMLGRecordAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public SeparateAllMLGRecordAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
          View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.l_m_g_singlerecord,parent,false);
          return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull AllMLGRecordAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull SeparateAllMLGRecordAdapter.ViewHolder holder, int position) {
         MLGAllRecordModel data=arrayList.get(position);
         holder.name.setText(data.getName());
         holder.inactiveDuration.setText("ACTIVE");//when user is active then it show active

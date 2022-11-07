@@ -7,7 +7,7 @@
     <string name="enter_name">NAME</string>
     <string name="enter_a_c_number">A/C number</string>
     <string name="account_holder_name">A/C Holder Name</string>
-    <string name="enter_aadhar_card_number">AADHAR CARD NUMBER</string>
+    <string name="enter_aadhar_card_number">AADHAAR CARD NUMBER</string>
     <string name="enter_phone_number">PHONE NUMBER</string>
     <string name="skilled_in">TYPE</string>
     <string name="remarks_only_500_letters">REMARKS Only 250 letters</string>

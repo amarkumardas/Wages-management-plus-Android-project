@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -10,7 +12,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical">
 
             <TextView
@@ -39,38 +41,143 @@
                 />
         </RadioGroup>
 
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/this_week_work_amount_layout"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/border_outline_while_bg"
             android:orientation="horizontal"
-            android:padding="4dp"
-            android:weightSum="10">
+            android:layout_marginTop="8dp"
+            android:weightSum="4"
+            android:background="#D6DADF"
+            android:layout_marginStart="80dp"
+            android:id="@+id/hardcode_meta_layout">
+
             <TextView
+                android:id="@+id/hardcoded_p1_tv_meta"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="M"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="12dp"
+                  />
+
+            <TextView
+                android:layout_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="7"
-                android:text="STAR RATING"
-                android:layout_gravity="center_vertical"
+                android:textAlignment="center"
                 android:textColor="@color/black"
-                android:textSize="17sp"
-                android:textStyle="bold"
+
+                android:text="M"
+                android:textSize="12dp"
+                android:id="@+id/hardcoded_p2_tv_meta"/>
+            <TextView
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:text="M"
+                android:textColor="@color/black"
+
+                android:textSize="12dp"
+                android:id="@+id/hardcoded_p3_tv_meta"/>
+
+            <TextView
+                android:id="@+id/hardcoded_p4_tv_meta"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="M"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="12dp"
+                 />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="4dp"
+            android:id="@+id/input_layout_meta"
+            android:weightSum="10"
+            android:background="#D6DADF">
+            <TextView
+                android:layout_weight="2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:text="RATE ="
+                android:textSize="12sp"
                 />
-            <Spinner
-                android:layout_weight="3"
+            <EditText
+                android:layout_weight="2"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
-                android:background="@color/white"
-                android:textColor="@color/black"
+                android:layout_marginTop="1dp"
+                android:background="@drawable/white_detailsbg"
                 android:textStyle="bold"
+                android:layout_marginRight="2dp"
                 android:layout_marginLeft="2dp"
-                android:layout_gravity="center_vertical"
-                android:id="@+id/starSpinner_metadata"
-                />
+                android:singleLine="true"
+                android:maxLength="5"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="20dp"
+                android:inputType="numberDecimal"
+                android:id="@+id/input_p1_et_meta">
+            </EditText>
+            <EditText
+                android:layout_weight="2"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="1dp"
+                android:background="@drawable/white_detailsbg"
+                android:textStyle="bold"
+                android:maxLength="5"
+                android:singleLine="true"
+                android:layout_marginRight="2dp"
+                android:layout_marginLeft="2dp"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="20dp"
+                android:inputType="numberDecimal"
+                android:id="@+id/input_p2_et_meta"/>
+            <EditText
+                android:layout_weight="2"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="1dp"
+                android:background="@drawable/white_detailsbg"
+                android:textStyle="bold"
+                android:maxLength="5"
+                android:singleLine="true"
+                android:layout_marginRight="2dp"
+                android:layout_marginLeft="2dp"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="20dp"
+                android:inputType="numberDecimal"
+                android:id="@+id/input_p3_et_meta"/>
+            <EditText
+                android:layout_weight="2"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="1dp"
+                android:background="@drawable/white_detailsbg"
+                android:textStyle="bold"
+                android:maxLength="5"
+                android:layout_marginRight="4dp"
+                android:layout_marginLeft="2dp"
+                android:singleLine="true"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="20dp"
+                android:inputType="numberDecimal"
+                android:id="@+id/input_p4_et_meta"/>
         </LinearLayout>
-
         <LinearLayout
             android:id="@+id/date_mic_chronometer_layout"
             android:layout_width="match_parent"
@@ -85,13 +192,12 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="9"
                 android:text="LEAVING DATE"
-                android:textStyle="bold"
-                android:layout_gravity="center_vertical"
+
+                 android:textAlignment="center"
                 android:textColor="@color/black"
-                android:textSize="17sp"
+                android:textSize="12sp"
                 />
             <TextView
-                android:id="@+id/date_icon_metadata"
                 android:layout_weight="3"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -109,20 +215,181 @@
                 android:paddingTop="8dp"
                 android:singleLine="true"
                 android:layout_marginLeft="2dp"
+                android:layout_marginRight="4dp"
                 android:textColor="@color/black"
                 android:textSize="18dp"
                 android:id="@+id/dateTv_metadata"/>
 
         </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="15dp"
+            android:weightSum="5"
+            android:background="#D6DADF">
+            <TextView
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+
+                android:text="STAR"
+                android:textSize="12dp"
+                 />
+
+
+            <TextView
+                android:layout_weight="2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+
+                android:text="ADD/REMOVE M L G"
+                android:textSize="12dp"
+                />
+            <TextView
+                android:layout_weight="2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+
+                android:text="TOTAL WORK DAYS"
+                android:textSize="12dp"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/this_week_work_amount_layout"
+
+            android:background="@drawable/border_outline_while_bg"
+            android:orientation="horizontal"
+            android:padding="4dp"
+            android:weightSum="5">
+
+            <Spinner
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:background="@drawable/white_detailsbg"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="2dp"
+                android:layout_gravity="center_vertical"
+                android:id="@+id/starSpinner_metadata"
+                />
+            <Spinner
+                android:layout_weight="2"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:background="@drawable/white_detailsbg"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:layout_marginRight="2dp"
+                android:layout_gravity="center_horizontal"
+                android:id="@+id/custom_spinner_setting"/>
+            <TextView
+                android:layout_weight="2"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:background="@drawable/white_detailsbg"
+                android:textStyle="bold"
+                android:textAlignment="center"
+                android:paddingTop="8dp"
+                android:layout_marginRight="4dp"
+                android:textColor="@color/black"
+                android:textSize="18dp"
+                android:id="@+id/total_work_days_metadata"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="15dp"
+            android:weightSum="2"
+            android:background="#D6DADF">
+            <TextView
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+
+                android:text="LOCATION"
+                android:textSize="12dp"
+                />
+
+
+            <TextView
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:text="RELIGION"
+                android:textSize="12dp"
+                />
+
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:orientation="horizontal"
+            android:padding="4dp"
+            android:weightSum="2"
+            android:background="@drawable/border_outline_while_bg">
+
+            <Spinner
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:background="@drawable/white_detailsbg"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:layout_marginRight="2dp"
+                android:layout_marginLeft="4dp"
+                android:layout_gravity="center_horizontal"
+                android:id="@+id/location_spinner_meta"/>
+            <Spinner
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:background="@drawable/white_detailsbg"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:layout_marginRight="4dp"
+                android:layout_gravity="center_horizontal"
+                android:id="@+id/religion_spinner_meta"/>
+
+        </LinearLayout>
+
+        <Spinner
+            android:layout_marginTop="20dp"
+            android:layout_width="50dp"
+            android:layout_height="40dp"
+            android:background="@drawable/green_color_bg"
+            android:textColor="@color/black"
+            android:layout_marginLeft="4dp"
+            android:id="@+id/autofill_remarks_spinner_setting"/>
+
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="REFEREES: WRITE ID OF THAT PERSON(LIMIT 200 LETTERS)"
-            android:layout_marginTop="20dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginLeft="10dp"
-            android:maxLength="200"
-            android:textSize="17dp"
+            android:hint="WRITE REMARKS"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="4dp"
+            android:layout_marginLeft="4dp"
+             android:fadingEdgeLength="233dp"
+
             android:id="@+id/refferal_metadata"
             />
         <LinearLayout

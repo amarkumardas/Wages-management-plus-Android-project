@@ -76,7 +76,8 @@ public class CustomizeLayoutOrDepositAmount extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 String p11 = binding.customDepositEt.getText().toString().trim();
-                binding.customDepositEt.setTextColor(getResources().getColor(R.color.green));
+                //binding.customDepositEt.setTextColor(getResources().getColor(R.color.green));
+                binding.customDepositEt.setTextColor(getColor(R.color.green));
                 arr[0]=1;//means data is inserted.This line should be here because when user enter wrong data and again enter right data then it should update array to 1 which indicate write data
                 //this will check if other data is right or wrong
                 if(!isEnterDataIsWrong(arr)) {//this is important if in field data is wrong then save button will not enabled until data is right.if save button is enabled with wrong data then if user has record audio then it will not be saved it will store null so to check right or wrong data this condition is important
@@ -86,7 +87,7 @@ public class CustomizeLayoutOrDepositAmount extends AppCompatActivity {
                     binding.customDepositEt.setTextColor(Color.RED);
                     binding.customSaveBtn.setVisibility(View.GONE);
                     arr[0]=2;//means data is inserted wrong
-                    Toast.makeText(CustomizeLayoutOrDepositAmount.this, "NOT ALLOWED(space  .  ,  -)\nPLEASE CORRECT", Toast.LENGTH_LONG).show();
+                   // Toast.makeText(CustomizeLayoutOrDepositAmount.this, "NOT ALLOWED(space  .  ,  -)\nPLEASE CORRECT", Toast.LENGTH_LONG).show();
                 }
             }
             @Override
@@ -315,8 +316,7 @@ public class CustomizeLayoutOrDepositAmount extends AppCompatActivity {
                                 }else
                                     Toast.makeText(CustomizeLayoutOrDepositAmount.this, "NO DATA IN CURSOR", Toast.LENGTH_SHORT).show();
                             }
-                            db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET ACTIVE='" + 1 + "'" + "WHERE ID='" + fromIntentPersonId + "'");//when ever user change setting then that person will become active.No idea why on top it is showing error
-
+                            db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET ACTIVE='" + 1 + "'"+" , LATESTDATE='" + Calendar.getInstance().get(Calendar.DAY_OF_MONTH)+"-"+(current.get(Calendar.MONTH)+1)+"-"+current.get(Calendar.YEAR) + "' WHERE ID='" + fromIntentPersonId + "'");//when ever user change setting then that person will become active and latest date also.No idea why on top it is showing error
                         }
                         @Override
                         public void onNothingSelected(AdapterView<?> adapterView) { }
@@ -344,20 +344,22 @@ public class CustomizeLayoutOrDepositAmount extends AppCompatActivity {
 //                    }
                     db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET  LATESTDATE='" + currentDate + "'" +" WHERE ID='" + fromIntentPersonId + "'");//when ever user insert its wages or deposit then latest date will be updated to current date not user entered date
 
-
-
                     if(file !=null){//if file is not null then only it execute otherwise nothing will be inserted
                         micPath=file.getAbsolutePath();
                         arr[1]=1;
                     }
                     else
                         arr[1]=0;
-                    if(binding.customDescriptionEt.getText().toString().length() >=1){//to prevent nullpointer exception
-                        remarks="["+binding.customTimeTv.getText().toString()+"-ENTERED]\n\n"+binding.customDescriptionEt.getText().toString().trim();//time is set automatically to remarks if user enter any remarks
+
+                    if(binding.customDescriptionEt.getText().toString().length() >=1){//to prevent nullpointer exception.it execute when user enter date
+                        remarks="["+binding.customTimeTv.getText().toString()+"-ENTERED]\n\n"+"[DEPOSITED]-"+binding.customDescriptionEt.getText().toString().trim();//time is set automatically to remarks if user enter any remarks
                         arr[2]=1;
                     }
-                    else
-                        arr[2]=0;
+                    else{
+                        remarks="["+binding.customTimeTv.getText().toString()+"-ENTERED]\n\n"+"[DEPOSITED]";//adding default deposit message so that when user dont enter remarks this remarks will be added
+                        arr[2]=1;
+                    }
+
 
                       boolean isWrongData,isDataPresent,success;
                       isWrongData= isEnterDataIsWrong(arr);//it should be here to get updated result
@@ -460,7 +462,7 @@ public class CustomizeLayoutOrDepositAmount extends AppCompatActivity {
             binding.customSaveBtn.setOnLongClickListener(view -> {
                 int depositAmount=0;
                 String micPath=cmicpath;//default value if we dont fetch previous data then null will be inserted and previous voice will be deleted when we try to update only deposit so it is important
-
+                String remarks;
 
                 //To get exact time so write code in save button
                 Date d=Calendar.getInstance().getTime();
@@ -484,9 +486,8 @@ public class CustomizeLayoutOrDepositAmount extends AppCompatActivity {
                     micPath=file.getAbsolutePath();
                  }
 
-
                 //if user dont enter remarks or description then it is sure that previous data will be entered so no need to check null pointer exception
-                String remarks = "[" + time + "-EDITED]\n\n"+binding.customDescriptionEt.getText().toString().trim()+"\n\n*****PREVIOUS DATA WAS*****\n" + previousDataHold[0] + "  " + previousDataHold[1] + "\n" + previousDataHold[2] + "\n" + previousDataHold[3] ;//time is set automatically to remarks if user enter any remarks;
+                remarks = "[" + time + "-EDITED]\n\n"+"[DEPOSITED]-"+binding.customDescriptionEt.getText().toString().trim()+"\n\n*****PREVIOUS DATA WAS*****\n" + previousDataHold[0] + "  " + previousDataHold[1] + "\n" + previousDataHold[2] + "\n" + previousDataHold[3] ;//time is set automatically to remarks if user enter any remarks;
                 arr[1] = 1;//this is important because when user do not enter any data while updating then atleast 1 field should be filled with data so this field will sure be filled automatically so this is important.
 
                 boolean isWrongData,isDataPresent,success;

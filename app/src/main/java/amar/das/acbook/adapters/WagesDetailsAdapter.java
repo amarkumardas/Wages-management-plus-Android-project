@@ -513,7 +513,7 @@ public class WagesDetailsAdapter extends RecyclerView.Adapter<WagesDetailsAdapte
                              save.setVisibility(View.VISIBLE);
                          }
                          if (!amount.matches("[0-9]+")) {//no space or . or ,
-                             Toast.makeText(context, "NOT ALLOWED(space  .  ,  -)\nPLEASE CORRECT", Toast.LENGTH_LONG).show();
+                            // Toast.makeText(context, "NOT ALLOWED(space  .  ,  -)\nPLEASE CORRECT", Toast.LENGTH_LONG).show();
                              toGive_Amount.setTextColor(Color.RED);
                              save.setVisibility(View.GONE);
                              arr[4] = 2;//means wrong data
@@ -543,7 +543,7 @@ public class WagesDetailsAdapter extends RecyclerView.Adapter<WagesDetailsAdapte
                              inputP1.setTextColor(Color.RED);
                              save.setVisibility(View.GONE);
                              arr[0] = 2;//means wrong data
-                             Toast.makeText(context, "NOT ALLOWED(space  .  ,  -)\nPLEASE CORRECT", Toast.LENGTH_LONG).show();
+                             //Toast.makeText(context, "NOT ALLOWED(space  .  ,  -)\nPLEASE CORRECT", Toast.LENGTH_LONG).show();
                          }
                      }
 
@@ -572,7 +572,7 @@ public class WagesDetailsAdapter extends RecyclerView.Adapter<WagesDetailsAdapte
                              inputP2.setTextColor(Color.RED);
                              save.setVisibility(View.GONE);
                              arr[1] = 2;//means wrong data
-                             Toast.makeText(context, "NOT ALLOWED(space  .  ,  -)\nPLEASE CORRECT", Toast.LENGTH_LONG).show();
+                            // Toast.makeText(context, "NOT ALLOWED(space  .  ,  -)\nPLEASE CORRECT", Toast.LENGTH_LONG).show();
                          }
                      }
 
@@ -601,7 +601,7 @@ public class WagesDetailsAdapter extends RecyclerView.Adapter<WagesDetailsAdapte
                              inputP3.setTextColor(Color.RED);
                              save.setVisibility(View.GONE);
                              arr[2] = 2;//means wrong data
-                             Toast.makeText(context, "NOT ALLOWED(space  .  ,  -)\nPLEASE CORRECT", Toast.LENGTH_LONG).show();
+                            // Toast.makeText(context, "NOT ALLOWED(space  .  ,  -)\nPLEASE CORRECT", Toast.LENGTH_LONG).show();
                          }
                      }
 
@@ -631,7 +631,7 @@ public class WagesDetailsAdapter extends RecyclerView.Adapter<WagesDetailsAdapte
                              inputP4.setTextColor(Color.RED);
                              save.setVisibility(View.GONE);
                              arr[3] = 2;//means wrong data
-                             Toast.makeText(context, "NOT ALLOWED(space  .  ,  -)\nPLEASE CORRECT", Toast.LENGTH_LONG).show();
+                             //Toast.makeText(context, "NOT ALLOWED(space  .  ,  -)\nPLEASE CORRECT", Toast.LENGTH_LONG).show();
                          }
                      }
 
