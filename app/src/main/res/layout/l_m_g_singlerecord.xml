@@ -8,7 +8,7 @@
     android:layout_marginRight="2dp"
     android:weightSum="20"
     android:padding="5dp"
-    android:id="@+id/linear_layout"
+    android:id="@+id/single_record_layout_of_inactive_and_active"
     android:background="@color/white">
 
     <TextView

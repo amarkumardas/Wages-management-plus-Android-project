@@ -102,10 +102,10 @@ public class CustomizeLayoutOrDepositAmount extends AppCompatActivity {
                         //while recording user should not perform other task like entering date while recording because app will crash so set all field to setEnabled(false);
                         binding.customDescriptionEt.setEnabled(false);
                         binding.customDepositEt.setEnabled(false);
-                        binding.customDateIconTv.setEnabled(false);
+                        binding.customDateTv.setEnabled(false);
                         binding.customSaveBtn.setVisibility(View.GONE);
                         binding.customCancelBtn.setEnabled(false);
-                        binding.customSpinnerSetting.setEnabled(false);
+
 
                         binding.customChronometer.setBase(SystemClock.elapsedRealtime());//In Android, Chronometer is a class that implements a simple timer. Chronometer is a subclass of TextView. This class helps us to add a timer in our app.
                         binding.customChronometer.start();
@@ -146,7 +146,7 @@ public class CustomizeLayoutOrDepositAmount extends AppCompatActivity {
 
                     binding.customDepositEt.setEnabled(true);
                     binding.customDescriptionEt.setEnabled(true);
-                    binding.customDateIconTv.setEnabled(true);
+                    binding.customDateTv.setEnabled(true);
 
                     //this will check if other data is right or wrong
                     if(!isEnterDataIsWrong(arr)) {//this is important if in field data is wrong then save button will not enabled until data is right.if save button is enabled with wrong data then if user has record audio then it will not be saved it will store null so to check right or wrong data this condition is important
@@ -154,7 +154,7 @@ public class CustomizeLayoutOrDepositAmount extends AppCompatActivity {
                     }
 
                     binding.customCancelBtn.setEnabled(true);
-                    binding.customSpinnerSetting.setEnabled(true);
+
 
                     binding.customChronometer.setTextColor(getColor(R.color.green));//changind text color to green to give feel that is saved
                     binding.customMicIconTv.setBackgroundResource(R.drawable.ic_green_sharp_mic_20);//set background image to cancel
@@ -173,7 +173,7 @@ public class CustomizeLayoutOrDepositAmount extends AppCompatActivity {
           cYear=current.get(Calendar.YEAR);
           cMonth=current.get(Calendar.MONTH);
           cDayOfMonth=current.get(Calendar.DAY_OF_MONTH);
-        binding.customDateIconTv.setOnClickListener(new View.OnClickListener() {
+        binding.customDateTv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //To show calendar dialog
@@ -189,139 +189,6 @@ public class CustomizeLayoutOrDepositAmount extends AppCompatActivity {
 
         if (getIntent().hasExtra("ID") && !getIntent().hasExtra("DATE") &&  !getIntent().hasExtra("TIME")) {//if id present than only operation will be performed
             db = new PersonRecordDatabase(this);//on start only database should be create
-             //setting adapter for spinner
-            String[] addOrRemoveMLG = getResources().getStringArray(R.array.addOrRemoveMlG);
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(CustomizeLayoutOrDepositAmount.this, android.R.layout.select_dialog_item, addOrRemoveMLG);
-            binding.customSpinnerSetting.setAdapter(adapter);
-            // when activity is loaded spinner item is selected automatically so to avoid this we are using customSpinnerSetting.setSelection(initialposition, false);
-//            int initialposition = binding.customSpinnerSetting.getSelectedItemPosition();
-//            binding.customSpinnerSetting.setSelection(initialposition, false);//clearing auto selected item
-            binding.customSpinnerSetting.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                        @Override
-                        public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long l) {
-                            String a = adapterView.getItemAtPosition(pos).toString();
-
-                            Cursor cursor=db.getData("SELECT SKILL1,SKILL2,SKILL3 FROM " + db.TABLE_NAME3 + " WHERE ID= '" + fromIntentPersonId +"'");
-                            cursor.moveToFirst();//skill which is null there skill is updated
-                            if (a.equals("ADD L")) {//adding L means p2
-                                if(cursor.getString(0) == null){
-                                    showDialogAsMessage("UPDATE "+db.TABLE_NAME3+" SET SKILL1='L' , INDICATOR="+2+" WHERE ID= "+fromIntentPersonId,"SUCCESSFULLY  ADDED L","STATUS: SUCCESS","FAILED TO ADD L","STATUS: FAILED");
-//                           if(db.updateTable3("UPDATE "+db.TABLE_NAME3+" SET SKILL1='L' , INDICATOR="+2+" WHERE ID= "+fromIntentPersonId)){
-//                               displResult("SUCCESSFULLY  ADD L","STATUS: SUCCESS");
-//                           }else
-//                               displResult("FAILED TO ADD L","STATUS: FAILED");
-
-                                }else if(cursor.getString(1) == null){
-                                    showDialogAsMessage("UPDATE "+db.TABLE_NAME3+" SET SKILL2='L' ,INDICATOR="+3+" WHERE ID= "+fromIntentPersonId,"SUCCESSFULLY ADDED L","STATUS: SUCCESS","FAILED TO ADD L","STATUS: FAILED");
-//                            if(db.updateTable3("UPDATE "+db.TABLE_NAME3+" SET SKILL2='L' ,INDICATOR="+3+" WHERE ID= "+fromIntentPersonId)){
-//                                displResult("SUCCESSFULLY ADD L","STATUS: SUCCESS");
-//                            }else
-//                                displResult("FAILED TO ADD L","STATUS: FAILED");
-
-                                }else if(cursor.getString(2) == null) {
-                                    showDialogAsMessage("UPDATE "+db.TABLE_NAME3+" SET SKILL3='L' ,INDICATOR="+4+" WHERE ID= "+fromIntentPersonId,"SUCCESSFULLY  ADDED L","STATUS: SUCCESS","FAILED TO  ADD L","STATUS: FAILED");
-//                            if(db.updateTable3("UPDATE "+db.TABLE_NAME3+" SET SKILL3='L' ,INDICATOR="+4+" WHERE ID= "+fromIntentPersonId)){
-//                                displResult("SUCCESSFULLY  ADD L","STATUS: SUCCESS");
-//                            }else
-//                                displResult("FAILED TO  ADD L","STATUS: FAILED");
-
-                                }else
-                                    displResult("ONLY 4 PERSON ALLOWED TO ADD","STATUS: CAN'T ADD MORE L");
-
-                            } else if (a.equals("ADD M")) {//adding M p3
-                                if(cursor.getString(0) == null){
-                                    showDialogAsMessage("UPDATE "+db.TABLE_NAME3+" SET SKILL1='M' , INDICATOR="+2+" WHERE ID= "+fromIntentPersonId,"SUCCESSFULLY  ADDED M","STATUS: SUCCESS","FAILED TO ADD M","STATUS: FAILED");
-//                            if(db.updateTable3("UPDATE "+db.TABLE_NAME3+" SET SKILL1='M' , INDICATOR="+2+" WHERE ID= "+fromIntentPersonId)){
-//                                displResult("SUCCESSFULLY  ADD M","STATUS: SUCCESS");
-//                            }else
-//                                displResult("FAILED TO ADD M","STATUS: FAILED");
-
-                                }else if(cursor.getString(1) == null){
-                                    showDialogAsMessage("UPDATE "+db.TABLE_NAME3+" SET SKILL2='M' ,INDICATOR="+3+" WHERE ID= "+fromIntentPersonId,"SUCCESSFULLY ADDED M","STATUS: SUCCESS","FAILED TO ADD M","STATUS: FAILED");
-//                            if(db.updateTable3("UPDATE "+db.TABLE_NAME3+" SET SKILL2='M' ,INDICATOR="+3+" WHERE ID= "+fromIntentPersonId)){
-//                                displResult("SUCCESSFULLY ADD M","STATUS: SUCCESS");
-//                            }else
-//                                displResult("FAILED TO ADD M","STATUS: FAILED");
-
-                                }else if(cursor.getString(2) == null) {
-                                    showDialogAsMessage("UPDATE "+db.TABLE_NAME3+" SET SKILL3='M' ,INDICATOR="+4+" WHERE ID= "+fromIntentPersonId,"SUCCESSFULLY  ADDED M","STATUS: SUCCESS","SUCCESSFULLY  ADD M","STATUS: SUCCESS");
-//                            if(db.updateTable3("UPDATE "+db.TABLE_NAME3+" SET SKILL3='M' ,INDICATOR="+4+" WHERE ID= "+fromIntentPersonId)){
-//                                displResult("SUCCESSFULLY  ADD M","STATUS: SUCCESS");
-//                            }else
-//                                displResult("FAILED TO  ADD M","STATUS: FAILED");
-                                }else
-                                    displResult("ONLY 4 PERSON ALLOWED TO ADD","STATUS: CAN'T ADD MORE M");
-                            } else if (a.equals("ADD G")) {//adding G p4
-                                if(cursor.getString(0) == null){
-                                    showDialogAsMessage("UPDATE "+db.TABLE_NAME3+" SET SKILL1='G' , INDICATOR="+2+" WHERE ID= "+fromIntentPersonId,"SUCCESSFULLY  ADDED G","STATUS: SUCCESS","FAILED TO ADD G","STATUS: FAILED");
-//                            if(db.updateTable3("UPDATE "+db.TABLE_NAME3+" SET SKILL1='G' , INDICATOR="+2+" WHERE ID= "+fromIntentPersonId)){
-//                                displResult("SUCCESSFULLY  ADD G","STATUS: SUCCESS");
-//                            }else
-//                                displResult("FAILED TO ADD G","STATUS: FAILED");
-
-                                }else if(cursor.getString(1) == null){
-                                    showDialogAsMessage("UPDATE "+db.TABLE_NAME3+" SET SKILL2='G' ,INDICATOR="+3+" WHERE ID= "+fromIntentPersonId,"SUCCESSFULLY ADDED G","STATUS: SUCCESS","FAILED TO ADD G","STATUS: FAILED");
-//                            if(db.updateTable3("UPDATE "+db.TABLE_NAME3+" SET SKILL2='G' ,INDICATOR="+3+" WHERE ID= "+fromIntentPersonId)){
-//                                displResult("SUCCESSFULLY ADD G","STATUS: SUCCESS");
-//                            }else
-//                                displResult("FAILED TO ADD G","STATUS: FAILED");
-
-                                }else if(cursor.getString(2) == null) {
-                                    showDialogAsMessage("UPDATE "+db.TABLE_NAME3+" SET SKILL3='G' ,INDICATOR="+4+" WHERE ID= "+fromIntentPersonId,"SUCCESSFULLY  ADDED G","STATUS: SUCCESS","FAILED TO  ADD G","STATUS: FAILED");
-//                            if(db.updateTable3("UPDATE "+db.TABLE_NAME3+" SET SKILL3='G' ,INDICATOR="+4+" WHERE ID= "+fromIntentPersonId)){
-//                                displResult("SUCCESSFULLY  ADD G","STATUS: SUCCESS");
-//                            }else
-//                                displResult("FAILED TO  ADD G","STATUS: FAILED");
-                                }else
-                                    displResult("ONLY 4 PERSON ALLOWED TO ADD","STATUS: CAN'T ADD MORE G");
-
-                            } else if (a.equals("REMOVE M") || a.equals("REMOVE L") || a.equals("REMOVE G")) {//removing
-                                //First getting indicator to decide whether delete or not.if indicator is null then cant delete because by default M or L or G present.If indicator is 2,3,4 then checking data is present or not if present then dont delete else delete
-                                Cursor cursorIndi=db.getData("SELECT INDICATOR FROM " + db.TABLE_NAME3 + " WHERE ID= '" + fromIntentPersonId +"'");
-                                if(cursorIndi != null){
-                                    cursorIndi.moveToFirst();
-                                    if(cursorIndi.getString(0) == null) {//person1
-                                        displResult("CAN'T REMOVE DEFAULT SETTING","STATUS: FAILED");//default M or L or G
-
-                                    }else if(cursorIndi.getString(0).equals("2")){//person2
-                                        Cursor result=db.getData("SELECT SUM(P2) FROM "+db.TABLE_NAME2+" WHERE ID= '"+fromIntentPersonId +"'");
-                                        result.moveToFirst();
-                                        if(result.getInt(0) == 0){//Means no data IN P2
-                                            db.updateTable("UPDATE "+db.TABLE_NAME3+" SET SKILL1= "+null+" , INDICATOR="+1+" WHERE ID= "+fromIntentPersonId);
-                                            displResult("NO DATA PRESENT REMOVED ","STATUS: SUCCESS");
-                                        }else if(result.getInt(0) >= 1){
-                                            displResult("CAN'T REMOVE","BECAUSE DATA IS PRESENT.SUM = "+result.getInt(0));
-                                        }
-
-                                    }else if(cursorIndi.getString(0).equals("3")){//person3
-                                        Cursor result=db.getData("SELECT SUM(P3) FROM "+db.TABLE_NAME2+" WHERE ID= '"+fromIntentPersonId +"'");
-                                        result.moveToFirst();
-                                        if(result.getInt(0) == 0){//Means no data IN P2
-                                            db.updateTable("UPDATE "+db.TABLE_NAME3+" SET SKILL2= "+null+" , INDICATOR="+2+" WHERE ID= "+fromIntentPersonId);
-                                            displResult("NO DATA PRESENT REMOVED ","STATUS: SUCCESS");
-                                        }else if(result.getInt(0) >= 1){
-                                            displResult("CAN'T REMOVE","BECAUSE DATA IS PRESENT.SUM= "+result.getInt(0));
-                                        }
-                                    }else if(cursorIndi.getString(0).equals("4")){//person4
-                                        Cursor result=db.getData("SELECT SUM(P4) FROM "+db.TABLE_NAME2+" WHERE ID= '"+fromIntentPersonId +"'");
-                                        result.moveToFirst();
-                                        if(result.getInt(0) == 0){//Means no data IN P2
-                                            db.updateTable("UPDATE "+db.TABLE_NAME3+" SET SKILL3= "+null+" , INDICATOR="+3+" WHERE ID= "+fromIntentPersonId);
-                                            displResult("NO DATA PRESENT REMOVED ","STATUS: SUCCESS");
-                                        }else if(result.getInt(0) >= 1){
-                                            displResult("CAN'T REMOVE","BECAUSE DATA IS PRESENT.SUM= "+result.getInt(0));
-                                        }
-                                    }else
-                                        displResult("CAN'T REMOVE DEFAULT SETTING","STATUS: FAILED");
-                                }else
-                                    Toast.makeText(CustomizeLayoutOrDepositAmount.this, "NO DATA IN CURSOR", Toast.LENGTH_SHORT).show();
-                            }
-                            db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET ACTIVE='" + 1 + "'"+" , LATESTDATE='" + Calendar.getInstance().get(Calendar.DAY_OF_MONTH)+"-"+(current.get(Calendar.MONTH)+1)+"-"+current.get(Calendar.YEAR) + "' WHERE ID='" + fromIntentPersonId + "'");//when ever user change setting then that person will become active and latest date also.No idea why on top it is showing error
-                        }
-                        @Override
-                        public void onNothingSelected(AdapterView<?> adapterView) { }
-                    });
-
             binding.customDateTv.setText(cDayOfMonth+"-"+(cMonth+1)+"-"+cYear);
             binding.customSaveBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -401,7 +268,7 @@ public class CustomizeLayoutOrDepositAmount extends AppCompatActivity {
 
             //while updating this will execute
         }else if( getIntent().hasExtra("ID") &&  getIntent().hasExtra("DATE") &&  getIntent().hasExtra("TIME") ){
-            binding.customSettingLayout.setVisibility(View.GONE);
+
             binding.customDepositAmountTv.setText("UPDATE DEPOSIT AMOUNT=");
             binding.customSaveBtn.setText("LONG PRESS TO UPDATE");
 
@@ -532,13 +399,7 @@ public class CustomizeLayoutOrDepositAmount extends AppCompatActivity {
         }
         return data;
     }
-    public void showDialogAsMessage( String query,String iftitle,String ifmessage,String elsetitle,String elsemessage){
-        if(db.updateTable(query)){
-            displResult(iftitle,ifmessage);
-        }else{
-            displResult(elsetitle, elsemessage);
-        }
-    }
+
     private void startRecordingVoice() {
         Long  tsLong=System.currentTimeMillis()/1000;//folder name should be unique so taking time as name of mic record so every record name will be different
         String ts=tsLong.toString();

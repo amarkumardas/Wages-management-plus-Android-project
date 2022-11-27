@@ -22,11 +22,12 @@
         android:orientation="horizontal">
 
         <Button
-            android:layout_width="35dp"
+            android:layout_width="40dp"
             android:layout_height="30dp"
             android:background="@drawable/ic_baseline_arrow_back_24"
-            android:layout_margin="3dp"
-            android:onClick="go_back"/>
+            android:layout_marginLeft="5dp"
+            android:onClick="go_back"
+            android:layout_marginTop="4dp"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -35,7 +36,8 @@
             android:textColor="@color/black"
             android:textSize="20dp"
             android:textStyle="bold"
-            android:layout_margin="4dp"/>
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"/>
     </LinearLayout>
 
     <ImageView
@@ -272,8 +274,8 @@
     </RadioGroup>
 
     <Button
-        android:layout_width="200dp"
-        android:layout_height="43dp"
+        android:layout_width="230dp"
+        android:layout_height="45dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="30dp"
         android:layout_marginBottom="10dp"

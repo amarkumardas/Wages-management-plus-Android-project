@@ -10,12 +10,18 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.viewpager2.widget.ViewPager2;
+
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 
 import java.util.Locale;
 
@@ -29,6 +35,7 @@ import amar.das.acbook.databinding.FragmentSearchBinding;
 public class SearchFragment extends Fragment  {
     private FragmentSearchBinding binding ;
     TextView searchBox;
+    private String[] titles=new String[]{"M","L","INACTIVE"};//to set on pager
     //important
     //to store image in db we have to convert Bitmap to bytearray
     //to set in imageview we have to get from db as Blob known as large byte and convert it to Bitmap then set in imageview
@@ -47,45 +54,38 @@ public class SearchFragment extends Fragment  {
         //ids
         searchBox=root.findViewById(R.id.search_click_tv);
 
+        //fragmentAdapter=new FragmentAdapter(getActivity());
         //setting adapter to viewpager
-        binding.viewPager.setAdapter(new FragmentAdapter(getChildFragmentManager()));
-        binding.tabLayout.setupWithViewPager(binding.viewPager);
+        binding.viewPager2.setAdapter(new FragmentAdapter(getActivity()));
+        new TabLayoutMediator(binding.tabLayout, binding.viewPager2,((tab,position)-> tab.setText(titles[position]))).attach();//set text to page according to position
 
-         searchBox.setOnClickListener(new View.OnClickListener() {
-             @Override
-             public void onClick(View view) {
-                 Intent intent=new Intent(getContext(),FindActivity.class);
-                 startActivity(intent);
+        searchBox.setOnClickListener(view -> {
+             Intent intent=new Intent(getContext(),FindActivity.class);
+             startActivity(intent);
 
-             }
          });
+        binding.verticledotsmenuClick.setOnClickListener(view -> {
+            PopupMenu popup=new PopupMenu(getContext(),binding.verticledotsmenuClick);
+            popup.inflate(R.menu.popuo_menu);
 
-
-        binding.verticledotsmenuClick.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                PopupMenu popup=new PopupMenu(getContext(),binding.verticledotsmenuClick);
-                popup.inflate(R.menu.popuo_menu);
-
-                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        switch(item.getItemId()){
-                            case R.id.insert_new:{
-                                Intent intent = new Intent(getContext(),InsertDataActivity.class);
-                                startActivity(intent);
-                                break;
-                            }
-                            case R.id.update:{//can be add more item like setting
-                                Toast.makeText(getContext(), "Update button clicked", Toast.LENGTH_SHORT).show();
-                                break;
-                            }
+            popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    switch(item.getItemId()){
+                        case R.id.insert_new:{
+                            Intent intent = new Intent(getContext(),InsertDataActivity.class);
+                            startActivity(intent);
+                            break;
                         }
-                        return true;
+                        case R.id.update:{//can be add more item like setting
+                            Toast.makeText(getContext(), "Update button clicked", Toast.LENGTH_SHORT).show();
+                            break;
+                        }
                     }
-                });
-                popup.show();
-            }
+                    return true;
+                }
+            });
+            popup.show();
         });
         return root;
     }

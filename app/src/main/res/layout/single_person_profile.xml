@@ -32,7 +32,7 @@
                 android:layout_height="80dp"
                 android:scaleType="fitCenter"
                 android:layout_gravity="center"
-                android:padding="2dp"
+                android:padding="1dp"
                 android:src="@drawable/defaultprofileimage"
                 android:id="@+id/profile_img"/>
             <TextView

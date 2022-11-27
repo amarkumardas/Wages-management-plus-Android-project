@@ -10,35 +10,49 @@
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:id="@+id/individual_person_details_activity">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:weightSum="10">
+        android:background="@color/purple_700"
+        android:id="@+id/leaving_or_not_color_indication_layout"
+        android:weightSum="20">
         <TextView
-            android:layout_weight="9"
+          android:layout_marginRight="2dp"
+            android:layout_marginLeft="2dp"
+            android:layout_weight="2"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:textSize="15dp"
-
-            android:background="#415EFB"
-            android:textStyle="bold"
-            android:textColor="@color/white"
-            android:gravity="center"
+            android:layout_height="25dp"
+            android:layout_gravity="center"
+            android:background="@drawable/ic_baseline_arrow_back_24"
+             android:id="@+id/goback_individual_person_details"
+            />
+        <TextView
+            android:layout_weight="15"
+            android:layout_width="0dp"
+            android:layout_height="35dp"
+            android:textSize="13sp"
+             android:textStyle="bold"
+             android:textColor="@color/white"
+             android:textAlignment="center"
             android:id="@+id/name_tv"/>
         <TextView
-            android:layout_weight="1"
+            android:layout_weight="3"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textSize="15dp"
+            android:textSize="13dp"
+            android:layout_gravity="center"
+            android:textAlignment="center"
 
-            android:background="@drawable/light_gray_color_bg"
-            android:gravity="center"
+            android:textColor="@color/white"
+            android:textStyle="bold"
             android:id="@+id/star_rating_tv"/>
     </LinearLayout>
 
     <LinearLayout
+
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -156,10 +170,9 @@
         <TextView
             android:layout_width="108dp"
             android:layout_height="wrap_content"
-
             android:textStyle="bold"
             android:textColor="@color/black"
-            android:textSize="13dp"
+            android:textSize="14dp"
             android:gravity="center"
             android:background="#FFE928"
             android:id="@+id/id_tv"/>
@@ -168,60 +181,60 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:weightSum="13">
+            android:weightSum="16">
             <TextView
-                android:layout_weight="3"
+                android:layout_weight="4"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="EDIT"
                 android:textStyle="bold"
                 android:textColor="#FFFFFF"
-                android:background="@drawable/light_blue_buttonbg"
-                android:textSize="13dp"
+                android:background="@drawable/dark_blue_buttonbg"
+                android:textSize="14dp"
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
-                android:gravity="center"
+                android:textAlignment="center"
                 android:id="@+id/edit_tv"/>
 
             <TextView
-                android:layout_weight="3"
+                android:layout_weight="4"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="PDF1"
+                android:text="INFO"
                 android:textStyle="bold"
                 android:textColor="#FFFFFF"
                 android:background="@drawable/dark_blue_buttonbg"
-                android:textSize="13dp"
+                android:textSize="14dp"
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
-                android:gravity="center"
-                android:id="@+id/pdf1_tv"/>
+                android:textAlignment="center"
+                android:id="@+id/info_tv"/>
             <TextView
-                android:layout_weight="3"
+                android:layout_weight="4"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="PDF2"
+                android:text="PDF"
                 android:textStyle="bold"
                 android:textColor="#FFFFFF"
                 android:background="@drawable/dark_blue_buttonbg"
-                android:textSize="13dp"
+                android:textSize="14dp"
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
-                android:gravity="center"
-                android:id="@+id/pdf2_tv"/>
+                android:textAlignment="center"
+                android:id="@+id/pdf_tv"/>
 
             <TextView
-                android:id="@+id/print_tv"
+                android:id="@+id/share_to_whatsapp_tv"
                 android:layout_weight="4"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="13dp"
-                android:layout_marginRight="13dp"
-                android:background="@drawable/black_color_bg"
-                android:gravity="center"
-                android:text="PRINT"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="11dp"
+                android:background="@drawable/dark_blue_buttonbg"
+                android:textAlignment="center"
+                android:text="A/C"
                 android:textColor="#FFFFFF"
-                android:textSize="13dp"
+                android:textSize="14dp"
                 android:textStyle="bold" />
         </LinearLayout>
     </LinearLayout>
@@ -229,7 +242,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="7dp"
         android:layout_marginLeft="2dp"
         android:layout_marginRight="2dp"
         android:weightSum="22"
@@ -241,7 +254,7 @@
             android:text="DATE"
             android:textColor="@color/black"
             android:textAlignment="center"
-            android:textSize="13dp" />
+            android:textSize="12dp" />
 
         <TextView
             android:id="@+id/rating"
@@ -249,7 +262,7 @@
             android:layout_height="match_parent"
             android:layout_weight="2"
             android:textAlignment="center"
-            android:textSize="13dp" />
+            android:textSize="12dp" />
         <TextView
             android:layout_weight="6"
             android:layout_width="0dp"
@@ -257,7 +270,7 @@
             android:textAlignment="center"
             android:text="WAGES"
             android:textColor="@color/black"
-            android:textSize="13dp" />
+            android:textSize="12dp" />
 
         <TextView
             android:id="@+id/default_hardcoded_tv"
@@ -362,7 +375,7 @@
                     android:textColor="@color/black"
                     android:textSize="14dp"
                     android:textStyle="bold"
-                    tools:ignore="RtlCompat"/>
+                    tools:ignore="RtlCompat" />
 
                 <TextView
                     android:id="@+id/blue_totalp2_tv"
@@ -681,7 +694,7 @@
                 android:text="DEPOSIT AMOUNT "
 
                 android:textAlignment="textEnd"
-                android:textSize="12dp" />
+                android:textSize="10dp" />
             <TextView
                 android:layout_weight="9"
                 android:layout_width="0dp"
@@ -712,7 +725,9 @@
                     android:layout_weight="4"
                     android:text="TOTAL =  "
                     android:textAlignment="textEnd"
-                    android:textSize="12dp" />
+                     android:layout_gravity="center"
+                    android:textSize="10dp"
+                    tools:ignore="RtlCompat" />
 
                 <TextView
                     android:id="@+id/wages_total_amount_tv"
@@ -755,12 +770,12 @@
                 android:clickable="true"
                 android:layout_below="@id/subtotal_layout"
                 android:layout_alignParentRight="true"
-                android:layout_marginRight="20dp"/>
+                android:layout_marginRight="5dp"/>
 
             <Button
                 android:id="@+id/final_calculation_btn"
                 android:layout_width="200dp"
-                android:layout_height="40dp"
+                android:layout_height="45dp"
                 android:layout_below="@+id/total_calculation_layout"
                 android:layout_centerInParent="true"
                 android:layout_marginTop="19dp"

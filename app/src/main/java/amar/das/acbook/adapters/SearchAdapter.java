@@ -1,5 +1,6 @@
 package amar.das.acbook.adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -56,9 +57,9 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
           }
 
         if(data.getAadhar().length()>5){
-            holder.aadhar.setText(HtmlCompat.fromHtml("AADHAR:____" +"<b>"+ data.getAadhar().substring(data.getAadhar().length() - 5)+"<b>",HtmlCompat.FROM_HTML_MODE_LEGACY));//getting last 5 letters
+            holder.aadhar.setText(HtmlCompat.fromHtml("AADHAAR:____" +"<b>"+ data.getAadhar().substring(data.getAadhar().length() - 5)+"<b>",HtmlCompat.FROM_HTML_MODE_LEGACY));//getting last 5 letters
         }else{/**when data is not there in Db than set  aadhar to - otherwise others people value is been showed in place of aadhar .Default null in databse is not working only empty data is set if user dont enter data*/
-            holder.aadhar.setText("AADHAR:    -");
+            holder.aadhar.setText("AADHAAR:    -");
          }
 
        holder.singleRowCartView.setOnClickListener(new View.OnClickListener() {
@@ -67,6 +68,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
                Intent intent=new Intent(contex, IndividualPersonDetailActivity.class);
                intent.putExtra("ID",data.getId());
                contex.startActivity(intent);
+               //((Activity)contex).finish();//syntax to destroy activity from adapter
            }
        });
     }

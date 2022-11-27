@@ -1,43 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="match_parent">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     tools:context=".activity.CustomizeLayoutOrDepositAmount"
     android:background="#D6DADF"
     android:orientation="vertical">
-
-
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="DEPOSIT"
+        android:layout_gravity="center_horizontal"
+        android:textColor="#1AA30A"
+        android:textStyle="bold"
+        android:layout_marginTop="20dp"
+        android:textSize="15sp"
+        />
         <LinearLayout
-            android:id="@+id/custom_setting_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:layout_marginTop="20dp"
-            android:weightSum="20">
-            <TextView
-                android:layout_weight="12"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="SETTING TO ADD/REMOVE M L G"
-                android:layout_gravity="center"
-                android:paddingLeft="10dp"/>
-            <Spinner
-                android:layout_weight="8"
-                android:layout_width="0dp"
-                android:layout_height="45dp"
-                android:background="#535050"
-                android:layout_marginRight="10dp"
-                android:layout_gravity="center_horizontal"
-                android:id="@+id/custom_spinner_setting"/>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
             android:orientation="horizontal"
             android:padding="4dp"
             android:weightSum="15"
@@ -51,7 +38,7 @@
                 android:textColor="#1AA30A"
                 android:layout_gravity="center_vertical"
                 android:paddingLeft="15dp"
-                android:textSize="14dp"
+                android:textSize="12dp"
                 android:id="@+id/custom_deposit_amount_tv"/>
 
 
@@ -83,13 +70,12 @@
         android:background="@drawable/border_outline_while_bg">
 
         <TextView
-            android:id="@+id/custom_date_icon_tv"
+
             android:layout_weight="3"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginLeft="10dp"
-            android:textColor="@color/black"
-            android:textSize="20dp"
+
             android:background="@drawable/ic_round_edit_calendar_20"/>
         <TextView
             android:id="@+id/custom_time_tv"
@@ -141,7 +127,7 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Remarks"
+            android:hint="WRITE REMARKS"
             android:layout_marginTop="20dp"
             android:layout_marginRight="10dp"
             android:layout_marginLeft="10dp"
@@ -183,3 +169,4 @@
                 android:id="@+id/custom_save_btn"/>
         </LinearLayout>
 </LinearLayout>
+</ScrollView>

@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+<androidx.cardview.widget.CardView
+
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -26,6 +31,7 @@
                 android:paddingTop="2dp"
                 android:textColor="@color/black"
                 android:layout_gravity="end"
+
                 android:background="@drawable/green_color_bg"
                 android:id="@+id/to_deposit_tv"/>
         </LinearLayout>
@@ -171,10 +177,10 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="9"
-                android:text="Days required to work  ="
+                android:text="DAYS REQUIRED TO WORK ="
                 android:textColor="@color/purple_700"
                 android:layout_gravity="center_vertical"
-                android:textSize="13sp"
+                android:textSize="11sp"
                 android:id="@+id/only_used_while_updating"
                 />
 
@@ -211,10 +217,10 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="7"
-                android:text="This week work amount ="
+                android:text="THIS WEEK WORK AMOUNT ="
                 android:layout_gravity="center_vertical"
                 android:textColor="@color/purple_700"
-                android:textSize="13sp"
+                android:textSize="11sp"
 
                 />
 
@@ -253,13 +259,13 @@
             android:background="@drawable/border_outline_while_bg">
 
             <TextView
-                android:id="@+id/date_icon_tv"
+
                 android:layout_weight="3"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="10dp"
-                android:textColor="@color/black"
-                android:textSize="20dp"
+
+
                 android:background="@drawable/ic_round_edit_calendar_20"/>
 
             <TextView
@@ -313,7 +319,7 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Remarks"
+            android:hint="WRITE REMARKS"
             android:layout_marginTop="20dp"
             android:layout_marginRight="10dp"
             android:layout_marginLeft="10dp"
@@ -358,3 +364,4 @@
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>
+</ScrollView>

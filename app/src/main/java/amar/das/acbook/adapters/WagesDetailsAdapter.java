@@ -190,7 +190,7 @@ public class WagesDetailsAdapter extends RecyclerView.Adapter<WagesDetailsAdapte
        else if(currentDate.equals(data.getDate()))//if data has enterded today then set background to yellow
        holder.singleRecordLayout.setBackgroundColor(context.getColor(R.color.yellow));
        else//if we dont put else statement then other layout also color get change so else is important
-       holder.singleRecordLayout.setBackgroundColor(Color.WHITE);
+       holder.singleRecordLayout.setBackgroundColor(context.getColor(R.color.wagesSingleRecord));
         //************************ DONE SETTING BACKGROUND COLOR ACCORDING TO PREVIOUS AND TODAYS DATE*******************************
 
          holder.singleRecordLayout.setOnLongClickListener(new View.OnLongClickListener() {//for updating
@@ -214,7 +214,7 @@ public class WagesDetailsAdapter extends RecyclerView.Adapter<WagesDetailsAdapte
 
                  TextView micIcon = myView.findViewById(R.id.mic_tv);
 
-                 TextView dateIcon = myView.findViewById(R.id.date_icon_tv);
+                // TextView dateIcon = myView.findViewById(R.id.date_icon_tv);
                  TextView inputDate = myView.findViewById(R.id.input_date_tv);
                  TextView inputTime = myView.findViewById(R.id.input_time_tv);
                  TextView saveAudio = myView.findViewById(R.id.save_audio_tv);
@@ -239,7 +239,7 @@ public class WagesDetailsAdapter extends RecyclerView.Adapter<WagesDetailsAdapte
                  });
 
                  if (data.getIsdeposited().equals("0")) {// 0 means not deposited it is important because it will open window to enter deposit or wages.wrong window should not be opened.
-                 message_tv.setText("You are updating");
+                 message_tv.setText("YOU ARE UPDATING");
                  save.setText("LONG PRESS TO UPDATE");
 
                  db = new PersonRecordDatabase(holder.wages.getContext());//we can take any field context
@@ -323,7 +323,7 @@ public class WagesDetailsAdapter extends RecyclerView.Adapter<WagesDetailsAdapte
                      int cMonth=Integer.parseInt(datearray[1]);
                      int cYear=Integer.parseInt(datearray[2]);
                  inputDate.setText(cDayOfMonth + "-" + (cMonth) + "-" + cYear);
-                 dateIcon.setOnClickListener(new View.OnClickListener() {
+                     inputDate.setOnClickListener(new View.OnClickListener() {
                      @Override
                      public void onClick(View view) {
                          //To show calendar dialog
@@ -372,7 +372,7 @@ public class WagesDetailsAdapter extends RecyclerView.Adapter<WagesDetailsAdapte
 
                         // Can outer Java classes access inner class?
                         // You can access any field of outer class from inner class directly. Even Outer class can access any field of Inner class but through object of inner class.
-                         db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET  LATESTDATE='" + currentDate + "'" + " WHERE ID='" + data.getId() + "'");//when ever user insert its wages or deposit then latest date will be updated to current date not user entered date
+                        // db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET  LATESTDATE='" + currentDate + "'" + " WHERE ID='" + data.getId() + "'");//when ever user insert its wages or deposit then latest date will be updated to current date not user entered date
 
                          if(file !=null){//if file is not null then only it execute otherwise nothing will be inserted
                              micPath=file.getAbsolutePath();
@@ -393,9 +393,10 @@ public class WagesDetailsAdapter extends RecyclerView.Adapter<WagesDetailsAdapte
                              Toast.makeText(context, "CORRECT THE DATA or CANCEL AND ENTER AGAIN", Toast.LENGTH_LONG).show();
 
                          //*********************************  all the upper code are common to all indicator 1,2,3,4*******************
-                         success=db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET ACTIVE='" + 1 + "'" +" WHERE ID='" +  data.getId() + "'");//when ever user update then that person will become active.This will work for all indicators
+                         success=db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET ACTIVE='" + 1 + "'"+" , LATESTDATE='" + currentDate  + "' WHERE ID='" + data.getId() + "'");////when ever user insert its wages or deposit or update then latest date will be updated to current date.when ever user update then that person will become active.This will work for all indicators
+
                          if(!success)
-                             Toast.makeText(context, "UPDATE TO SET ACTIVE FAILED", Toast.LENGTH_LONG).show();
+                             Toast.makeText(context, "UPDATE TO SET ACTIVE AND LATESTDATE FAILED", Toast.LENGTH_LONG).show();
 
                          if (indicator == 1) {
                              if (isDataPresent == true && isWrongData == false) {//it is important means if data is present then check is it right data or not.if condition is false then this message will be displayed "Correct the Data or Cancel and Enter again"
@@ -655,7 +656,7 @@ public class WagesDetailsAdapter extends RecyclerView.Adapter<WagesDetailsAdapte
                                      inputP4.setEnabled(false);
                                      toGive_Amount.setEnabled(false);
                                      description.setEnabled(false);
-                                     dateIcon.setEnabled(false);
+                                     inputDate.setEnabled(false);
                                      save.setVisibility(View.GONE);
                                      cancel.setEnabled(false);
 
@@ -731,7 +732,7 @@ public class WagesDetailsAdapter extends RecyclerView.Adapter<WagesDetailsAdapte
                                  inputP4.setEnabled(true);
                                  toGive_Amount.setEnabled(true);
                                  description.setEnabled(true);
-                                 dateIcon.setEnabled(true);
+                                 inputDate.setEnabled(true);
 
                                  if(!isEnterDataIsWrong(arr)) {//this is important if in field data is wrong then save button will not enabled until data is right.if save button is enabled with wrong data then if user has record audio then it will not be saved it will store null so to check right or wrong data this condition is important
                                      save.setVisibility(View.VISIBLE);

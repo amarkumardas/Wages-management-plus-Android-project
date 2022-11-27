@@ -21,6 +21,7 @@ import amar.das.acbook.activity.IndividualPersonDetailActivity;
 import amar.das.acbook.model.MestreLaberGModel;
 
 public class InactiveLGAdapter extends RecyclerView.Adapter<InactiveLGAdapter.ViewHolder>{
+
     Context contex;
     ArrayList<MestreLaberGModel> arrayList;//because more operation is retrieving
 

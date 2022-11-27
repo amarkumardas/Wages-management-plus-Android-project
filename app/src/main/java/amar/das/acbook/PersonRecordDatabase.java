@@ -151,7 +151,7 @@ public class PersonRecordDatabase extends SQLiteOpenHelper {
             cv.put(COL_9, fathername);
             cv.put(COL_10, image);
             cv.put(COL_11, acholder);
-            cv.put(COL_12, "1");//when ever user update that usere will become active
+           // cv.put(COL_12, "1");//when ever user update that usere will become active
             //0 is returned if no record updated and it return number of rows updated
             int rowid = db.update(TABLE_NAME1, cv, "ID=?", new String[]{Id});
             //db.close();//closing db after operation performed

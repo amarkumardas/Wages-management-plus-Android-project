@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     tools:context=".fragments.ActiveMFragment"
     android:orientation="vertical"
+
     android:background="#D6DADF">
     <LinearLayout
         android:layout_width="match_parent"
@@ -33,24 +34,31 @@
             android:id="@+id/active_m_balance"
             />
     </LinearLayout>
+   <ScrollView
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:layout_marginBottom="55dp">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="4dp"
-        android:orientation="vertical"
-        android:layout_marginBottom="60dp"
-        >
+        android:orientation="vertical">
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycle_active_mestre"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_gravity="center"
             android:layout_marginLeft="2dp"
             android:layout_marginRight="2dp"
-            android:layout_gravity="center"
-            tools:listitem="@layout/single_person_profile"
-            android:id="@+id/recycle_active_mestre">
+            tools:listitem="@layout/single_person_profile">
         </androidx.recyclerview.widget.RecyclerView>
-
-
+        <ProgressBar
+            android:id="@+id/progress_bar_active_m"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+             android:layout_gravity="center"
+            android:indeterminate="true"/>
     </LinearLayout>
+   </ScrollView>
 </LinearLayout>
 <!--android:background="#121212" -->

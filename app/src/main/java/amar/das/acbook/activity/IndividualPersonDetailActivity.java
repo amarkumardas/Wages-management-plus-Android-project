@@ -1,11 +1,13 @@
 package amar.das.acbook.activity;
 
+import androidx.activity.OnBackPressedDispatcher;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.text.HtmlCompat;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.Manifest;
@@ -19,6 +21,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
 import android.graphics.pdf.PdfDocument;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
@@ -34,6 +37,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Chronometer;
@@ -52,6 +56,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -60,7 +66,10 @@ import amar.das.acbook.PersonRecordDatabase;
 import amar.das.acbook.R;
 import amar.das.acbook.adapters.WagesDetailsAdapter;
 import amar.das.acbook.databinding.ActivityIndividualPersonDetailBinding;
+import amar.das.acbook.fragments.ActiveLGFragment;
+import amar.das.acbook.fragments.ActiveMFragment;
 import amar.das.acbook.model.WagesDetailsModel;
+import amar.das.acbook.ui.search.SearchFragment;
 
 public class IndividualPersonDetailActivity extends AppCompatActivity {
      ActivityIndividualPersonDetailBinding binding;
@@ -272,10 +281,10 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                 binding.nameTv.setText(cursor.getString(0));
                 binding.accountTv.setText(HtmlCompat.fromHtml("A/C-  " + "<b>" + cursor.getString(1) + "</b>",HtmlCompat.FROM_HTML_MODE_LEGACY));
                 binding.ifscCodeTv.setText("IFSC-  " + cursor.getString(2));
-                binding.bankNameTv.setText("Bank- " + cursor.getString(3));
-                binding.aadharTv.setText(HtmlCompat.fromHtml("Aadhaar Card-  " + "<b>" + cursor.getString(4) + "</b>",HtmlCompat.FROM_HTML_MODE_LEGACY));
-                binding.phoneTv.setText("Phone-  " + cursor.getString(5));
-                binding.fatherNameTv.setText("Father- " + cursor.getString(6));
+                binding.bankNameTv.setText("BANK- " + cursor.getString(3));
+                binding.aadharTv.setText(HtmlCompat.fromHtml("AADHAAR CARD-  " + "<b>" + cursor.getString(4) + "</b>",HtmlCompat.FROM_HTML_MODE_LEGACY));
+                binding.phoneTv.setText("PHONE-  " + cursor.getString(5));
+                binding.fatherNameTv.setText("FATHER- " + cursor.getString(6));
 
                 if (cursor.getString(5).length() == 10) {//if there is no phone number then show default icon color black else green icon
                     binding.callTv.setBackgroundResource(R.drawable.ic_outline_call_24);
@@ -286,148 +295,316 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                 Bitmap bitmap = BitmapFactory.decodeByteArray(image, 0, image.length);
                 binding.imageImg.setImageBitmap(bitmap);
 
-                binding.acHolderTv.setText("A/C Holder- " + cursor.getString(8));
+                binding.acHolderTv.setText("A/C HOLDER PHONE- " + cursor.getString(8));
                 binding.idTv.setText("ID- " + cursor.getString(9));
             } else {
                 Toast.makeText(this, "NO DATA IN CURSOR", Toast.LENGTH_SHORT).show();
             }
           //setting star rating
-            Cursor cursor2 = db.getData("SELECT RATING FROM " + db.TABLE_NAME3 + " WHERE ID='" + fromIntentPersonId + "'");
+            Cursor cursor2 = db.getData("SELECT RATING,LEAVINGDATE FROM " + db.TABLE_NAME3 + " WHERE ID='" + fromIntentPersonId + "'");
             cursor2.moveToFirst();
-            if(cursor2.getString(0) != null)
-               binding.starRatingTv.setText(cursor2.getString(0)+" *");
-            else
+            if(cursor2.getString(0) != null || cursor2.getString(1) != null) {
+
+                if(cursor2.getString(1) != null){//https://www.youtube.com/watch?v=VmhcvoenUl0
+                    LocalDate dbDate, todayDate = LocalDate.now();//current date; return 2022-05-01
+                    String  dateArray []= cursor2.getString(1).split("-");
+//                    d = Integer.parseInt(dateArray[0]);
+//                    m = Integer.parseInt(dateArray[1]);
+//                    y = Integer.parseInt(dateArray[2]);//dbDate is leaving date
+                    dbDate = LocalDate.of(Integer.parseInt(dateArray[2]),Integer.parseInt(dateArray[1]),Integer.parseInt(dateArray[0]));//it convert 2022-05-01 it add 0 automatically
+                    //between (2022-05-01,2022-05-01) like
+                   // Toast.makeText(contex, ""+ ChronoUnit.DAYS.between(todayDate,dbDate)+" DAYS LEFT TO LEAVE", Toast.LENGTH_SHORT).show();//HERE dbDate will always be higher then todayDate because user will leave in forward date so in method chronounit todayDate is written first and second dbDate to get right days
+                                                     //between (2022-05-01,2022-05-01) like
+                    binding.starRatingTv.setText(ChronoUnit.DAYS.between(todayDate,dbDate)+" DAYS LEFT");//HERE dbDate will always be higher then todayDate because user will leave in forward date so in method chronounit todayDate is written first and second dbDate to get right days
+
+                    if(ChronoUnit.DAYS.between(todayDate,dbDate) <= 21 ) {
+                       binding.leavingOrNotColorIndicationLayout.setBackgroundColor(Color.RED);//red color indicate person going to leave within 3 weeks
+                   }
+                }else{
+                    binding.starRatingTv.setText(cursor2.getString(0) + " *");
+                }
+
+            }else {
                 binding.starRatingTv.setText("0 *");//if user has never press save button on Meta data then by default 0* will be shown
+            }
             cursor2.close();
 
             //Meta data
-            binding.starRatingTv.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View view) {
-                    AlertDialog.Builder mycustomDialog=new AlertDialog.Builder(IndividualPersonDetailActivity.this);
-                    LayoutInflater inflater=LayoutInflater.from(IndividualPersonDetailActivity.this);
+            binding.infoTv.setOnClickListener(view -> {
+                final boolean[] editOrNot = {false,false};
+                AlertDialog.Builder mycustomDialog=new AlertDialog.Builder(IndividualPersonDetailActivity.this);
+                LayoutInflater inflater=LayoutInflater.from(IndividualPersonDetailActivity.this);
 
-                    View myView=inflater.inflate(R.layout.meta_data,null);//myView contain all layout view ids
-                    mycustomDialog.setView(myView);//set custom layout to alert dialog
-                    mycustomDialog.setCancelable(false);//if user touch to other place then dialog will not be close
+                View myView=inflater.inflate(R.layout.meta_data,null);//myView contain all layout view ids
+                mycustomDialog.setView(myView);//set custom layout to alert dialog
+                mycustomDialog.setCancelable(false);//if user touch to other place then dialog will not be close
 
-                    final AlertDialog dialog=mycustomDialog.create();//mycustomDialog varialble cannot be use in inner class so creating another final varialbe  to use in inner class
+                final AlertDialog dialog=mycustomDialog.create();//mycustomDialog varialble cannot be use in inner class so creating another final varialbe  to use in inner class
 
-                    //ids
-                    RadioButton activeRadio=myView.findViewById(R.id.active_metadata);
-                    RadioGroup radioGroup=myView.findViewById(R.id.skill_radiogp_metadata);
-                    Spinner starSpinner= myView.findViewById(R.id.starSpinner_metadata);
-                    TextView dateTv=myView.findViewById(R.id.dateTv_metadata);
-                    EditText remarksMetaData=myView.findViewById(R.id.refferal_metadata);
-                    Button save=myView.findViewById(R.id.save_btn_metadata);
-                    Button  cancel=myView.findViewById(R.id.cancel_btn_metadata);
-                    cancel.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            dialog.dismiss();
-                        }
-                    });
+                //ids
+                RadioButton activeRadio=myView.findViewById(R.id.active_metadata);
+                RadioGroup radioGroup=myView.findViewById(R.id.skill_radiogp_metadata);
 
-                    Cursor cursor = db.getData("SELECT ACTIVE FROM " + db.TABLE_NAME1 + " WHERE ID='" + fromIntentPersonId + "'");
-                    cursor.moveToFirst();
-                    if(cursor.getString(0).equals("1"))
-                        activeRadio.setVisibility(View.GONE);//when it is active then dont show to activate
-                    else if(cursor.getString(0).equals("0"))
-                        activeRadio.setChecked(false);
-                    cursor.close();
-                    radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {//this should not be use in other class class other wise it will not be called when user change radio button
-                        @Override
-                        public void onCheckedChanged(RadioGroup radioGroup, int checkedidOfRadioBtn) {
-                            switch(checkedidOfRadioBtn){
-                                case R.id.active_metadata:{
-                                    active ="1";//updating active variable
-                                      break;
-                                }
+                TextView hardcodedP1Tv=myView.findViewById(R.id.hardcoded_p1_tv_meta);
+                EditText inputP1Et=myView.findViewById(R.id.input_p1_et_meta);
+                TextView hardcodedP2Tv=myView.findViewById(R.id.hardcoded_p2_tv_meta);
+                EditText inputP2Et=myView.findViewById(R.id.input_p2_et_meta);
+                TextView hardcodedP3Tv=myView.findViewById(R.id.hardcoded_p3_tv_meta);
+                EditText inputP3Et=myView.findViewById(R.id.input_p3_et_meta);
+                TextView hardcodedP4Tv=myView.findViewById(R.id.hardcoded_p4_tv_meta);
+                EditText inputP4Et=myView.findViewById(R.id.input_p4_et_meta);
+                TextView returningDate=myView.findViewById(R.id.returning_dateTv_metadata);
+                Spinner customSpinnerRemoveorAddmlg=myView.findViewById(R.id.custom_spinner_remove_or_add_mlg);
+                TextView totalWorkDaysMetadata=myView.findViewById(R.id.total_work_days_metadata);
+                Spinner locationSpinner=myView.findViewById(R.id.location_spinner_meta);
+                Spinner religionSpinner=myView.findViewById(R.id.religion_spinner_meta);
+                Spinner autofillRemarksSpinner=myView.findViewById(R.id.autofill_remarks_spinner_setting);
+
+                Spinner starSpinner= myView.findViewById(R.id.starSpinner_metadata);
+                TextView dateTv=myView.findViewById(R.id.leaving_dateTv_metadata);
+                EditText remarksMetaData=myView.findViewById(R.id.refferal_metadata);
+                Button edit=myView.findViewById(R.id.save_btn_metadata);
+                Button  cancel=myView.findViewById(R.id.cancel_btn_metadata);
+                cancel.setOnClickListener(view12 -> dialog.dismiss());
+
+                radioGroup.getChildAt(0).setEnabled(false);
+                inputP1Et.setEnabled(false);
+                inputP2Et.setEnabled(false);
+                inputP3Et.setEnabled(false);
+                inputP4Et.setEnabled(false);
+                returningDate.setEnabled(false);
+                customSpinnerRemoveorAddmlg.setEnabled(false);
+                locationSpinner.setEnabled(false);
+                religionSpinner.setEnabled(false);
+                autofillRemarksSpinner.setEnabled(false);
+                starSpinner.setEnabled(false);
+                dateTv.setEnabled(false);
+                remarksMetaData.setEnabled(false);
+
+                Cursor cursor1 = db.getData("SELECT ACTIVE FROM " + db.TABLE_NAME1 + " WHERE ID='" + fromIntentPersonId + "'");
+                cursor1.moveToFirst();
+                if(cursor1.getString(0).equals("1"))
+                    activeRadio.setVisibility(View.GONE);//when it is active then dont show to activate
+                else if(cursor1.getString(0).equals("0"))
+                    activeRadio.setChecked(false);
+                cursor1.close();
+                radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {//this should not be use in other class class other wise it will not be called when user change radio button
+                    @Override
+                    public void onCheckedChanged(RadioGroup radioGroup, int checkedidOfRadioBtn) {
+                        switch(checkedidOfRadioBtn){
+                            case R.id.active_metadata:{
+                                active ="1";//updating active variable
+                                  break;
                             }
                         }
-                    });
-
-                    Cursor cursor2 = db.getData("SELECT RATING,LEAVINGDATE,REFFERAL FROM " + db.TABLE_NAME3 + " WHERE ID='" + fromIntentPersonId + "'");
-                    cursor2.moveToFirst();
-
-                    String[] ratingStar =getResources().getStringArray(R.array.star);
-                    ArrayAdapter<String> adapter = new ArrayAdapter<>(IndividualPersonDetailActivity.this, android.R.layout.simple_list_item_1,ratingStar);
-                    starSpinner.setAdapter(adapter);
-                    if(cursor2.getString(0) != null){//rating star
-                        int spinnerPosition = adapter.getPosition(cursor2.getString(0));
-                        starSpinner.setSelection(spinnerPosition);
-                    }else if(cursor2.getString(0) == null){
-                        int spinnerPosition = adapter.getPosition("1");//1 star by default
-                        starSpinner.setSelection(spinnerPosition);
                     }
+                });
 
-                    if(cursor2.getString(1) != null){//leaving date
-                        dateTv.setText(cursor2.getString(1));
-                    }else if(cursor2.getString(1) == null) {
-                        dateTv.setText("");
-                    }
-                    final Calendar current=Calendar.getInstance();//to get current date and time
-                    int cYear,cMonth,cDayOfMonth;
-                    cYear=current.get(Calendar.YEAR);
-                    cMonth=current.get(Calendar.MONTH);
-                    cDayOfMonth=current.get(Calendar.DAY_OF_MONTH);
+                Cursor cursor21 = db.getData("SELECT RATING,LEAVINGDATE,REFFERAL FROM " + db.TABLE_NAME3 + " WHERE ID='" + fromIntentPersonId + "'");
+                cursor21.moveToFirst();
 
-                    dateTv.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            //To show calendar dialog
-                            DatePickerDialog datePickerDialog=new DatePickerDialog(IndividualPersonDetailActivity.this, new DatePickerDialog.OnDateSetListener() {
-                                @Override
-                                public void onDateSet(DatePicker datePicker, int year, int month, int dayOfMonth) {
-                                    dateTv.setText(dayOfMonth+"-"+(month+1)+"-"+year);//month start from 0 so 1 is added to get right month like 12
-                                }
-                            },cYear,cMonth,cDayOfMonth);//This variable should be ordered this variable will set date day month to calendar to datePickerDialog so passing it
-                            datePickerDialog.show();
-                        }
-                    });
-
-                    if(cursor2.getString(2) != null){//remarksMetaData
-                        remarksMetaData.setText(cursor2.getString(2));
-                    }
-                    cursor2.close();
-                    save.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            boolean success2;
-                            String rate;
-                            if(active.equals("1")) {//if user has pressed radio button then only it will execute
-                                //to automatically set today date so that it become active
-                                final Calendar current=Calendar.getInstance();//to get current date and time
-                                int cYear=current.get(Calendar.YEAR);
-                                int cMonth=current.get(Calendar.MONTH);
-                                int cDayOfMonth=current.get(Calendar.DAY_OF_MONTH);
-                                String date=cDayOfMonth+"-"+(cMonth+1)+"-"+cYear;
-                                success2=db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET ACTIVE='" + active +"', LATESTDATE='"+date+"' WHERE ID='" + fromIntentPersonId + "'");
-                                if(!success2)
-                                    Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO UPDATE LATEST DATE", Toast.LENGTH_LONG).show();
-                            }
-
-                             if(starSpinner.getSelectedItem().toString().equals("SELECT"))//if user bymistake click on SELECT then by default start set to 1
-                                 rate="1";//default value
-                             else
-                                 rate=starSpinner.getSelectedItem().toString();
-
-                             if(dateTv.getText().toString()=="") {//by default if user dont enter anything then editText view contain nothing so checking "" it is important otherwise it will  produce error to other code due to nothing.so if nothing then dont update leavingdate
-                                  success2=db.update_Rating_TABLE_NAME3(rate,remarksMetaData.getText().toString().trim(),null,fromIntentPersonId);
-                             } else { //if user dont enter anything then else will execute
-                                  success2=db.update_Rating_TABLE_NAME3(rate,remarksMetaData.getText().toString().trim(),dateTv.getText().toString().trim(),fromIntentPersonId);
-                             }
-                             if(success2)
-                                 displResult("SAVED SUCCESSFULLY", "RATING- " + rate + "\nLEAVINGDATE- " + dateTv.getText().toString().trim() + "\n\nREMARKS- " + remarksMetaData.getText().toString().trim());
-                             else
-                                 displResult("FAILED TO SAVE!!!","DATA NOT UPDATED- UPDATE QUERY FAILED- PLEASE TRY AGAIN");
-
-                             dialog.dismiss();
-                        }
-                    });
-                    dialog.show();
-                    return false;
+                String[] ratingStar =getResources().getStringArray(R.array.star);
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(IndividualPersonDetailActivity.this, android.R.layout.simple_list_item_1,ratingStar);
+                starSpinner.setAdapter(adapter);
+                if(cursor21.getString(0) != null){//rating star
+                    int spinnerPosition = adapter.getPosition(cursor21.getString(0));
+                    starSpinner.setSelection(spinnerPosition);
+                }else if(cursor21.getString(0) == null){
+                    int spinnerPosition = adapter.getPosition("1");//1 star by default
+                    starSpinner.setSelection(spinnerPosition);
                 }
+
+                if(cursor21.getString(1) != null){//leaving date
+                    dateTv.setText(cursor21.getString(1));
+                }else if(cursor21.getString(1) == null) {
+                    dateTv.setText("");
+                }
+                final Calendar current=Calendar.getInstance();//to get current date and time
+                int cYear,cMonth,cDayOfMonth;
+                cYear=current.get(Calendar.YEAR);
+                cMonth=current.get(Calendar.MONTH);
+                cDayOfMonth=current.get(Calendar.DAY_OF_MONTH);
+
+                dateTv.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        //To show calendar dialog
+                        DatePickerDialog datePickerDialog=new DatePickerDialog(IndividualPersonDetailActivity.this, new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker datePicker, int year, int month, int dayOfMonth) {
+                                dateTv.setText(dayOfMonth+"-"+(month+1)+"-"+year);//month start from 0 so 1 is added to get right month like 12
+                            }
+                        },cYear,cMonth,cDayOfMonth);//This variable should be ordered this variable will set date day month to calendar to datePickerDialog so passing it
+                        datePickerDialog.show();
+                    }
+                });
+
+                if(cursor21.getString(2) != null){//remarksMetaData
+                    remarksMetaData.setText(cursor21.getString(2));
+                }
+                cursor21.close();
+
+                //****************************************************setting adapter for addOrRemoveMLG spinner*****************************************
+                String[] addOrRemoveMLG = getResources().getStringArray(R.array.addOrRemoveMlG);
+                ArrayAdapter<String> addOrRemoveMlGAdapter = new ArrayAdapter<>(IndividualPersonDetailActivity.this, android.R.layout.select_dialog_item, addOrRemoveMLG);
+                customSpinnerRemoveorAddmlg.setAdapter(addOrRemoveMlGAdapter);
+                // when activity is loaded spinner item is selected automatically so to avoid this we are using customSpinnerSetting.setSelection(initialposition, false);
+//            int initialposition = binding.customSpinnerSetting.getSelectedItemPosition();
+//            binding.customSpinnerSetting.setSelection(initialposition, false);//clearing auto selected item
+                customSpinnerRemoveorAddmlg.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {//**Spinner OnItemSelectedListener event will execute twice:1.Spinner initializationUser 2.selected manually Try to differentiate those two by using flag variable.thats the reason boolean array is used
+                    @Override
+                    public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long l) {
+                        String a = adapterView.getItemAtPosition(pos).toString();
+
+                        Cursor cursor1 =db.getData("SELECT SKILL1,SKILL2,SKILL3 FROM " + db.TABLE_NAME3 + " WHERE ID= '" + fromIntentPersonId +"'");
+                        cursor1.moveToFirst();//skill which is null there skill is updated
+                        if (a.equals("ADD L")) {//adding L means p2
+                            editOrNot[1]=true;//indicate user has selected option
+                            if(cursor1.getString(0) == null){
+                                showDialogAsMessage("UPDATE "+db.TABLE_NAME3+" SET SKILL1='L' , INDICATOR="+2+" WHERE ID= "+fromIntentPersonId,"SUCCESSFULLY  ADDED L","STATUS: SUCCESS","FAILED TO ADD L","STATUS: FAILED");
+
+                            }else if(cursor1.getString(1) == null){
+                                showDialogAsMessage("UPDATE "+db.TABLE_NAME3+" SET SKILL2='L' ,INDICATOR="+3+" WHERE ID= "+fromIntentPersonId,"SUCCESSFULLY ADDED L","STATUS: SUCCESS","FAILED TO ADD L","STATUS: FAILED");
+
+
+                            }else if(cursor1.getString(2) == null) {
+                                showDialogAsMessage("UPDATE "+db.TABLE_NAME3+" SET SKILL3='L' ,INDICATOR="+4+" WHERE ID= "+fromIntentPersonId,"SUCCESSFULLY  ADDED L","STATUS: SUCCESS","FAILED TO  ADD L","STATUS: FAILED");
+
+                            }else
+                                displResult("ONLY 4 PERSON ALLOWED TO ADD","STATUS: CAN'T ADD MORE L");
+                        } else if (a.equals("ADD M")) {//adding M p3
+                            editOrNot[1]=true;//indicate user has selected option
+                            if(cursor1.getString(0) == null){
+                                showDialogAsMessage("UPDATE "+db.TABLE_NAME3+" SET SKILL1='M' , INDICATOR="+2+" WHERE ID= "+fromIntentPersonId,"SUCCESSFULLY  ADDED M","STATUS: SUCCESS","FAILED TO ADD M","STATUS: FAILED");
+
+                            }else if(cursor1.getString(1) == null){
+                                showDialogAsMessage("UPDATE "+db.TABLE_NAME3+" SET SKILL2='M' ,INDICATOR="+3+" WHERE ID= "+fromIntentPersonId,"SUCCESSFULLY ADDED M","STATUS: SUCCESS","FAILED TO ADD M","STATUS: FAILED");
+
+                            }else if(cursor1.getString(2) == null) {
+                                showDialogAsMessage("UPDATE "+db.TABLE_NAME3+" SET SKILL3='M' ,INDICATOR="+4+" WHERE ID= "+fromIntentPersonId,"SUCCESSFULLY  ADDED M","STATUS: SUCCESS","SUCCESSFULLY  ADD M","STATUS: SUCCESS");
+
+                            }else
+                                displResult("ONLY 4 PERSON ALLOWED TO ADD","STATUS: CAN'T ADD MORE M");
+
+                        } else if (a.equals("ADD G")) {//adding G p4
+                            editOrNot[1]=true;//indicate user has selected option
+                            if(cursor1.getString(0) == null){
+                                showDialogAsMessage("UPDATE "+db.TABLE_NAME3+" SET SKILL1='G' , INDICATOR="+2+" WHERE ID= "+fromIntentPersonId,"SUCCESSFULLY  ADDED G","STATUS: SUCCESS","FAILED TO ADD G","STATUS: FAILED");
+
+                            }else if(cursor1.getString(1) == null){
+                                showDialogAsMessage("UPDATE "+db.TABLE_NAME3+" SET SKILL2='G' ,INDICATOR="+3+" WHERE ID= "+fromIntentPersonId,"SUCCESSFULLY ADDED G","STATUS: SUCCESS","FAILED TO ADD G","STATUS: FAILED");
+
+                            }else if(cursor1.getString(2) == null) {
+                                showDialogAsMessage("UPDATE "+db.TABLE_NAME3+" SET SKILL3='G' ,INDICATOR="+4+" WHERE ID= "+fromIntentPersonId,"SUCCESSFULLY  ADDED G","STATUS: SUCCESS","FAILED TO  ADD G","STATUS: FAILED");
+
+                            }else
+                                displResult("ONLY 4 PERSON ALLOWED TO ADD","STATUS: CAN'T ADD MORE G");
+
+                        } else if (a.equals("REMOVE M") || a.equals("REMOVE L") || a.equals("REMOVE G")) {//removing
+                            editOrNot[1]=true;//indicate user has selected option
+                            //First getting indicator to decide whether delete or not.if indicator is null then cant delete because by default M or L or G present.If indicator is 2,3,4 then checking data is present or not if present then dont delete else delete
+                            Cursor cursorIndi=db.getData("SELECT INDICATOR FROM " + db.TABLE_NAME3 + " WHERE ID= '" + fromIntentPersonId +"'");
+                            if(cursorIndi != null){
+                                cursorIndi.moveToFirst();
+                                if(cursorIndi.getString(0) == null) {//person1
+                                    displResult("CAN'T REMOVE DEFAULT SETTING","STATUS: FAILED");//default M or L or G
+
+                                }else if(cursorIndi.getString(0).equals("2")){//person2
+                                    Cursor result=db.getData("SELECT SUM(P2) FROM "+db.TABLE_NAME2+" WHERE ID= '"+fromIntentPersonId +"'");
+                                    result.moveToFirst();
+                                    if(result.getInt(0) == 0){//Means no data IN P2
+                                        db.updateTable("UPDATE "+db.TABLE_NAME3+" SET SKILL1= "+null+" , INDICATOR="+1+" WHERE ID= "+fromIntentPersonId);
+                                        displResult("NO DATA PRESENT SO REMOVED ","STATUS: SUCCESS");
+                                    }else if(result.getInt(0) >= 1){
+                                        displResult("CAN'T REMOVE","BECAUSE DATA IS PRESENT.SUM = "+result.getInt(0));
+                                    }
+
+                                }else if(cursorIndi.getString(0).equals("3")){//person3
+                                    Cursor result=db.getData("SELECT SUM(P3) FROM "+db.TABLE_NAME2+" WHERE ID= '"+fromIntentPersonId +"'");
+                                    result.moveToFirst();
+                                    if(result.getInt(0) == 0){//Means no data IN P2
+                                        db.updateTable("UPDATE "+db.TABLE_NAME3+" SET SKILL2= "+null+" , INDICATOR="+2+" WHERE ID= "+fromIntentPersonId);
+                                        displResult("NO DATA PRESENT SO REMOVED ","STATUS: SUCCESS");
+                                    }else if(result.getInt(0) >= 1){
+                                        displResult("CAN'T REMOVE","BECAUSE DATA IS PRESENT.SUM= "+result.getInt(0));
+                                    }
+                                }else if(cursorIndi.getString(0).equals("4")){//person4
+                                    Cursor result=db.getData("SELECT SUM(P4) FROM "+db.TABLE_NAME2+" WHERE ID= '"+fromIntentPersonId +"'");
+                                    result.moveToFirst();
+                                    if(result.getInt(0) == 0){//Means no data IN P2
+                                        db.updateTable("UPDATE "+db.TABLE_NAME3+" SET SKILL3= "+null+" , INDICATOR="+3+" WHERE ID= "+fromIntentPersonId);
+                                        displResult("NO DATA PRESENT SO REMOVED ","STATUS: SUCCESS");
+                                    }else if(result.getInt(0) >= 1){
+                                        displResult("CAN'T REMOVE","BECAUSE DATA IS PRESENT.SUM= "+result.getInt(0));
+                                    }
+                                }else
+                                    displResult("CAN'T REMOVE DEFAULT SETTING","STATUS: FAILED");
+                            }else
+                                Toast.makeText(IndividualPersonDetailActivity.this, "NO DATA IN CURSOR", Toast.LENGTH_SHORT).show();
+                        }
+                        if(editOrNot[1]==true) {
+                            dialog.dismiss();//closing dialog to prevent window leak.whenever user select any option then editOrNot[1]=true; will be set.so if it is true then dismiss dialog before going to IndividualPersonDetailActivity.java from displayResult method
+                        }
+                        // db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET ACTIVE='" + 1 + "'"+" , LATESTDATE='" + Calendar.getInstance().get(Calendar.DAY_OF_MONTH)+"-"+(current.get(Calendar.MONTH)+1)+"-"+current.get(Calendar.YEAR) + "' WHERE ID='" + fromIntentPersonId + "'");//when ever user change setting then that person will become active and latest date also.No idea why on top it is showing error
+                    }
+                    @Override
+                    public void onNothingSelected(AdapterView<?> adapterView) { }
+                });
+                //****************************************************DONE setting adapter for addOrRemoveMLG spinner*****************************************
+
+                edit.setOnClickListener(view1 -> {
+                    if(editOrNot[0] ==false) {//while editing this will execute
+                        radioGroup.getChildAt(0).setEnabled(true);
+                        inputP1Et.setEnabled(true);
+                        inputP2Et.setEnabled(true);
+                        inputP3Et.setEnabled(true);
+                        inputP4Et.setEnabled(true);
+                        returningDate.setEnabled(true);
+                        customSpinnerRemoveorAddmlg.setEnabled(true);
+                        locationSpinner.setEnabled(true);
+                        religionSpinner.setEnabled(true);
+                        autofillRemarksSpinner.setEnabled(true);
+                        starSpinner.setEnabled(true);
+                        dateTv.setEnabled(true);
+                        remarksMetaData.setEnabled(true);
+                        edit.setBackgroundResource(R.drawable.green_color_bg);//changing background
+                        edit.setText("SAVE");
+                        editOrNot[0] =true;
+                    }else{//while saving this will execute
+                        boolean success2;
+                        String rate;
+                        if (active.equals("1")) {//if user has pressed radio button then only it will execute
+                            //to automatically set today date so that it become active
+                            final Calendar current1 = Calendar.getInstance();//to get current date and time
+                            int cYear1 = current1.get(Calendar.YEAR);
+                            int cMonth1 = current1.get(Calendar.MONTH);
+                            int cDayOfMonth1 = current1.get(Calendar.DAY_OF_MONTH);
+                            String date = cDayOfMonth1 + "-" + (cMonth1 + 1) + "-" + cYear1;
+                            success2 = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET ACTIVE='" + active + "', LATESTDATE='" + date + "' WHERE ID='" + fromIntentPersonId + "'");//setting today date to latestdate TO AVOID PREVIOUS LATESTSDATE which is present in db for 1 month. so that when account is inactive then that account will become active due to new latestdate.due to todaydate in  variable latestdate logic in MestreLabeGAdapter will not execute and account will not become inactive it will remain active
+                            if (!success2)
+                                Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO UPDATE LATESTDATE AND ACTIVE=1", Toast.LENGTH_LONG).show();
+                        }
+
+                        if (starSpinner.getSelectedItem().toString().equals("SELECT"))//if user bymistake click on SELECT then by default start set to 1
+                            rate = "1";//default value
+                        else
+                            rate = starSpinner.getSelectedItem().toString();
+
+                        if (dateTv.getText().toString() == "") {//by default if user dont enter anything then editText view contain nothing so checking "" it is important otherwise it will  produce error to other code due to nothing.so if nothing then dont update leavingdate
+                            success2 = db.update_Rating_TABLE_NAME3(rate, remarksMetaData.getText().toString().trim(), null, fromIntentPersonId);
+                        } else { //if user dont enter anything then else will execute
+                            success2 = db.update_Rating_TABLE_NAME3(rate, remarksMetaData.getText().toString().trim(), dateTv.getText().toString().trim(), fromIntentPersonId);
+                        }
+                        if (success2)
+                            displResult("SAVED SUCCESSFULLY", "RATING- " + rate + "\nLEAVINGDATE- " + dateTv.getText().toString().trim() + "\n\nREMARKS- " + remarksMetaData.getText().toString().trim());
+                        else
+                            displResult("FAILED TO SAVE!!!", "DATA NOT UPDATED- UPDATE QUERY FAILED- PLEASE TRY AGAIN");
+
+                        dialog.dismiss();
+                    }
+
+                });
+                dialog.show();
             });
             binding.finalCalculationBtn.setOnLongClickListener(new View.OnLongClickListener() {
                 TextView defaultSkillTextTv,totalP1CountTv,workTotalAmountTv,totalP1AmountTv,advanceOrBalanceTv,totalDepositAmountTv,wagesTotalAmountTv,skill1TextTv,totalP2CountTv,totalP2AmountTv,skill2TextTv,totalP3CountTv,totalP3AmountTv,skill3TextTv,totalP4CountTv,totalP4AmountTv;
@@ -1388,41 +1565,45 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                 }
             });
             //to open dialpaid
-            binding.callTv.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View view) {
-                    if (cursor.getString(5).length() == 10) {
-                        Intent callingIntent = new Intent(Intent.ACTION_DIAL);
-                        callingIntent.setData(Uri.parse("tel:+91" + cursor.getString(5)));
-                        startActivity(callingIntent);
-                    } else
-                        Toast.makeText(IndividualPersonDetailActivity.this, "NO PHONE NUMBER ADDED", Toast.LENGTH_SHORT).show();
-                    return false;
-                }
+            binding.callTv.setOnClickListener(view -> {
+                if (cursor.getString(5).length() == 10) {
+                    Intent callingIntent = new Intent(Intent.ACTION_DIAL);
+                    callingIntent.setData(Uri.parse("tel:+91" + cursor.getString(5)));
+                    startActivity(callingIntent);
+                } else
+                    Toast.makeText(IndividualPersonDetailActivity.this, "NO PHONE NUMBER ADDED", Toast.LENGTH_SHORT).show();
             });
-            binding.editTv.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View view) {
-                    Intent intent = new Intent(getBaseContext(), InsertDataActivity.class);
-                    intent.putExtra("ID", fromIntentPersonId);
-                    startActivity(intent);
-                    finish();//while going to other activity so destroy  this current activity so that while coming back we will see refresh activity
-                    return false;
-                }
+            binding.editTv.setOnClickListener(view -> {
+                Intent intent = new Intent(getBaseContext(), InsertDataActivity.class);
+                intent.putExtra("ID", fromIntentPersonId);
+                startActivity(intent);
+                finish();//while going to other activity so destroy  this current activity so that while coming back we will see refresh activity
             });
             // cursor.close(); it should not be close because of call action to perform then we need cursor
+
+            binding.gobackIndividualPersonDetails.setOnClickListener(view -> {
+//                        if (getIntent().hasExtra("FromMesterLaberGAdapter")) {
+//                            finish();//first destroy current activity then go back
+//                            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+//                            transaction.replace(R.id.individual_person_details_activity, new SearchFragment()).commit();
+//                            Toast.makeText(this, "if", Toast.LENGTH_SHORT).show();
+//                           // getSupportFragmentManager().beginTransaction().detach(new ActiveLGFragment()).attach(new ActiveLGFragment()).commit();
+//                        } else {
+//                            Toast.makeText(this, "else", Toast.LENGTH_SHORT).show();
+//                            super.onBackPressed();// This calls finish() on this activity and pops the back stack.
+//                        }
+                        super.onBackPressed();// This calls finish() on this activity and pops the back stack.
+                    }
+            );
         } else
             Toast.makeText(this, "NO ID FROM OTHER INTENT", Toast.LENGTH_SHORT).show();
         //to insert data in recyclerview
-        binding.fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                arr=new int[7];//so that when again enter data fresh array will be created
-                 insertDataToRecyclerView_ALertDialogBox(get_indicator(fromIntentPersonId) );
-            }
+        binding.fab.setOnClickListener(view -> {
+            arr=new int[7];//so that when again enter data fresh array will be created
+             insertDataToRecyclerView_ALertDialogBox(get_indicator(fromIntentPersonId));
         });
     }
-    private void indicator1234CalculateAndUpdate(@NonNull Cursor sumCursor, int rate1IntoSump1, int rate2IntoSump2, int rate3IntoSump3, int rate4IntoSump4) {
+    private void indicator1234CalculateAndUpdate(Cursor sumCursor, int rate1IntoSump1, int rate2IntoSump2, int rate3IntoSump3, int rate4IntoSump4) {
         boolean bool;
         int  totalDeposit,totalWages;
         int totalr1r2r3r4sum1sum2sum3sum4=rate1IntoSump1+rate2IntoSump2+rate3IntoSump3+rate4IntoSump4;
@@ -1497,7 +1678,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
         TextView hardcodedP3=myView.findViewById(R.id.hardcoded_p3_tv);
         TextView hardcodedP4=myView.findViewById(R.id.hardcoded_p4_tv);
         TextView micIcon=myView.findViewById(R.id.mic_tv);
-        TextView dateIcon=myView.findViewById(R.id.date_icon_tv);
+       // TextView dateIcon=myView.findViewById(R.id.date_icon_tv);
         TextView advanceOrBalanceWarring=myView.findViewById(R.id.advance_or_balance_amount_warring_tv);
         TextView noOfDaysToWork=myView.findViewById(R.id.no_of_days);
         TextView inputDate=myView.findViewById(R.id.input_date_tv);
@@ -1579,7 +1760,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
        // int cMonth=current.get(Calendar.MONTH);
        // int cDayOfMonth=current.get(Calendar.DAY_OF_MONTH);
         inputDate.setText(current.get(Calendar.DAY_OF_MONTH)+"-"+(current.get(Calendar.MONTH)+1)+"-"+current.get(Calendar.YEAR));
-        dateIcon.setOnClickListener(new View.OnClickListener() {
+        inputDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //To show calendar dialog
@@ -1643,128 +1824,123 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
         }
         skillsCursor.close();
         //**************************************done setting skills*******************************************
-        save.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //*********************************common to all indicator 1,2,3,4*******************
-                int p1,p2,p3,p4;//this default value is taken when user do enter date to fileds
-                p1=p2=p3=p4=0;
-                int wages=0;
-                String remarks=null;
-                String micPath=null;
-                String date=inputDate.getText().toString();//date will be inserted automatically
+        save.setOnClickListener(view -> {
+            //*********************************common to all indicator 1,2,3,4*******************
+            int p1,p2,p3,p4;//this default value is taken when user do enter date to fileds
+            p1=p2=p3=p4=0;
+            int wages=0;
+            String remarks=null;
+            String micPath=null;
+            String date=inputDate.getText().toString();//date will be inserted automatically
 
 
-                final Calendar current=Calendar.getInstance();//to get current date
-                String currentDate =current.get(Calendar.DAY_OF_MONTH)+"-"+(current.get(Calendar.MONTH)+1)+"-"+current.get(Calendar.YEAR);
-//                if(date.equals(currentDate)) {//if it is true then store
-//                    db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET  LATESTDATE='" + date + "'" +" WHERE ID='" + fromIntentPersonId + "'");////this will store latest date in db if that date is current date because if we store directly current date then it will give incorrect information about whether data is entered today or other days
-//                }
-                db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET  LATESTDATE='" + currentDate + "'" +" WHERE ID='" + fromIntentPersonId + "'");////when ever user insert its wages or deposit or update then latest date will be updated to current date not user entered date
+           // final Calendar current=Calendar.getInstance();//to get current date
+           // String currentDate =current.get(Calendar.DAY_OF_MONTH)+"-"+(current.get(Calendar.MONTH)+1)+"-"+current.get(Calendar.YEAR);
+            //db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET  LATESTDATE='" + currentDate + "'" +" WHERE ID='" + fromIntentPersonId + "'");////when ever user insert its wages or deposit or update then latest date will be updated to current date not user entered date
+            db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET ACTIVE='" + 1 + "'"+" , LATESTDATE='" + Calendar.getInstance().get(Calendar.DAY_OF_MONTH)+"-"+(current.get(Calendar.MONTH)+1)+"-"+current.get(Calendar.YEAR) + "' WHERE ID='" + fromIntentPersonId + "'");////when ever user insert its wages or deposit or update then latest date will be updated to current date
 
 
-                //To get exact time so write code in save button
-                Date d=Calendar.getInstance().getTime();
-                SimpleDateFormat sdf=new SimpleDateFormat("hh:mm:ss a");//a stands for is AM or PM
-                String onlyTime = sdf.format(d);
-                inputTime.setText(onlyTime);//setting time to take time and store in db
-                String time=inputTime.getText().toString();//time will be inserted automatically
+            //To get exact time so write code in save button
+            Date d=Calendar.getInstance().getTime();
+            SimpleDateFormat sdf=new SimpleDateFormat("hh:mm:ss a");//a stands for is AM or PM
+            String onlyTime = sdf.format(d);
+            inputTime.setText(onlyTime);//setting time to take time and store in db
+            String time=inputTime.getText().toString();//time will be inserted automatically
 
-                if(file !=null){//if file is not null then only it execute otherwise nothing will be inserted
-                    micPath=file.getAbsolutePath();
-                    arr[5]=1;
-                 }
-                else
-                    arr[5]=0;
+            if(file !=null){//if file is not null then only it execute otherwise nothing will be inserted
+                micPath=file.getAbsolutePath();
+                arr[5]=1;
+             }
+            else
+                arr[5]=0;
 
-                if(description.getText().toString().length() >=1){//to prevent nullpointer exception
-                    remarks="["+time+"-ENTERED]\n\n"+description.getText().toString().trim();//time is set automatically to remarks if user enter any remarks
-                    arr[6]=1;
+            if(description.getText().toString().length() >=1){//to prevent nullpointer exception
+                remarks="["+time+"-ENTERED]\n\n"+description.getText().toString().trim();//time is set automatically to remarks if user enter any remarks
+                arr[6]=1;
+            }
+            else
+                arr[6]=0;
+            boolean success, isWrongData, isDataPresent;
+              isWrongData= isEnterDataIsWrong(arr);
+              isDataPresent= isDataPresent(arr);
+            if(isDataPresent==true && isWrongData==false ) {//means if data is present then check is it right data or not .if condition is false then default value will be taken
+                if (toGive_Amount.getText().toString().length() >= 1) {//to prevent nullpointer exception
+                    wages = Integer.parseInt(toGive_Amount.getText().toString().trim());
                 }
-                else
-                    arr[6]=0;
-                boolean success, isWrongData, isDataPresent;
-                  isWrongData= isEnterDataIsWrong(arr);
-                  isDataPresent= isDataPresent(arr);
-                if(isDataPresent==true && isWrongData==false ) {//means if data is present then check is it right data or not .if condition is false then default value will be taken
-                    if (toGive_Amount.getText().toString().length() >= 1) {//to prevent nullpointer exception
-                        wages = Integer.parseInt(toGive_Amount.getText().toString().trim());
+                //>= if user enter only one digit then >= is important otherwise default value will be set
+                if(inputP1.getText().toString().length() >=1) {//to prevent nullpointer exception
+                    p1 = Integer.parseInt(inputP1.getText().toString().trim());//converted to float and stored
+                }
+            }
+            //*********************************  all the upper code are common to all indicator 1,2,3,4*******************
+           //  db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET ACTIVE='" + 1 + "'" +" WHERE ID='" + fromIntentPersonId + "'");//when ever user insert data then that person will become active.It will work for all
+            if(indicator==1) {
+                if (isDataPresent == true && isWrongData == false) {//it is important means if data is present then check is it right data or not.if condition is false then this message will be displayed "Correct the Data or Cancel and Enter again"
+                    //insert to database
+                      success = db.insert_1_Person_WithWagesTable2(fromIntentPersonId, date,time, micPath, remarks, wages, p1, "0");
+                    if (success) {
+                        displResult(wages + "          " + p1, "\nDATE- " + date + "\n\n" + "REMARKS- " + remarks + "\n\nMICPATH- " + micPath);
+                        dialog.dismiss();//dialog will be dismiss after saved automatically
+                    } else
+                        Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO INSERT", Toast.LENGTH_LONG).show();
+                } else//once user enter wrong data and left blank then user wound be able to save because array value would not be change it will be 2 so  user have to "Cancel and enter again" if use dont leave blank then it will save successfully
+                    Toast.makeText(IndividualPersonDetailActivity.this, "CORRECT THE DATA or CANCEL AND ENTER AGAIN", Toast.LENGTH_LONG).show();
+
+            } else if(indicator==2){
+                //p1 is automatically added
+                if(isDataPresent==true && isWrongData==false ) {
+                    if (inputP2.getText().toString().length() >= 1) {//to prevent nullpointer exception
+                        p2 = Integer.parseInt(inputP2.getText().toString().trim());//converted to float and stored
                     }
-                    //>= if user enter only one digit then >= is important otherwise default value will be set
-                    if(inputP1.getText().toString().length() >=1) {//to prevent nullpointer exception
-                        p1 = Integer.parseInt(inputP1.getText().toString().trim());//converted to float and stored
+                    //insert to database
+                      success = db.insert_2_Person_WithWagesTable2(fromIntentPersonId, date,time, micPath, remarks, wages, p1, p2, "0");
+                     if (success) {
+                        displResult(wages+"          "+p1+"     "+p2,"\nDATE- "+date+"\n\n"+"REMARKS- "+remarks+"\n\nMICPATH- "+micPath);
+                        dialog.dismiss();//dialog will be dismiss after saved automatically
+                    } else
+                        Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO INSERT", Toast.LENGTH_LONG).show();
+                }else
+                    Toast.makeText(IndividualPersonDetailActivity.this, "CORRECT THE DATA or CANCEL AND ENTER AGAIN", Toast.LENGTH_LONG).show();
+
+            }else if(indicator==3){
+                if(isDataPresent==true && isWrongData==false ) {
+                    if (inputP2.getText().toString().length() >= 1) {//to prevent nullpointer exception
+                        p2 = Integer.parseInt(inputP2.getText().toString().trim());//converted to float and stored
                     }
-                }
-                //*********************************  all the upper code are common to all indicator 1,2,3,4*******************
-                 db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET ACTIVE='" + 1 + "'" +" WHERE ID='" + fromIntentPersonId + "'");//when ever user insert data then that person will become active.It will work for all
-                if(indicator==1) {
-                    if (isDataPresent == true && isWrongData == false) {//it is important means if data is present then check is it right data or not.if condition is false then this message will be displayed "Correct the Data or Cancel and Enter again"
-                        //insert to database
-                          success = db.insert_1_Person_WithWagesTable2(fromIntentPersonId, date,time, micPath, remarks, wages, p1, "0");
-                        if (success) {
-                            displResult(wages + "          " + p1, "\nDATE- " + date + "\n\n" + "REMARKS- " + remarks + "\n\nMICPATH- " + micPath);
-                            dialog.dismiss();//dialog will be dismiss after saved automatically
-                        } else
-                            Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO INSERT", Toast.LENGTH_LONG).show();
-                    } else//once user enter wrong data and left blank then user wound be able to save because array value would not be change it will be 2 so  user have to "Cancel and enter again" if use dont leave blank then it will save successfully
-                        Toast.makeText(IndividualPersonDetailActivity.this, "CORRECT THE DATA or CANCEL AND ENTER AGAIN", Toast.LENGTH_LONG).show();
-
-                } else if(indicator==2){
-                    //p1 is automatically added
-                    if(isDataPresent==true && isWrongData==false ) {
-                        if (inputP2.getText().toString().length() >= 1) {//to prevent nullpointer exception
-                            p2 = Integer.parseInt(inputP2.getText().toString().trim());//converted to float and stored
-                        }
-                        //insert to database
-                          success = db.insert_2_Person_WithWagesTable2(fromIntentPersonId, date,time, micPath, remarks, wages, p1, p2, "0");
-                         if (success) {
-                            displResult(wages+"          "+p1+"     "+p2,"\nDATE- "+date+"\n\n"+"REMARKS- "+remarks+"\n\nMICPATH- "+micPath);
-                            dialog.dismiss();//dialog will be dismiss after saved automatically
-                        } else
-                            Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO INSERT", Toast.LENGTH_LONG).show();
-                    }else
-                        Toast.makeText(IndividualPersonDetailActivity.this, "CORRECT THE DATA or CANCEL AND ENTER AGAIN", Toast.LENGTH_LONG).show();
-
-                }else if(indicator==3){
-                    if(isDataPresent==true && isWrongData==false ) {
-                        if (inputP2.getText().toString().length() >= 1) {//to prevent nullpointer exception
-                            p2 = Integer.parseInt(inputP2.getText().toString().trim());//converted to float and stored
-                        }
-                        if (inputP3.getText().toString().length() >= 1) {//to prevent nullpointer exception
-                            p3 = Integer.parseInt(inputP3.getText().toString().trim());//converted to float and stored
-                        }
-                        //insert to database
-                          success = db.insert_3_Person_WithWagesTable2(fromIntentPersonId, date,time, micPath, remarks, wages, p1, p2, p3, "0");
-                         if (success) {
-                            displResult(wages+"          "+p1+"     "+p2+"     "+p3,"\nDATE- "+date+"\n\n"+"REMARKS- "+remarks+"\n\nMICPATH- "+micPath);
-                            dialog.dismiss();//dialog will be dismiss after saved automatically
-                        } else
-                            Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO INSERT", Toast.LENGTH_LONG).show();
-                    }else
-                        Toast.makeText(IndividualPersonDetailActivity.this, "CORRECT THE DATA or CANCEL AND ENTER AGAIN", Toast.LENGTH_LONG).show();
+                    if (inputP3.getText().toString().length() >= 1) {//to prevent nullpointer exception
+                        p3 = Integer.parseInt(inputP3.getText().toString().trim());//converted to float and stored
+                    }
+                    //insert to database
+                      success = db.insert_3_Person_WithWagesTable2(fromIntentPersonId, date,time, micPath, remarks, wages, p1, p2, p3, "0");
+                     if (success) {
+                        displResult(wages+"          "+p1+"     "+p2+"     "+p3,"\nDATE- "+date+"\n\n"+"REMARKS- "+remarks+"\n\nMICPATH- "+micPath);
+                        dialog.dismiss();//dialog will be dismiss after saved automatically
+                    } else
+                        Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO INSERT", Toast.LENGTH_LONG).show();
+                }else
+                    Toast.makeText(IndividualPersonDetailActivity.this, "CORRECT THE DATA or CANCEL AND ENTER AGAIN", Toast.LENGTH_LONG).show();
 
 
-                }else if(indicator==4) {
-                    if (isDataPresent == true && isWrongData == false) {
-                        if (inputP2.getText().toString().length() >= 1) {//to prevent nullpointer exception.If user do not enter any data then that time it will save from crashing app.So due to this condition if field is empty then default value will be taken
-                            p2 = Integer.parseInt(inputP2.getText().toString().trim());//converted to float and stored
-                        }
-                        if (inputP3.getText().toString().length() >= 1) {//to prevent nullpointer exception
-                            p3 = Integer.parseInt(inputP3.getText().toString().trim());//converted to float and stored
-                        }
-                        if (inputP4.getText().toString().length() >= 1) {//to prevent nullpointer exception
-                            p4 = Integer.parseInt(inputP4.getText().toString().trim());//converted to float and stored
-                        }
-                        //insert to database
-                          success = db.insert_4_Person_WithWagesTable2(fromIntentPersonId, date,time, micPath, remarks, wages, p1, p2, p3, p4, "0");
-                        if (success) {
-                            displResult(wages+"          "+p1+"     "+p2+"     "+p3+"     "+p4,"\nDATE- "+date+"\n\n"+"REMARKS- "+remarks+"\n\nMICPATH- "+micPath);
-                            dialog.dismiss();//dialog will be dismiss after saved automatically
-                        } else
-                            Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO INSERT", Toast.LENGTH_LONG).show();
-                    }else
-                        Toast.makeText(IndividualPersonDetailActivity.this, "CORRECT THE DATA or CANCEL AND ENTER AGAIN", Toast.LENGTH_LONG).show();
-                }
+            }else if(indicator==4) {
+                if (isDataPresent == true && isWrongData == false) {
+                    if (inputP2.getText().toString().length() >= 1) {//to prevent nullpointer exception.If user do not enter any data then that time it will save from crashing app.So due to this condition if field is empty then default value will be taken
+                        p2 = Integer.parseInt(inputP2.getText().toString().trim());//converted to float and stored
+                    }
+                    if (inputP3.getText().toString().length() >= 1) {//to prevent nullpointer exception
+                        p3 = Integer.parseInt(inputP3.getText().toString().trim());//converted to float and stored
+                    }
+                    if (inputP4.getText().toString().length() >= 1) {//to prevent nullpointer exception
+                        p4 = Integer.parseInt(inputP4.getText().toString().trim());//converted to float and stored
+                    }
+                    //insert to database
+                      success = db.insert_4_Person_WithWagesTable2(fromIntentPersonId, date,time, micPath, remarks, wages, p1, p2, p3, p4, "0");
+                    if (success) {
+                        displResult(wages+"          "+p1+"     "+p2+"     "+p3+"     "+p4,"\nDATE- "+date+"\n\n"+"REMARKS- "+remarks+"\n\nMICPATH- "+micPath);
+                        dialog.dismiss();//dialog will be dismiss after saved automatically
+                    } else
+                        Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO INSERT", Toast.LENGTH_LONG).show();
+                }else
+                    Toast.makeText(IndividualPersonDetailActivity.this, "CORRECT THE DATA or CANCEL AND ENTER AGAIN", Toast.LENGTH_LONG).show();
             }
         });
         micIcon.setOnClickListener(new View.OnClickListener() {
@@ -1780,7 +1956,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                         inputP4.setEnabled(false);
                         toGive_Amount.setEnabled(false);
                         description.setEnabled(false);
-                        dateIcon.setEnabled(false);
+                        inputDate.setEnabled(false);
                         save.setVisibility(View.GONE);
                         cancel.setEnabled(false);
                         deposit_btn_tv.setEnabled(false);
@@ -1845,7 +2021,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                     inputP4.setEnabled(true);
                     toGive_Amount.setEnabled(true);
                     description.setEnabled(true);
-                    dateIcon.setEnabled(true);
+                    inputDate.setEnabled(true);
 
                     if(!isEnterDataIsWrong(arr)) {//this is important if in field data is wrong then save button will not enabled until data is right.if save button is enabled with wrong data then if user has record audio then it will not be saved it will store null so to check right or wrong data this condition is important
                         save.setVisibility(View.VISIBLE);
@@ -2168,6 +2344,13 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
         mediaRecorder.release();
         mediaRecorder=null;
         // Toast.makeText(this, "Recording SAVED "+file.getAbsolutePath(), Toast.LENGTH_SHORT).show();
+    }
+    public void showDialogAsMessage( String query,String iftitle,String ifmessage,String elsetitle,String elsemessage){
+        if(db.updateTable(query)){
+            displResult(iftitle,ifmessage);
+        }else{
+            displResult(elsetitle, elsemessage);
+        }
     }
     private void displResult(String title,String message) {
         AlertDialog.Builder showDataFromDataBase=new AlertDialog.Builder(IndividualPersonDetailActivity.this);

@@ -10,4 +10,5 @@
     <color name="green">#2EB310</color>
     <color name="background">#D6DADF</color>
     <color name="yellow">#FFE928</color>
+    <color name="wagesSingleRecord">#FAFBF8F8</color>
 </resources>

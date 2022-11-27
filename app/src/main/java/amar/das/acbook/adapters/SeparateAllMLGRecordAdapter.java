@@ -1,5 +1,6 @@
 package amar.das.acbook.adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -74,6 +75,7 @@ public class SeparateAllMLGRecordAdapter extends RecyclerView.Adapter<SeparateAl
                 Intent intent=new Intent(context, IndividualPersonDetailActivity.class);
                 intent.putExtra("ID",data.getId());
                 context.startActivity(intent);
+               // ((Activity)context).finish();//syntax to destroy activity from adapter
                 //************************leaving date updation if days is 0 between two date then update SET LEAVINGDATE="+null+
                 Cursor cursor2 = db.getData("SELECT LEAVINGDATE FROM " + db.TABLE_NAME3 + " WHERE ID='" + data.getId() + "'");
                 cursor2.moveToFirst();
@@ -87,16 +89,16 @@ public class SeparateAllMLGRecordAdapter extends RecyclerView.Adapter<SeparateAl
                         db.updateTable("UPDATE " + db.TABLE_NAME3 + " SET LEAVINGDATE="+null+" WHERE ID='" + data.getId() + "'");
                     }
                 }
-                cursor2 = db.getData("SELECT LEAVINGDATE FROM " + db.TABLE_NAME3 + " WHERE ID='" + data.getId() + "'");
-                cursor2.moveToFirst();
-                if(cursor2.getString(0) != null){//https://www.youtube.com/watch?v=VmhcvoenUl0
-                    dateArray = cursor2.getString(0).split("-");
-//                    d = Integer.parseInt(dateArray[0]);
-//                    m = Integer.parseInt(dateArray[1]);
-//                    y = Integer.parseInt(dateArray[2]);//dbDate is leaving date
-                    dbLatestDate = LocalDate.of(Integer.parseInt(dateArray[2]),Integer.parseInt(dateArray[1]),Integer.parseInt(dateArray[0]));//it convert 01.05.2022 it add 0 automatically
-                    Toast.makeText(context, ""+ChronoUnit.DAYS.between(currentDate,dbLatestDate)+" DAYS LEFT TO LEAVE", Toast.LENGTH_SHORT).show();//HERE dbDate will always be higher then todayDate because user will leave in forward date so in method chronounit todayDate is written first and second dbDate to get right days
-                }
+//                cursor2 = db.getData("SELECT LEAVINGDATE FROM " + db.TABLE_NAME3 + " WHERE ID='" + data.getId() + "'");
+//                cursor2.moveToFirst();
+//                if(cursor2.getString(0) != null){//https://www.youtube.com/watch?v=VmhcvoenUl0
+//                    dateArray = cursor2.getString(0).split("-");
+////                    d = Integer.parseInt(dateArray[0]);
+////                    m = Integer.parseInt(dateArray[1]);
+////                    y = Integer.parseInt(dateArray[2]);//dbDate is leaving date
+//                    dbLatestDate = LocalDate.of(Integer.parseInt(dateArray[2]),Integer.parseInt(dateArray[1]),Integer.parseInt(dateArray[0]));//it convert 01.05.2022 it add 0 automatically
+//                    Toast.makeText(context, ""+ChronoUnit.DAYS.between(currentDate,dbLatestDate)+" DAYS LEFT TO LEAVE", Toast.LENGTH_SHORT).show();//HERE dbDate will always be higher then todayDate because user will leave in forward date so in method chronounit todayDate is written first and second dbDate to get right days
+//                }
                 cursor2.close();
             }
         });
@@ -113,7 +115,7 @@ public class SeparateAllMLGRecordAdapter extends RecyclerView.Adapter<SeparateAl
             super(itemView);
             name=itemView.findViewById(R.id.name_tv);
             inactiveDuration =itemView.findViewById(R.id.inactive_duration_tv);
-            layout=itemView.findViewById(R.id.linear_layout);
+            layout=itemView.findViewById(R.id.single_record_layout_of_inactive_and_active);
         }
     }
 }

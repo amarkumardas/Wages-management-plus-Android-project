@@ -115,8 +115,7 @@ public class InsertDataActivity extends AppCompatActivity {
 //        ArrayAdapte5r<String>adapter=new ArrayAdapter<>(InsertDataActivity.this,android.R.layout.simple_list_item_1, type_plus);
 //        spinner.setAdapter(adapter);
 
-         //get bank names
-        indianBank =getResources().getStringArray(R.array.indian_bank_names);
+        indianBank =getResources().getStringArray(R.array.indian_bank_names); //get bank names
         ArrayAdapter<String> bankadapter=new ArrayAdapter<>(InsertDataActivity.this, android.R.layout.simple_list_item_1, indianBank);
         bankname_autocomptextview.setAdapter(bankadapter);
 
@@ -169,7 +168,8 @@ public class InsertDataActivity extends AppCompatActivity {
                 Bitmap bitmap= BitmapFactory.decodeByteArray(image,0, image.length);
                 imageView.setImageBitmap(bitmap);
                 acholdername.setText(cursor1.getString(9));
-                add.setText("UPDATE");
+                add.setBackgroundResource(R.drawable.green_color_bg);
+                add.setText("SAVE");
                 cursor1.close();
             }else
                 Toast.makeText(this, "cursor is null", Toast.LENGTH_SHORT).show();
@@ -343,9 +343,9 @@ public class InsertDataActivity extends AppCompatActivity {
                             Toast.makeText(InsertDataActivity.this, "ID- "+fromIntentPersonId+" UPDATED SUCCESSFULLY", Toast.LENGTH_SHORT).show();
 
                             //whenever user update its name,bank account,etc theN IF that account is inactive then that account will become active that is its latest date is updated to current date
-                            final Calendar current=Calendar.getInstance();//to get current date
-                            String currentDate =current.get(Calendar.DAY_OF_MONTH)+"-"+(current.get(Calendar.MONTH)+1)+"-"+current.get(Calendar.YEAR);
-                            personDb.updateTable("UPDATE " + personDb.TABLE_NAME1 + " SET  LATESTDATE='" + currentDate + "'" +" WHERE ID='" + fromIntentPersonId + "'");
+//                            final Calendar current=Calendar.getInstance();//to get current date
+//                            String currentDate =current.get(Calendar.DAY_OF_MONTH)+"-"+(current.get(Calendar.MONTH)+1)+"-"+current.get(Calendar.YEAR);
+//                            personDb.updateTable("UPDATE " + personDb.TABLE_NAME1 + " SET  LATESTDATE='" + currentDate + "'" +" WHERE ID='" + fromIntentPersonId + "'");
 
 
                             //after success then go to previous activity automatically and destroy current activity so that when pressing back user should not get same activity this is done by finish();
@@ -364,7 +364,7 @@ public class InsertDataActivity extends AppCompatActivity {
                              success = personDb.insertDataTable1(personName, personAccount, personIfsccode, personBankName, personAadhar, personPhon, personType, personFathername, imagestore, personAccountHolderName);
                         //}
 
-                        if ( success == true) {//checking for duplicate
+                        if (success == true) {//checking for duplicate
                             Cursor result = personDb.getId(personName, personAccount, personIfsccode, personBankName, personAadhar, personPhon, personType, personFathername, personAccountHolderName);
                             StringBuilder buffer;//because it is not synchronized and efficient then stringbuffer and no need to lock and unlock
                             String holdlastid="";

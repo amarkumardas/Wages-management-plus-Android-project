@@ -160,12 +160,8 @@ Boolean aboolean=false;
         }
         cursor2.close();
         //sorting according to name IN accending order by default or natural sorting order
-        allMLGList.sort(new Comparator<MLGAllRecordModel>() {//anonymous inner class Lamda expression can be used
-            @Override
-            public int compare(MLGAllRecordModel mlgAllRecordModel, MLGAllRecordModel t1) {
-                return mlgAllRecordModel.getName().compareTo(t1.getName());//ascending order
-            }
-        });
+        //anonymous inner class Lamda expression can be used
+        allMLGList.sort(Comparator.comparing(MLGAllRecordModel::getName));
 
         SeparateAllMLGRecordAdapter allMLGRecordAdapter=new SeparateAllMLGRecordAdapter(this,allMLGList);
         searchRecycler.setHasFixedSize(true);

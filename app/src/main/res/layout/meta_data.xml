@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    app:cardElevation="50dp"
-    app:cardCornerRadius="4dp"
-    app:cardBackgroundColor="#D6DADF">
+    android:layout_height="wrap_content">
+
+    <androidx.cardview.widget.CardView
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardElevation="50dp"
+        app:cardCornerRadius="4dp"
+        app:cardBackgroundColor="#D6DADF">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -18,11 +21,11 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="META DATA"
+                android:text="PERSON INFO"
                 android:layout_gravity="center_horizontal"
                 android:textColor="#415EFB"
                 android:textStyle="bold"
-                android:textSize="17sp"
+                android:textSize="15sp"
                 />
 
         <RadioGroup
@@ -47,52 +50,61 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginTop="8dp"
-            android:weightSum="4"
+            android:weightSum="10"
             android:background="#D6DADF"
-            android:layout_marginStart="80dp"
             android:id="@+id/hardcode_meta_layout">
-
+            <TextView
+                android:layout_weight="2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textSize="10sp"
+                />
             <TextView
                 android:id="@+id/hardcoded_p1_tv_meta"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
+                android:layout_weight="2"
                 android:text="M"
+                android:layout_marginRight="2dp"
                 android:textAlignment="center"
                 android:textColor="@color/black"
-                android:textSize="12dp"
+                android:textSize="10dp"
                   />
 
             <TextView
-                android:layout_weight="1"
+                android:layout_weight="2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
                 android:textColor="@color/black"
-
+                android:layout_marginRight="2dp"
+                android:layout_marginLeft="2dp"
                 android:text="M"
-                android:textSize="12dp"
+                android:textSize="10dp"
                 android:id="@+id/hardcoded_p2_tv_meta"/>
             <TextView
-                android:layout_weight="1"
+                android:layout_weight="2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
                 android:text="M"
                 android:textColor="@color/black"
-
-                android:textSize="12dp"
+                android:layout_marginRight="2dp"
+                android:layout_marginLeft="2dp"
+                android:textSize="10dp"
                 android:id="@+id/hardcoded_p3_tv_meta"/>
 
             <TextView
                 android:id="@+id/hardcoded_p4_tv_meta"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_weight="2"
                 android:text="M"
+                android:layout_marginRight="3dp"
+                android:layout_marginLeft="2dp"
                 android:textAlignment="center"
                 android:textColor="@color/black"
-                android:textSize="12dp"
+                android:textSize="10dp"
                  />
         </LinearLayout>
         <LinearLayout
@@ -110,7 +122,7 @@
                 android:textAlignment="center"
                 android:textColor="@color/black"
                 android:text="RATE ="
-                android:textSize="12sp"
+                android:textSize="10sp"
                 />
             <EditText
                 android:layout_weight="2"
@@ -169,7 +181,7 @@
                 android:background="@drawable/white_detailsbg"
                 android:textStyle="bold"
                 android:maxLength="5"
-                android:layout_marginRight="4dp"
+                android:layout_marginRight="3dp"
                 android:layout_marginLeft="2dp"
                 android:singleLine="true"
                 android:textAlignment="center"
@@ -179,46 +191,78 @@
                 android:id="@+id/input_p4_et_meta"/>
         </LinearLayout>
         <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="15dp"
+            android:weightSum="2"
+            android:background="#D6DADF">
+
+
+
+            <TextView
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="2dp"
+                android:text="LEAVING DATE"
+                android:textSize="10dp"
+                />
+            <TextView
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:text="RETURNING DATE"
+                android:textSize="10dp"
+                 android:id="@+id/returning_date_hardcoded_text_metadata"
+                android:layout_marginRight="2dp"
+                />
+
+        </LinearLayout>
+        <LinearLayout
             android:id="@+id/date_mic_chronometer_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+
             android:orientation="horizontal"
             android:padding="4dp"
-            android:weightSum="20"
+            android:weightSum="2"
             android:background="@drawable/border_outline_while_bg">
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="9"
-                android:text="LEAVING DATE"
 
-                 android:textAlignment="center"
-                android:textColor="@color/black"
-                android:textSize="12sp"
-                />
+
             <TextView
-                android:layout_weight="3"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="2dp"
-                android:textColor="@color/black"
-                android:textSize="20dp"
-                android:background="@drawable/ic_round_edit_calendar_20"/>
-            <TextView
-                android:layout_weight="8"
+                android:layout_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
                 android:background="@drawable/white_detailsbg"
                 android:textStyle="bold"
                 android:textAlignment="center"
                 android:paddingTop="8dp"
-                android:singleLine="true"
+
                 android:layout_marginLeft="2dp"
-                android:layout_marginRight="4dp"
+                android:layout_marginRight="2dp"
                 android:textColor="@color/black"
                 android:textSize="18dp"
-                android:id="@+id/dateTv_metadata"/>
+                android:id="@+id/leaving_dateTv_metadata"/>
+            <TextView
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:background="@drawable/white_detailsbg"
+                android:textStyle="bold"
+                android:textAlignment="center"
+                android:paddingTop="8dp"
+
+
+                android:layout_marginRight="2dp"
+                android:textColor="@color/black"
+                android:textSize="18dp"
+                android:id="@+id/returning_dateTv_metadata"/>
 
         </LinearLayout>
         <LinearLayout
@@ -228,38 +272,40 @@
             android:layout_marginTop="15dp"
             android:weightSum="5"
             android:background="#D6DADF">
+
+
+            <TextView
+                android:layout_weight="2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:layout_marginRight="2dp"
+                android:layout_marginLeft="2dp"
+                android:text="ADD/REMOVE M L G"
+                android:textSize="10dp"
+                />
+            <TextView
+                android:layout_weight="2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:layout_marginRight="2dp"
+                android:text="TOTAL WORK DAYS"
+                android:textSize="10dp"
+                />
             <TextView
                 android:layout_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
                 android:textColor="@color/black"
-
+                android:layout_marginRight="2dp"
                 android:text="STAR"
-                android:textSize="12dp"
-                 />
-
-
-            <TextView
-                android:layout_weight="2"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:textAlignment="center"
-                android:textColor="@color/black"
-
-                android:text="ADD/REMOVE M L G"
-                android:textSize="12dp"
+                android:textSize="10dp"
                 />
-            <TextView
-                android:layout_weight="2"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:textAlignment="center"
-                android:textColor="@color/black"
 
-                android:text="TOTAL WORK DAYS"
-                android:textSize="12dp"
-                />
 
         </LinearLayout>
 
@@ -273,18 +319,7 @@
             android:padding="4dp"
             android:weightSum="5">
 
-            <Spinner
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:background="@drawable/white_detailsbg"
-                android:textColor="@color/black"
-                android:textStyle="bold"
-                android:layout_marginLeft="4dp"
-                android:layout_marginRight="2dp"
-                android:layout_gravity="center_vertical"
-                android:id="@+id/starSpinner_metadata"
-                />
+
             <Spinner
                 android:layout_weight="2"
                 android:layout_width="0dp"
@@ -293,8 +328,9 @@
                 android:textColor="@color/black"
                 android:textStyle="bold"
                 android:layout_marginRight="2dp"
+                android:layout_marginLeft="2dp"
                 android:layout_gravity="center_horizontal"
-                android:id="@+id/custom_spinner_setting"/>
+                android:id="@+id/custom_spinner_remove_or_add_mlg"/>
             <TextView
                 android:layout_weight="2"
                 android:layout_width="0dp"
@@ -303,10 +339,22 @@
                 android:textStyle="bold"
                 android:textAlignment="center"
                 android:paddingTop="8dp"
-                android:layout_marginRight="4dp"
+                android:layout_marginRight="2dp"
                 android:textColor="@color/black"
                 android:textSize="18dp"
                 android:id="@+id/total_work_days_metadata"/>
+            <Spinner
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:background="@drawable/white_detailsbg"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+
+                android:layout_marginRight="2dp"
+                android:layout_gravity="center_vertical"
+                android:id="@+id/starSpinner_metadata"
+                />
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
@@ -321,9 +369,10 @@
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
                 android:textColor="@color/black"
-
+                android:layout_marginRight="2dp"
+                android:layout_marginLeft="2dp"
                 android:text="LOCATION"
-                android:textSize="12dp"
+                android:textSize="10dp"
                 />
 
 
@@ -334,7 +383,8 @@
                 android:textAlignment="center"
                 android:textColor="@color/black"
                 android:text="RELIGION"
-                android:textSize="12dp"
+                android:textSize="10dp"
+                android:layout_marginRight="2dp"
                 />
 
 
@@ -356,7 +406,7 @@
                 android:textColor="@color/black"
                 android:textStyle="bold"
                 android:layout_marginRight="2dp"
-                android:layout_marginLeft="4dp"
+                android:layout_marginLeft="2dp"
                 android:layout_gravity="center_horizontal"
                 android:id="@+id/location_spinner_meta"/>
             <Spinner
@@ -366,7 +416,7 @@
                 android:background="@drawable/white_detailsbg"
                 android:textColor="@color/black"
                 android:textStyle="bold"
-                android:layout_marginRight="4dp"
+                android:layout_marginRight="2dp"
                 android:layout_gravity="center_horizontal"
                 android:id="@+id/religion_spinner_meta"/>
 
@@ -375,7 +425,7 @@
         <Spinner
             android:layout_marginTop="20dp"
             android:layout_width="50dp"
-            android:layout_height="40dp"
+            android:layout_height="35dp"
             android:background="@drawable/green_color_bg"
             android:textColor="@color/black"
             android:layout_marginLeft="4dp"
@@ -385,11 +435,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="WRITE REMARKS"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="4dp"
             android:layout_marginRight="4dp"
             android:layout_marginLeft="4dp"
-             android:fadingEdgeLength="233dp"
-
+            android:fadingEdgeLength="233dp"
             android:id="@+id/refferal_metadata"
             />
         <LinearLayout
@@ -420,12 +469,13 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:text="SAVE"
+                android:text="EDIT"
                 android:textColor="@color/white"
                 android:textStyle="bold"
-                android:background="@drawable/green_color_bg"
+                android:background="@drawable/dark_blue_buttonbg"
                 android:id="@+id/save_btn_metadata"/>
         </LinearLayout>
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>
+</ScrollView>

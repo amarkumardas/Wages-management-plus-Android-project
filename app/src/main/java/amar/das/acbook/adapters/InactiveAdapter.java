@@ -17,24 +17,24 @@ import amar.das.acbook.activity.IndividualPersonDetailActivity;
 import amar.das.acbook.model.MestreLaberGModel;
 
 
-public class InactiveMAdapter extends RecyclerView.Adapter<InactiveMAdapter.ViewHolder> {
+public class InactiveAdapter extends RecyclerView.Adapter<InactiveAdapter.ViewHolder> {
     Context contex;
     ArrayList<MestreLaberGModel> arrayList;//because more operation is retrieving
 
-    public InactiveMAdapter(Context context, ArrayList<MestreLaberGModel> arrayList){
+    public InactiveAdapter(Context context, ArrayList<MestreLaberGModel> arrayList){
         this.contex=context;
         this.arrayList=arrayList;
     }
     @NonNull
     @Override
-    public InactiveMAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public InactiveAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater=LayoutInflater.from(parent.getContext());
         View view=inflater.inflate(R.layout.inactive_single_person_profile,parent,false);
-        return new InactiveMAdapter.ViewHolder(view);//constructor  public ViewHolder(@NonNull View itemView)
+        return new InactiveAdapter.ViewHolder(view);//constructor  public ViewHolder(@NonNull View itemView)
     }
 
     @Override
-    public void onBindViewHolder(@NonNull InactiveMAdapter.ViewHolder holder, int position) {//to fill data on every view filed
+    public void onBindViewHolder(@NonNull InactiveAdapter.ViewHolder holder, int position) {//to fill data on every view filed
         MestreLaberGModel data=arrayList.get(position);
         byte[] image=data.getPerson_img();//getting image ffrom db
         //getting bytearray image from DB and converting  to bitmap to set in imageview
