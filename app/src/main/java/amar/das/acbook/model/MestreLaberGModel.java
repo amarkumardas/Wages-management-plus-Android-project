@@ -71,7 +71,7 @@ public class MestreLaberGModel implements Serializable,Comparable<MestreLaberGMo
     }
 
     @Override
-    public int compareTo(MestreLaberGModel obj1) {//natural sorting latest date
+    public int compareTo(MestreLaberGModel obj1) {//natural sorting latest date desc
         DateFormat f = new SimpleDateFormat("dd-MM-yyyy");
         try {
             return f.parse(obj1.getLatestDate()).compareTo(f.parse(this.getLatestDate()));
