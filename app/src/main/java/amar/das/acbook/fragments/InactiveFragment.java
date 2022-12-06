@@ -68,7 +68,7 @@ public class InactiveFragment extends Fragment {
         //1-6000                                                                                                            // ACTIVE='0'
         Cursor cursormestre=db.getData("SELECT IMAGE,ID,ADVANCE,BALANCE FROM "+db.TABLE_NAME1 +" WHERE (TYPE='M' OR TYPE='L' OR TYPE='G') AND ACTIVE='0' ORDER BY ADVANCE DESC LIMIT 28 ");
         // Cursor cursorinactive=db.getImage("SELECT IMAGE,ADVANCEAMOUNT FROM "+db.TABLE_NAME+" WHERE ADVANCEAMOUNT  BETWEEN 0 AND 3000 AND ACTIVE='0' ORDER BY ADVANCEAMOUNT DESC");//this query will fetch image and advanceamount between 0 to 3000 and is not active ie;0 in decending order
-        inactiveArraylist =new ArrayList<>();
+        inactiveArraylist =new ArrayList<>(60);
         while(cursormestre.moveToNext()){
             MestreLaberGModel data=new MestreLaberGModel();
             data.setPerson_img(cursormestre.getBlob(0));
@@ -77,6 +77,7 @@ public class InactiveFragment extends Fragment {
             data.setBalanceAmount(cursormestre.getInt(3));
             inactiveArraylist.add(data);
         }
+        inactiveArraylist.trimToSize();//to free space
         cursormestre.close();
          db.close();
         inactiveAdapter =new InactiveAdapter(getContext(), inactiveArraylist);
@@ -170,7 +171,7 @@ public class InactiveFragment extends Fragment {
                 progressBar.setVisibility(View.GONE);//after data loading progressbar disabled
                 //Cursor cursorinactive=db.getImage("SELECT IMAGE,ADVANCEAMOUNT FROM "+db.TABLE_NAME+" WHERE ADVANCEAMOUNT  BETWEEN  50000 AND 1000000 AND ACTIVE='0' ORDER BY ADVANCEAMOUNT DESC");//this query will fetch image and advanceamount between 0 to 3000 and is not active ie;0 in decending order
             }
-        }, 2000);
+        }, 1000);
     }
 
     private void dataLoad(String querys,ArrayList<MestreLaberGModel> arraylist){
@@ -187,6 +188,8 @@ public class InactiveFragment extends Fragment {
              arraylist.add(data);
              inactiveAdapter.notifyDataSetChanged();//Use the notifyDataSetChanged() every time the list is updated,or inserted or deleted
         }
+        arraylist.trimToSize();//to free space
+
         cursormestre.close();
         db.close();//closing database
     }

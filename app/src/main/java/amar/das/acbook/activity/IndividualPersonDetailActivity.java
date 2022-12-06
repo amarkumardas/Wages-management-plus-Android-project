@@ -345,7 +345,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                 RadioButton activeRadio=myView.findViewById(R.id.active_metadata);
                 RadioGroup radioGroup=myView.findViewById(R.id.skill_radiogp_metadata);
 
-                TextView hardcodedP1Tv=myView.findViewById(R.id.hardcoded_p1_tv_meta);
+                TextView hardcodedP1Tv=myView.findViewById(R.id.hardcoded_p1_tv_meta);//dont remove
                 EditText inputP1Et=myView.findViewById(R.id.input_p1_et_meta);
                 TextView hardcodedP2Tv=myView.findViewById(R.id.hardcoded_p2_tv_meta);
                 EditText inputP2Et=myView.findViewById(R.id.input_p2_et_meta);
@@ -388,14 +388,12 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                 else if(cursor1.getString(0).equals("0"))
                     activeRadio.setChecked(false);
                 cursor1.close();
-                radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {//this should not be use in other class class other wise it will not be called when user change radio button
-                    @Override
-                    public void onCheckedChanged(RadioGroup radioGroup, int checkedidOfRadioBtn) {
-                        switch(checkedidOfRadioBtn){
-                            case R.id.active_metadata:{
-                                active ="1";//updating active variable
-                                  break;
-                            }
+                //this should not be use in other class class other wise it will not be called when user change radio button
+                radioGroup.setOnCheckedChangeListener((radioGroup1, checkedidOfRadioBtn) -> {
+                    switch(checkedidOfRadioBtn){
+                        case R.id.active_metadata:{
+                            active ="1";//updating active variable
+                              break;
                         }
                     }
                 });
@@ -425,18 +423,12 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                 cMonth=current.get(Calendar.MONTH);
                 cDayOfMonth=current.get(Calendar.DAY_OF_MONTH);
 
-                dateTv.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        //To show calendar dialog
-                        DatePickerDialog datePickerDialog=new DatePickerDialog(IndividualPersonDetailActivity.this, new DatePickerDialog.OnDateSetListener() {
-                            @Override
-                            public void onDateSet(DatePicker datePicker, int year, int month, int dayOfMonth) {
-                                dateTv.setText(dayOfMonth+"-"+(month+1)+"-"+year);//month start from 0 so 1 is added to get right month like 12
-                            }
-                        },cYear,cMonth,cDayOfMonth);//This variable should be ordered this variable will set date day month to calendar to datePickerDialog so passing it
-                        datePickerDialog.show();
-                    }
+                dateTv.setOnClickListener(view13 -> {
+                    //To show calendar dialog
+                    DatePickerDialog datePickerDialog=new DatePickerDialog(IndividualPersonDetailActivity.this, (datePicker, year, month, dayOfMonth) -> {
+                        dateTv.setText(dayOfMonth+"-"+(month+1)+"-"+year);//month start from 0 so 1 is added to get right month like 12
+                    },cYear,cMonth,cDayOfMonth);//This variable should be ordered this variable will set date day month to calendar to datePickerDialog so passing it
+                    datePickerDialog.show();
                 });
 
                 if(cursor21.getString(2) != null){//remarksMetaData
@@ -580,7 +572,8 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                             int cMonth1 = current1.get(Calendar.MONTH);
                             int cDayOfMonth1 = current1.get(Calendar.DAY_OF_MONTH);
                             String date = cDayOfMonth1 + "-" + (cMonth1 + 1) + "-" + cYear1;
-                            success2 = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET ACTIVE='" + active + "', LATESTDATE='" + date + "' WHERE ID='" + fromIntentPersonId + "'");//setting today date to latestdate TO AVOID PREVIOUS LATESTSDATE which is present in db for 1 month. so that when account is inactive then that account will become active due to new latestdate.due to todaydate in  variable latestdate logic in MestreLabeGAdapter will not execute and account will not become inactive it will remain active
+
+                            success2 = db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET ACTIVE='" + active + "', LATESTDATE='" + date + "' , TIME='"+new SimpleDateFormat("hh:mm:ss a").format(Calendar.getInstance().getTime())+"' WHERE ID='" + fromIntentPersonId + "'");//setting today date to latestdate TO AVOID PREVIOUS LATESTSDATE which is present in db for 1 month. so that when account is inactive then that account will become active due to new latestdate.due to todaydate in  variable latestdate logic in MestreLabeGAdapter will not execute and account will not become inactive it will remain active
                             if (!success2)
                                 Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO UPDATE LATESTDATE AND ACTIVE=1", Toast.LENGTH_LONG).show();
                         }
@@ -1742,16 +1735,13 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
         advanceAmountCursor.close();
         //***********************done setting no of days and warringTotaladvanceamount********************************************
 
-        deposit_btn_tv.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                Intent intent=new Intent(IndividualPersonDetailActivity.this,CustomizeLayoutOrDepositAmount.class);
-                intent.putExtra("ID",fromIntentPersonId);
-                dialog.dismiss();//while going to other activity dismiss dialog otherwise window leak
-                finish();//while going to other activity so destroy  this current activity so that while coming back we will see refresh activity
-                startActivity(intent);
-                return false;
-            }
+        deposit_btn_tv.setOnLongClickListener(view -> {
+            Intent intent=new Intent(IndividualPersonDetailActivity.this,CustomizeLayoutOrDepositAmount.class);
+            intent.putExtra("ID",fromIntentPersonId);
+            dialog.dismiss();//while going to other activity dismiss dialog otherwise window leak
+            finish();//while going to other activity so destroy  this current activity so that while coming back we will see refresh activity
+            startActivity(intent);
+            return false;
         });
 
         //to automatically set date to textView
@@ -1833,19 +1823,20 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
             String micPath=null;
             String date=inputDate.getText().toString();//date will be inserted automatically
 
-
-           // final Calendar current=Calendar.getInstance();//to get current date
-           // String currentDate =current.get(Calendar.DAY_OF_MONTH)+"-"+(current.get(Calendar.MONTH)+1)+"-"+current.get(Calendar.YEAR);
-            //db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET  LATESTDATE='" + currentDate + "'" +" WHERE ID='" + fromIntentPersonId + "'");////when ever user insert its wages or deposit or update then latest date will be updated to current date not user entered date
-            db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET ACTIVE='" + 1 + "'"+" , LATESTDATE='" + Calendar.getInstance().get(Calendar.DAY_OF_MONTH)+"-"+(current.get(Calendar.MONTH)+1)+"-"+current.get(Calendar.YEAR) + "' WHERE ID='" + fromIntentPersonId + "'");////when ever user insert its wages or deposit or update then latest date will be updated to current date
-
-
             //To get exact time so write code in save button
             Date d=Calendar.getInstance().getTime();
             SimpleDateFormat sdf=new SimpleDateFormat("hh:mm:ss a");//a stands for is AM or PM
             String onlyTime = sdf.format(d);
             inputTime.setText(onlyTime);//setting time to take time and store in db
             String time=inputTime.getText().toString();//time will be inserted automatically
+
+           // final Calendar current=Calendar.getInstance();//to get current date
+           // String currentDate =current.get(Calendar.DAY_OF_MONTH)+"-"+(current.get(Calendar.MONTH)+1)+"-"+current.get(Calendar.YEAR);
+            //db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET  LATESTDATE='" + currentDate + "'" +" WHERE ID='" + fromIntentPersonId + "'");////when ever user insert its wages or deposit or update then latest date will be updated to current date not user entered date
+            db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET ACTIVE='" + 1 + "'"+" , LATESTDATE='" + Calendar.getInstance().get(Calendar.DAY_OF_MONTH)+"-"+(current.get(Calendar.MONTH)+1)+"-"+current.get(Calendar.YEAR) + "' , TIME='"+onlyTime+"' WHERE ID='" + fromIntentPersonId + "'");////when ever user insert its wages or deposit or update then latest date will be updated to current date
+
+
+
 
             if(file !=null){//if file is not null then only it execute otherwise nothing will be inserted
                 micPath=file.getAbsolutePath();

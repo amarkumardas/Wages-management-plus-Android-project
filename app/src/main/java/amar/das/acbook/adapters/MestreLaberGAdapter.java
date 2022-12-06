@@ -26,7 +26,7 @@ import amar.das.acbook.activity.IndividualPersonDetailActivity;
 import amar.das.acbook.model.MestreLaberGModel;
 import amar.das.acbook.R;
 
-public class MestreLaberGAdapter extends RecyclerView.Adapter<MestreLaberGAdapter.ViewHolder > {
+public class MestreLaberGAdapter extends RecyclerView.Adapter<MestreLaberGAdapter.ViewHolder> {
 
     Context contex;
     ArrayList<MestreLaberGModel> arrayList;//because more operation is retrieving
@@ -91,35 +91,32 @@ public class MestreLaberGAdapter extends RecyclerView.Adapter<MestreLaberGAdapte
         }else
             holder.yellowBg.setBackgroundColor(Color.WHITE);
 
-        holder.profileimg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(contex, IndividualPersonDetailActivity.class);
-                intent.putExtra("ID", data.getId());
-                intent.putExtra("FromMesterLaberGAdapter", 1);
-                contex.startActivity(intent);
+        holder.profileimg.setOnClickListener(view -> {
+            Intent intent = new Intent(contex, IndividualPersonDetailActivity.class);
+            intent.putExtra("ID", data.getId());
+            intent.putExtra("FromMesterLaberGAdapter", 1);
+            contex.startActivity(intent);
 
 
-                Cursor cursor5 = db.getData("SELECT LATESTDATE FROM " + db.TABLE_NAME1 + " WHERE ID='" + data.getId() + "'");
-                cursor5.moveToFirst();
-                Toast.makeText(contex, "showLatestdate" + cursor5.getString(0), Toast.LENGTH_SHORT).show();
+            Cursor cursor5 = db.getData("SELECT LATESTDATE FROM " + db.TABLE_NAME1 + " WHERE ID='" + data.getId() + "'");
+            cursor5.moveToFirst();
+            Toast.makeText(contex, "showLatestdate" + cursor5.getString(0), Toast.LENGTH_SHORT).show();
 
-                //************************leaving date updation if days is 0 between two date then update SET LEAVINGDATE="+null+
-                Cursor cursor2 = db.getData("SELECT LEAVINGDATE FROM " + db.TABLE_NAME3 + " WHERE ID='" + data.getId() + "'");
-                cursor2.moveToFirst();
-                if (cursor2.getString(0) != null) {
-                    dateArray = cursor2.getString(0).split("-");
+            //************************leaving date updation if days is 0 between two date then update SET LEAVINGDATE="+null+
+            Cursor cursor2 = db.getData("SELECT LEAVINGDATE FROM " + db.TABLE_NAME3 + " WHERE ID='" + data.getId() + "'");
+            cursor2.moveToFirst();
+            if (cursor2.getString(0) != null) {
+                dateArray = cursor2.getString(0).split("-");
 //                    d = Integer.parseInt(dateArray[0]);
 //                    m = Integer.parseInt(dateArray[1]);
 //                    y = Integer.parseInt(dateArray[2]);//dbDate is leaving date
-                    dbDate = LocalDate.of(Integer.parseInt(dateArray[2]), Integer.parseInt(dateArray[1]), Integer.parseInt(dateArray[0]));//it convert 2022-05-01it add 0 automatically
-                    //between (2022-05-01,2022-05-01) like
-                    if (ChronoUnit.DAYS.between(dbDate, todayDate) >= 0) {//if days between leaving date and today date is 0 then leaving date will set null automatically
-                        db.updateTable("UPDATE " + db.TABLE_NAME3 + " SET LEAVINGDATE=" + null + " WHERE ID='" + data.getId() + "'");
-                    }
+                dbDate = LocalDate.of(Integer.parseInt(dateArray[2]), Integer.parseInt(dateArray[1]), Integer.parseInt(dateArray[0]));//it convert 2022-05-01it add 0 automatically
+                //between (2022-05-01,2022-05-01) like
+                if (ChronoUnit.DAYS.between(dbDate, todayDate) >= 0) {//if days between leaving date and today date is 0 then leaving date will set null automatically
+                    db.updateTable("UPDATE " + db.TABLE_NAME3 + " SET LEAVINGDATE=" + null + " WHERE ID='" + data.getId() + "'");
                 }
-                cursor2.close();
             }
+            cursor2.close();
         });
     }
     @Override

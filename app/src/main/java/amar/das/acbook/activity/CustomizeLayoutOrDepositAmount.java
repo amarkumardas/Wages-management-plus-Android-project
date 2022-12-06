@@ -93,79 +93,73 @@ public class CustomizeLayoutOrDepositAmount extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable editable) { }
         });
-        binding.customMicIconTv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //checking for permission
-                if(checkPermission()){
-                    if (mStartRecording) {//initially false
-                        //while recording user should not perform other task like entering date while recording because app will crash so set all field to setEnabled(false);
-                        binding.customDescriptionEt.setEnabled(false);
-                        binding.customDepositEt.setEnabled(false);
-                        binding.customDateTv.setEnabled(false);
-                        binding.customSaveBtn.setVisibility(View.GONE);
-                        binding.customCancelBtn.setEnabled(false);
+        binding.customMicIconTv.setOnClickListener(view -> {
+            //checking for permission
+            if(checkPermission()){
+                if (mStartRecording) {//initially false
+                    //while recording user should not perform other task like entering date while recording because app will crash so set all field to setEnabled(false);
+                    binding.customDescriptionEt.setEnabled(false);
+                    binding.customDepositEt.setEnabled(false);
+                    binding.customDateTv.setEnabled(false);
+                    binding.customSaveBtn.setVisibility(View.GONE);
+                    binding.customCancelBtn.setEnabled(false);
 
 
-                        binding.customChronometer.setBase(SystemClock.elapsedRealtime());//In Android, Chronometer is a class that implements a simple timer. Chronometer is a subclass of TextView. This class helps us to add a timer in our app.
-                        binding.customChronometer.start();
-                        binding.customChronometer.setEnabled(false);//when user press save button then set to true playAudioChronometer.setEnabled(true);
-                        binding.customSaveAudioIconTv.setBackgroundResource(R.drawable.ic_green_sharp_done_sharp_tick_20);//changing tick color to green so that user can feel to press to save
-                        binding.customMicIconTv.setEnabled(false);
-                        binding.customMicIconTv.setBackgroundResource(R.drawable.black_sharp_mic_24);//change color when user click
+                    binding.customChronometer.setBase(SystemClock.elapsedRealtime());//In Android, Chronometer is a class that implements a simple timer. Chronometer is a subclass of TextView. This class helps us to add a timer in our app.
+                    binding.customChronometer.start();
+                    binding.customChronometer.setEnabled(false);//when user press save button then set to true playAudioChronometer.setEnabled(true);
+                    binding.customSaveAudioIconTv.setBackgroundResource(R.drawable.ic_green_sharp_done_sharp_tick_20);//changing tick color to green so that user can feel to press to save
+                    binding.customMicIconTv.setEnabled(false);
+                    binding.customMicIconTv.setBackgroundResource(R.drawable.black_sharp_mic_24);//change color when user click
 
-                        Toast.makeText(CustomizeLayoutOrDepositAmount.this, "RECORDING STARTED", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CustomizeLayoutOrDepositAmount.this, "RECORDING STARTED", Toast.LENGTH_SHORT).show();
 
-                        //be carefull take only getExternalFilesDir( null ) https://stackoverflow.com/questions/59017202/mediarecorder-stop-failed
-                        File folder = new File(getExternalFilesDir(null) + "/acBookMicRecording");//Creating File directory in phone
+                    //be carefull take only getExternalFilesDir( null ) https://stackoverflow.com/questions/59017202/mediarecorder-stop-failed
+                    File folder = new File(getExternalFilesDir(null) + "/acBookMicRecording");//Creating File directory in phone
 
-                        if (!folder.exists()) {//if folder not exist
-                            Toast.makeText(CustomizeLayoutOrDepositAmount.this, "Creating acBookMicRecord folder to store audios", Toast.LENGTH_LONG).show();
-                            folder.mkdir();//create folder
-                        }
-
-                        startRecordingVoice();
-                        CustomizeLayoutOrDepositAmount.this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON); //while the user is recording screen should be on. it should not close
-
-                    } else {//if recording is not started then stop
-                        Toast.makeText(CustomizeLayoutOrDepositAmount.this, "AGAIN TAB ON MIC TO START RECORDING", Toast.LENGTH_SHORT).show();
+                    if (!folder.exists()) {//if folder not exist
+                        Toast.makeText(CustomizeLayoutOrDepositAmount.this, "Creating acBookMicRecord folder to store audios", Toast.LENGTH_LONG).show();
+                        folder.mkdir();//create folder
                     }
-                    mStartRecording = !mStartRecording;//so that user should click 2 times to start recording
 
-                }else {//request for permission
-                    Toast.makeText(CustomizeLayoutOrDepositAmount.this, "AUDIO PERMISSION REQUIRED", Toast.LENGTH_SHORT).show();
-                    ActivityCompat.requestPermissions(CustomizeLayoutOrDepositAmount.this, new String[]{Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 21);
+                    startRecordingVoice();
+                    CustomizeLayoutOrDepositAmount.this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON); //while the user is recording screen should be on. it should not close
+
+                } else {//if recording is not started then stop
+                    Toast.makeText(CustomizeLayoutOrDepositAmount.this, "AGAIN TAB ON MIC TO START RECORDING", Toast.LENGTH_SHORT).show();
                 }
+                mStartRecording = !mStartRecording;//so that user should click 2 times to start recording
+
+            }else {//request for permission
+                Toast.makeText(CustomizeLayoutOrDepositAmount.this, "AUDIO PERMISSION REQUIRED", Toast.LENGTH_SHORT).show();
+                ActivityCompat.requestPermissions(CustomizeLayoutOrDepositAmount.this, new String[]{Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 21);
             }
         });
-        binding.customSaveAudioIconTv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(mediaRecorder !=null){
-                    //after clicking save audion then setEnabled to true so that user can enter data to fields
+        binding.customSaveAudioIconTv.setOnClickListener(view -> {
+            if(mediaRecorder !=null){
+                //after clicking save audion then setEnabled to true so that user can enter data to fields
 
-                    binding.customDepositEt.setEnabled(true);
-                    binding.customDescriptionEt.setEnabled(true);
-                    binding.customDateTv.setEnabled(true);
+                binding.customDepositEt.setEnabled(true);
+                binding.customDescriptionEt.setEnabled(true);
+                binding.customDateTv.setEnabled(true);
 
-                    //this will check if other data is right or wrong
-                    if(!isEnterDataIsWrong(arr)) {//this is important if in field data is wrong then save button will not enabled until data is right.if save button is enabled with wrong data then if user has record audio then it will not be saved it will store null so to check right or wrong data this condition is important
-                        binding.customSaveBtn.setVisibility(View.VISIBLE);
-                    }
+                //this will check if other data is right or wrong
+                if(!isEnterDataIsWrong(arr)) {//this is important if in field data is wrong then save button will not enabled until data is right.if save button is enabled with wrong data then if user has record audio then it will not be saved it will store null so to check right or wrong data this condition is important
+                    binding.customSaveBtn.setVisibility(View.VISIBLE);
+                }
 
-                    binding.customCancelBtn.setEnabled(true);
+                binding.customCancelBtn.setEnabled(true);
 
 
-                    binding.customChronometer.setTextColor(getColor(R.color.green));//changind text color to green to give feel that is saved
-                    binding.customMicIconTv.setBackgroundResource(R.drawable.ic_green_sharp_mic_20);//set background image to cancel
-                    stopAndSaveRecordingPathToDB();
-                    binding.customChronometer.stop();//stopping chronometer
-                    binding.customMicIconTv.setEnabled(false);//so that user cannot press again this button
-                    binding.customSaveAudioIconTv.setEnabled(false);//even this button user should not click again
-                    binding.customChronometer.setEnabled(true);//when audio is save then user will be able to play
-                }else
-                    Toast.makeText(CustomizeLayoutOrDepositAmount.this, "TAB ON MIC TO START RECORDING", Toast.LENGTH_SHORT).show();
-            }
+                binding.customChronometer.setTextColor(getColor(R.color.green));//changind text color to green to give feel that is saved
+                binding.customMicIconTv.setBackgroundResource(R.drawable.ic_green_sharp_mic_20);//set background image to cancel
+                stopAndSaveRecordingPathToDB();
+                binding.customChronometer.stop();//stopping chronometer
+                binding.customMicIconTv.setEnabled(false);//so that user cannot press again this button
+                binding.customSaveAudioIconTv.setEnabled(false);//even this button user should not click again
+                binding.customChronometer.setEnabled(true);//when audio is save then user will be able to play
+            }else
+                Toast.makeText(CustomizeLayoutOrDepositAmount.this, "TAB ON MIC TO START RECORDING", Toast.LENGTH_SHORT).show();
         });
 
         //to automatically set date to textView
@@ -173,79 +167,74 @@ public class CustomizeLayoutOrDepositAmount extends AppCompatActivity {
           cYear=current.get(Calendar.YEAR);
           cMonth=current.get(Calendar.MONTH);
           cDayOfMonth=current.get(Calendar.DAY_OF_MONTH);
-        binding.customDateTv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //To show calendar dialog
-                DatePickerDialog datePickerDialog=new DatePickerDialog(CustomizeLayoutOrDepositAmount.this, new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker datePicker, int year, int month, int dayOfMonth) {
-                        binding.customDateTv.setText(dayOfMonth+"-"+(month+1)+"-"+year);//month start from 0 so 1 is added to get right month like 12
-                    }
-                },cYear,cMonth,cDayOfMonth);//This variable should be ordered this variable will set date day month to calendar to datePickerDialog so passing it
-                datePickerDialog.show();
-            }
+        binding.customDateTv.setOnClickListener(view -> {
+            //To show calendar dialog
+            DatePickerDialog datePickerDialog=new DatePickerDialog(CustomizeLayoutOrDepositAmount.this, new DatePickerDialog.OnDateSetListener() {
+                @Override
+                public void onDateSet(DatePicker datePicker, int year, int month, int dayOfMonth) {
+                    binding.customDateTv.setText(dayOfMonth+"-"+(month+1)+"-"+year);//month start from 0 so 1 is added to get right month like 12
+                }
+            },cYear,cMonth,cDayOfMonth);//This variable should be ordered this variable will set date day month to calendar to datePickerDialog so passing it
+            datePickerDialog.show();
         });
 
         if (getIntent().hasExtra("ID") && !getIntent().hasExtra("DATE") &&  !getIntent().hasExtra("TIME")) {//if id present than only operation will be performed
             db = new PersonRecordDatabase(this);//on start only database should be create
             binding.customDateTv.setText(cDayOfMonth+"-"+(cMonth+1)+"-"+cYear);
-            binding.customSaveBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    int depositAmount=0;
-                    String remarks=null;
-                    String micPath=null;
+            binding.customSaveBtn.setOnClickListener(view -> {
+                int depositAmount=0;
+                String remarks=null;
+                String micPath=null;
 
-                    //To get exact time so written code in save button
-                    Date d=Calendar.getInstance().getTime();
-                    SimpleDateFormat sdf=new SimpleDateFormat("hh:mm:ss a");//a stands for is AM or PM
-                    String onlyTime = sdf.format(d);
-                    binding.customTimeTv.setText(onlyTime);//setting time to take time and store in db
+                //To get exact time so written code in save button
+                Date d=Calendar.getInstance().getTime();
+                SimpleDateFormat sdf=new SimpleDateFormat("hh:mm:ss a");//a stands for is AM or PM
+                String onlyTime = sdf.format(d);
+                binding.customTimeTv.setText(onlyTime);//setting time to take time and store in db
 
-                    //this will store latest date by taking current date
-                    final Calendar current=Calendar.getInstance();//to get current date
-                    String currentDate =current.get(Calendar.DAY_OF_MONTH)+"-"+(current.get(Calendar.MONTH)+1)+"-"+current.get(Calendar.YEAR);
+                //this will store latest date by taking current date
+                final Calendar current12 =Calendar.getInstance();//to get current date
+                String currentDate = current12.get(Calendar.DAY_OF_MONTH)+"-"+(current12.get(Calendar.MONTH)+1)+"-"+ current12.get(Calendar.YEAR);
 //                    if(binding.customDateTv.getText().toString().equals(currentDate)) {//if it is true then store
 //                        db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET  LATESTDATE='" + binding.customDateTv.getText().toString() + "'" +" WHERE ID='" + fromIntentPersonId + "'");
 //                    }
-                    db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET  LATESTDATE='" + currentDate + "'" +" WHERE ID='" + fromIntentPersonId + "'");//when ever user insert its wages or deposit then latest date will be updated to current date not user entered date
+                                                                                                              // To get exact time
+                db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET  LATESTDATE='" + currentDate + "' , TIME= '"+ onlyTime  +"' WHERE ID='" + fromIntentPersonId + "'");//when ever user insert its wages or deposit then latest date AND TIME  will be updated to current date AND TIME not user entered date
 
-                    if(file !=null){//if file is not null then only it execute otherwise nothing will be inserted
-                        micPath=file.getAbsolutePath();
-                        arr[1]=1;
-                    }
-                    else
-                        arr[1]=0;
-
-                    if(binding.customDescriptionEt.getText().toString().length() >=1){//to prevent nullpointer exception.it execute when user enter date
-                        remarks="["+binding.customTimeTv.getText().toString()+"-ENTERED]\n\n"+"[DEPOSITED]-"+binding.customDescriptionEt.getText().toString().trim();//time is set automatically to remarks if user enter any remarks
-                        arr[2]=1;
-                    }
-                    else{
-                        remarks="["+binding.customTimeTv.getText().toString()+"-ENTERED]\n\n"+"[DEPOSITED]";//adding default deposit message so that when user dont enter remarks this remarks will be added
-                        arr[2]=1;
-                    }
-
-
-                      boolean isWrongData,isDataPresent,success;
-                      isWrongData= isEnterDataIsWrong(arr);//it should be here to get updated result
-                      isDataPresent= isDataPresent(arr);
-                    if(isDataPresent==true && isWrongData==false ) {  //means if data is present then check is it right data or not
-                        if(binding.customDepositEt.getText().toString().trim().length() >= 1) {
-                            depositAmount = Integer.parseInt(binding.customDepositEt.getText().toString().trim());
-                        }
-
-                        db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET ACTIVE='" + 1 + "'" +" WHERE ID='" + fromIntentPersonId + "'");//when ever user update then that person will become active
-                        success = db.insert_Deposit_Table2(fromIntentPersonId,binding.customDateTv.getText().toString(),binding.customTimeTv.getText().toString(),micPath,remarks,depositAmount,"1");
-                        if (success == true) {
-                            displResult("DEPOSIT - "+depositAmount,"\nDATE-  "+binding.customDateTv.getText().toString()+"\n\nREMARKS- "+remarks+"\n\nMICPATH- "+micPath);
-                        } else
-                            Toast.makeText(CustomizeLayoutOrDepositAmount.this, "FAILED TO INSERT", Toast.LENGTH_LONG).show();
-
-                    }else
-                        Toast.makeText(CustomizeLayoutOrDepositAmount.this, "CORRECT THE DATA or CANCEL AND ENTER AGAIN", Toast.LENGTH_LONG).show();
+                if(file !=null){//if file is not null then only it execute otherwise nothing will be inserted
+                    micPath=file.getAbsolutePath();
+                    arr[1]=1;
                 }
+                else
+                    arr[1]=0;
+
+                if(binding.customDescriptionEt.getText().toString().length() >=1){//to prevent nullpointer exception.it execute when user enter date
+                    remarks="["+binding.customTimeTv.getText().toString()+"-ENTERED]\n\n"+"[DEPOSITED]-"+binding.customDescriptionEt.getText().toString().trim();//time is set automatically to remarks if user enter any remarks
+                    arr[2]=1;
+                }
+                else{
+                    remarks="["+binding.customTimeTv.getText().toString()+"-ENTERED]\n\n"+"[DEPOSITED]";//adding default deposit message so that when user dont enter remarks this remarks will be added
+                    arr[2]=1;
+                }
+
+
+                  boolean isWrongData,isDataPresent,success;
+                  isWrongData= isEnterDataIsWrong(arr);//it should be here to get updated result
+                  isDataPresent= isDataPresent(arr);
+                if(isDataPresent==true && isWrongData==false ) {  //means if data is present then check is it right data or not
+                    if(binding.customDepositEt.getText().toString().trim().length() >= 1) {
+                        depositAmount = Integer.parseInt(binding.customDepositEt.getText().toString().trim());
+                    }
+
+                    db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET ACTIVE='" + 1 + "'" +" WHERE ID='" + fromIntentPersonId + "'");//when ever user update then that person will become active
+                    success = db.insert_Deposit_Table2(fromIntentPersonId,binding.customDateTv.getText().toString(),binding.customTimeTv.getText().toString(),micPath,remarks,depositAmount,"1");
+                    if (success == true) {
+                        displResult("DEPOSIT - "+depositAmount,"\nDATE-  "+binding.customDateTv.getText().toString()+"\n\nREMARKS- "+remarks+"\n\nMICPATH- "+micPath);
+                    } else
+                        Toast.makeText(CustomizeLayoutOrDepositAmount.this, "FAILED TO INSERT", Toast.LENGTH_LONG).show();
+
+                }else
+                    Toast.makeText(CustomizeLayoutOrDepositAmount.this, "CORRECT THE DATA or CANCEL AND ENTER AGAIN", Toast.LENGTH_LONG).show();
             });
             binding.customChronometer.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -345,7 +334,7 @@ public class CustomizeLayoutOrDepositAmount extends AppCompatActivity {
 //                if(date.equals(currentDate)) {//if it is true then store
 //                    db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET  LATESTDATE='" +date + "'" +" WHERE ID='" + getIntent().getStringExtra("ID") + "'");
 //                }
-                 db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET  LATESTDATE='" +currentDate + "'" +" WHERE ID='" + getIntent().getStringExtra("ID") + "'");////when ever user insert its wages or deposit then latest date will be updated to current date not user entered date
+                db.updateTable("UPDATE " + db.TABLE_NAME1 + " SET  LATESTDATE='" + currentDate + "' , TIME= '"+ onlyTime  +"' WHERE ID='" + fromIntentPersonId + "'");//when ever user insert its wages or deposit then latest date AND TIME  will be updated to current date AND TIME not user entered date
 
 
 

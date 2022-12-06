@@ -8,9 +8,11 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+
 
 public class PersonRecordDatabase extends SQLiteOpenHelper {
-    public final static int Database_Version=5;
+    public final static int Database_Version=6;//5to update db version just increase thie value by 1.when this value is increase then constructor is called
     public final static String DATABASE_NAME="person_db";
 
     //table 1
@@ -30,11 +32,12 @@ public class PersonRecordDatabase extends SQLiteOpenHelper {
     public final static String COL_13="ADVANCE";
     public final static String COL_14="BALANCE";
     public final static String COL_15="LATESTDATE";
+    public final static String COL_16="TIME";//To arrange todays enter data to show on top
 
     //table 2
     public final static String TABLE_NAME2="wages_table";
     public final static String COL_21="ID";
-    public final static String COL_22="DATE";//here date and time is acting like primary key
+    public final static String COL_22="DATE";//here date and time and id is acting like primary key
     public final static String COL_2221="TIME";
     public final static String COL_24="MICPATH";
     public final static String COL_26="DESCRIPTION";
@@ -62,35 +65,52 @@ public class PersonRecordDatabase extends SQLiteOpenHelper {
     public final static String COL_327="REFFERAL";
     public final static String COL_328="PDF1";
     public final static String COL_329="PDF2";
+    public final static String COL_330="PDFSEQUENCE";
 
 
     SQLiteDatabase db;
 
     public PersonRecordDatabase(Context context){
-        super(context,DATABASE_NAME,null,Database_Version);
+        super(context,DATABASE_NAME,null,Database_Version);//The reason of passing null is you want the standard SQLiteCursor behaviour. If you want to implement a specialized Cursor you can get it by by extending the Cursor class( this is for doing additional operations on the query results). And in these cases, you can use the CursorFactory class to return an instance of your Cursor implementation. Here is the document for that https://stackoverflow.com/questions/11643294/what-is-the-use-of-sqlitedatabase-cursorfactory-in-android
+        System.out.println("constructor db*****************************");
     }
     //If we explicitly insert default NULL into the column then in database blank will be shown instead of NULL
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {//it will execute only once        //NOT NULL OR DEFAULT NOT WORKING AND VARCHAR GIVEN VALUE NOT WORKING HOLDING MORE THAN GIVEN VALUE
-     try {//if some error occur it will handle
-         sqLiteDatabase.execSQL("CREATE TABLE " + TABLE_NAME1 + " (ID INTEGER PRIMARY KEY AUTOINCREMENT,NAME VARCHAR(100) DEFAULT NULL,BANKACCOUNT VARCHAR(20) DEFAULT NULL,IFSCCODE VARCHAR(11) DEFAULT NULL,BANKNAME VARCHAR(38) DEFAULT NULL,AADHARCARD VARCHAR(12) DEFAULT NULL,PHONE VARCHAR(10) DEFAULT NULL,TYPE CHAR(1) DEFAULT NULL,FATHERNAME VARCHAR(100) DEFAULT NULL,IMAGE BLOB DEFAULT NULL,ACHOLDER VARCHAR(100) DEFAULT NULL,ACTIVE CHAR(1) DEFAULT 1,ADVANCE NUMERIC DEFAULT NULL,BALANCE NUMERIC DEFAULT NULL,LATESTDATE TEXT DEFAULT NULL);");
-         sqLiteDatabase.execSQL("CREATE TABLE " + TABLE_NAME2 + " (ID INTEGER ,DATE TEXT DEFAULT NULL,TIME TEXT DEFAULT NULL,MICPATH TEXT DEFAULT NULL,DESCRIPTION TEXT DEFAULT NULL,WAGES NUMERIC DEFAULT NULL,DEPOSIT NUMERIC DEFAULT NULL,P1 INTEGER DEFAULT NULL,P2 INTEGER DEFAULT NULL,P3 INTEGER DEFAULT NULL,P4 INTEGER DEFAULT NULL,ISDEPOSITED CHAR(1) DEFAULT NULL);");
-         sqLiteDatabase.execSQL("CREATE TABLE " + TABLE_NAME3 + " (ID INTEGER PRIMARY KEY NOT NULL ,R1 INTEGER DEFAULT NULL,R2 INTEGER DEFAULT NULL,R3 INTEGER DEFAULT NULL,R4 INTEGER DEFAULT NULL,SKILL1 CHAR(1) DEFAULT NULL,SKILL2 CHAR(1) DEFAULT NULL,SKILL3 CHAR(1) DEFAULT NULL,INDICATOR CHAR(1) DEFAULT NULL,RATING CHAR(1) DEFAULT NULL,LEAVINGDATE VARCHAR(10) DEFAULT NULL,REFFERAL TEXT DEFAULT NULL,PDF1 BLOB DEFAULT NULL,PDF2 BLOB DEFAULT NULL);");//id is primary key because according to id only data is stored in table 3 so no duplicate
-     }catch(Exception e){
-         e.printStackTrace();
-     }
+//     try {//if some error occur it will handle
+//         sqLiteDatabase.execSQL("CREATE TABLE " + TABLE_NAME1 + " (ID INTEGER PRIMARY KEY AUTOINCREMENT,NAME VARCHAR(100) DEFAULT NULL,BANKACCOUNT VARCHAR(20) DEFAULT NULL,IFSCCODE VARCHAR(11) DEFAULT NULL,BANKNAME VARCHAR(38) DEFAULT NULL,AADHARCARD VARCHAR(12) DEFAULT NULL,PHONE VARCHAR(10) DEFAULT NULL,TYPE CHAR(1) DEFAULT NULL,FATHERNAME VARCHAR(100) DEFAULT NULL,IMAGE BLOB DEFAULT NULL,ACHOLDER VARCHAR(100) DEFAULT NULL,ACTIVE CHAR(1) DEFAULT 1,ADVANCE NUMERIC DEFAULT NULL,BALANCE NUMERIC DEFAULT NULL,LATESTDATE TEXT DEFAULT NULL,TIME TEXT DEFAULT NULL);");
+//         sqLiteDatabase.execSQL("CREATE TABLE " + TABLE_NAME2 + " (ID INTEGER ,DATE TEXT DEFAULT NULL,TIME TEXT DEFAULT NULL,MICPATH TEXT DEFAULT NULL,DESCRIPTION TEXT DEFAULT NULL,WAGES NUMERIC DEFAULT NULL,DEPOSIT NUMERIC DEFAULT NULL,P1 INTEGER DEFAULT NULL,P2 INTEGER DEFAULT NULL,P3 INTEGER DEFAULT NULL,P4 INTEGER DEFAULT NULL,ISDEPOSITED CHAR(1) DEFAULT NULL);");
+//         sqLiteDatabase.execSQL("CREATE TABLE " + TABLE_NAME3 + " (ID INTEGER PRIMARY KEY NOT NULL ,R1 INTEGER DEFAULT NULL,R2 INTEGER DEFAULT NULL,R3 INTEGER DEFAULT NULL,R4 INTEGER DEFAULT NULL,SKILL1 CHAR(1) DEFAULT NULL,SKILL2 CHAR(1) DEFAULT NULL,SKILL3 CHAR(1) DEFAULT NULL,INDICATOR CHAR(1) DEFAULT NULL,RATING CHAR(1) DEFAULT NULL,LEAVINGDATE VARCHAR(10) DEFAULT NULL,REFFERAL TEXT DEFAULT NULL,PDF1 BLOB DEFAULT NULL,PDF2 BLOB DEFAULT NULL,PDFSEQUENCE INTEGER DEFAULT 1);");//id is primary key because according to id only data is stored in table 3 so no duplicate
+//     }catch(Exception e){
+//         e.printStackTrace();
+//     }
+        System.out.println("oncreate*****************************************");
+    onUpgrade(sqLiteDatabase,0,Database_Version);
     }
 
     @Override    //i is old version and i1 is new version.When we change version then this method is called
-    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-
+    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
+        System.out.println("on upgrade*******************************************");
+        if(oldVersion < 5){//if version is less then 5 then will execute
+            System.out.println("old****************5"+oldVersion);
+            try {//if some error occur it will handle
+                sqLiteDatabase.execSQL("CREATE TABLE " + TABLE_NAME1 + " (ID INTEGER PRIMARY KEY AUTOINCREMENT,NAME VARCHAR(100) DEFAULT NULL,BANKACCOUNT VARCHAR(20) DEFAULT NULL,IFSCCODE VARCHAR(11) DEFAULT NULL,BANKNAME VARCHAR(38) DEFAULT NULL,AADHARCARD VARCHAR(12) DEFAULT NULL,PHONE VARCHAR(10) DEFAULT NULL,TYPE CHAR(1) DEFAULT NULL,FATHERNAME VARCHAR(100) DEFAULT NULL,IMAGE BLOB DEFAULT NULL,ACHOLDER VARCHAR(100) DEFAULT NULL,ACTIVE CHAR(1) DEFAULT 1,ADVANCE NUMERIC DEFAULT NULL,BALANCE NUMERIC DEFAULT NULL,LATESTDATE TEXT DEFAULT NULL,TIME TEXT DEFAULT '0');");
+                sqLiteDatabase.execSQL("CREATE TABLE " + TABLE_NAME2 + " (ID INTEGER ,DATE TEXT DEFAULT NULL,TIME TEXT DEFAULT NULL,MICPATH TEXT DEFAULT NULL,DESCRIPTION TEXT DEFAULT NULL,WAGES NUMERIC DEFAULT NULL,DEPOSIT NUMERIC DEFAULT NULL,P1 INTEGER DEFAULT NULL,P2 INTEGER DEFAULT NULL,P3 INTEGER DEFAULT NULL,P4 INTEGER DEFAULT NULL,ISDEPOSITED CHAR(1) DEFAULT NULL);");
+                sqLiteDatabase.execSQL("CREATE TABLE " + TABLE_NAME3 + " (ID INTEGER PRIMARY KEY NOT NULL ,R1 INTEGER DEFAULT NULL,R2 INTEGER DEFAULT NULL,R3 INTEGER DEFAULT NULL,R4 INTEGER DEFAULT NULL,SKILL1 CHAR(1) DEFAULT NULL,SKILL2 CHAR(1) DEFAULT NULL,SKILL3 CHAR(1) DEFAULT NULL,INDICATOR CHAR(1) DEFAULT NULL,RATING CHAR(1) DEFAULT NULL,LEAVINGDATE VARCHAR(10) DEFAULT NULL,REFFERAL TEXT DEFAULT NULL,PDF1 BLOB DEFAULT NULL,PDF2 BLOB DEFAULT NULL,PDFSEQUENCE INTEGER DEFAULT 1);");//id is primary key because according to id only data is stored in table 3 so no duplicate
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+        }
 //      sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+ TABLE_NAME1);
 //      sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+ TABLE_NAME2);
 //      sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+ TABLE_NAME3);
-//        sqLiteDatabase.execSQL("ALTER TABLE "+ TABLE_NAME3+" ADD COLUMN PDF1 BLOB DEFAULT NULL");//ADDED NEW COLUMN TO TABLE3 AND VERSION IS 4
-//        sqLiteDatabase.execSQL("ALTER TABLE "+ TABLE_NAME3+" ADD COLUMN PDF2 BLOB DEFAULT NULL");
-      Log.d("INDATABASE","ON UPGRADE DROP 3 TABLES");
-      onCreate(sqLiteDatabase);
+        else if(oldVersion < 6) { //if version is less then 6 then will execute
+            System.out.println("old****************6"+oldVersion);
+            sqLiteDatabase.execSQL("ALTER TABLE " + TABLE_NAME1 + " ADD COLUMN TIME TEXT DEFAULT '0'");//ADDED NEW COLUMN TO TABLE3 AND VERSION IS 4
+            sqLiteDatabase.execSQL("ALTER TABLE " + TABLE_NAME3 + " ADD COLUMN PDFSEQUENCE INTEGER DEFAULT 1");
+        }
+     // Log.d("INDATABASE","ON UPGRADE DROP 3 TABLES");
+      //onCreate(sqLiteDatabase);
     }
     //insertdata TO table 1
     public boolean insertDataTable1(String name, String bankaccount, String ifsccode, String bankname, String aadharcard, String phonenumber, String skill, String fathername, byte[] image, String acholder ) {

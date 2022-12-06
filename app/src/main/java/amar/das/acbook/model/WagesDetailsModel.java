@@ -28,7 +28,22 @@ public class WagesDetailsModel implements Serializable {
     private String micPath;
     private String description;
     private String id;
-    private int p1,p2,p3,p4,wages,deposit;
+    private int p1;
+    private int p2;
+    private int p3;
+    private int p4;
+    private int wages;
+    private int deposit;
+
+    public int getPdfSequence() {
+        return pdfSequence;
+    }
+
+    public void setPdfSequence(int pdfSequence) {
+        this.pdfSequence = pdfSequence;
+    }
+
+    private int pdfSequence;
 
     public  void setId(String id){
           this.id=id;
