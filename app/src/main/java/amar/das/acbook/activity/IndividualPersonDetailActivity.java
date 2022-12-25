@@ -388,7 +388,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                 else if(cursor1.getString(0).equals("0"))
                     activeRadio.setChecked(false);
                 cursor1.close();
-                //this should not be use in other class class other wise it will not be called when user change radio button
+                //this should not be use in other class   other wise it will not be called when user change radio button
                 radioGroup.setOnCheckedChangeListener((radioGroup1, checkedidOfRadioBtn) -> {
                     switch(checkedidOfRadioBtn){
                         case R.id.active_metadata:{

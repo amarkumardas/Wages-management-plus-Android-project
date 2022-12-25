@@ -106,7 +106,7 @@ public class PersonRecordDatabase extends SQLiteOpenHelper {
 //      sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+ TABLE_NAME3);
         else if(oldVersion < 6) { //if version is less then 6 then will execute
             System.out.println("old****************6"+oldVersion);
-            sqLiteDatabase.execSQL("ALTER TABLE " + TABLE_NAME1 + " ADD COLUMN TIME TEXT DEFAULT '0'");//ADDED NEW COLUMN TO TABLE3 AND VERSION IS 4
+            sqLiteDatabase.execSQL("ALTER TABLE " + TABLE_NAME1 + " ADD COLUMN TIME TEXT DEFAULT '0'");//make this column integerADDED NEW COLUMN TO TABLE3 AND VERSION IS 4
             sqLiteDatabase.execSQL("ALTER TABLE " + TABLE_NAME3 + " ADD COLUMN PDFSEQUENCE INTEGER DEFAULT 1");
         }
      // Log.d("INDATABASE","ON UPGRADE DROP 3 TABLES");

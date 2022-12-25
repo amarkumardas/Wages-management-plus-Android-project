@@ -16,13 +16,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ProgressBar;
+import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 
 import amar.das.acbook.adapters.InactiveAdapter;
-import amar.das.acbook.adapters.InactiveLGAdapter;
 import amar.das.acbook.model.MestreLaberGModel;
 import amar.das.acbook.PersonRecordDatabase;
 import amar.das.acbook.R;
@@ -42,8 +42,9 @@ public class InactiveFragment extends Fragment {
     TextView advance,balance;
 
     LinearLayoutManager layoutManager;
-    int currentItem1, totalItem1, scrollOutItems1;
+    int currentItem1, totalItem1, scrollOutItems1,holdDataToLoad ,skillIndicator,totalSpecificInactiveRecord;;
     ProgressBar progressBar;
+    RadioButton mInActiveRadio;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -51,7 +52,7 @@ public class InactiveFragment extends Fragment {
         // Inflate the layout for this fragment
         binding= FragmentInactiveBinding.inflate(inflater, container, false);
          View root=binding.getRoot();
-        db=new PersonRecordDatabase(getContext());//on start only database should be create
+        //db=new PersonRecordDatabase(getContext());//on start only database should be create
         //ids
         inactiveRecyclerView =root.findViewById(R.id.recycleview_inactive);
         progressBar=binding.progressBarInactive;
@@ -59,33 +60,87 @@ public class InactiveFragment extends Fragment {
 
         advance=root.findViewById(R.id.inactive_advance);
         balance=root.findViewById(R.id.inactive_balance);
-        Cursor advanceBalanceCursor=db.getData("SELECT SUM(ADVANCE),SUM(BALANCE) FROM "+db.TABLE_NAME1+" WHERE (TYPE='M' OR TYPE='L' OR TYPE='G') AND (ACTIVE='0')");
-        advanceBalanceCursor.moveToFirst();
-        advance.setText(HtmlCompat.fromHtml("ADVANCE- "+"<b>"+advanceBalanceCursor.getLong(0)+"</b>",HtmlCompat.FROM_HTML_MODE_LEGACY));
-        balance.setText(HtmlCompat.fromHtml("BALANCE-"+"<b>"+advanceBalanceCursor.getLong(1)+"</b>",HtmlCompat.FROM_HTML_MODE_LEGACY));
-        advanceBalanceCursor.close();
 
-        //1-6000                                                                                                            // ACTIVE='0'
-        Cursor cursormestre=db.getData("SELECT IMAGE,ID,ADVANCE,BALANCE FROM "+db.TABLE_NAME1 +" WHERE (TYPE='M' OR TYPE='L' OR TYPE='G') AND ACTIVE='0' ORDER BY ADVANCE DESC LIMIT 28 ");
-        // Cursor cursorinactive=db.getImage("SELECT IMAGE,ADVANCEAMOUNT FROM "+db.TABLE_NAME+" WHERE ADVANCEAMOUNT  BETWEEN 0 AND 3000 AND ACTIVE='0' ORDER BY ADVANCEAMOUNT DESC");//this query will fetch image and advanceamount between 0 to 3000 and is not active ie;0 in decending order
-        inactiveArraylist =new ArrayList<>(60);
-        while(cursormestre.moveToNext()){
-            MestreLaberGModel data=new MestreLaberGModel();
-            data.setPerson_img(cursormestre.getBlob(0));
-            data.setId(cursormestre.getString(1));
-            data.setAdvanceAmount(cursormestre.getInt(2));
-            data.setBalanceAmount(cursormestre.getInt(3));
-            inactiveArraylist.add(data);
-        }
-        inactiveArraylist.trimToSize();//to free space
-        cursormestre.close();
-         db.close();
+        mInActiveRadio=root.findViewById(R.id.mestre_total_inactive_radiogroup);
+        mInActiveRadio.setChecked(true);
+
+          totalSpecificInactiveRecord= getCountOfSpecificInactiveTotalRecord("M");
+        loadDefaultDataHavingTotalAdvanceNBalanceOfInactive(advance,balance);
+        binding.inactiveRadiogroup.setOnCheckedChangeListener((radioGroup1, checkedidOfRadioBtn) -> {
+            switch(checkedidOfRadioBtn){
+                case R.id.mestre_total_inactive_radiogroup:{//M
+                    skillIndicator=1;
+                    holdDataToLoad=29;
+                    totalSpecificInactiveRecord= getCountOfSpecificInactiveTotalRecord("M");
+                    inactiveArraylist.clear();//INITIALLY ARRAYLIST HAS DATA SO REMOVING
+                    db=new PersonRecordDatabase(getContext());//on start only database should be create
+                    Cursor advanceBalanceCursor=db.getData("SELECT SUM(ADVANCE),SUM(BALANCE) FROM "+db.TABLE_NAME1+" WHERE TYPE='M' AND (ACTIVE='0')");
+                    advanceBalanceCursor.moveToFirst();
+                    advance.setText(HtmlCompat.fromHtml("ADVANCE- "+"<b>"+advanceBalanceCursor.getLong(0)+"</b>",HtmlCompat.FROM_HTML_MODE_LEGACY));
+                    balance.setText(HtmlCompat.fromHtml("BALANCE-"+"<b>"+advanceBalanceCursor.getLong(1)+"</b>",HtmlCompat.FROM_HTML_MODE_LEGACY));
+                    advanceBalanceCursor.close();
+                    db.close();
+                    break;
+                }
+                case R.id.laber_total_inactive_radiogroup:{//L
+                    skillIndicator=2;
+                    holdDataToLoad=29;
+                    totalSpecificInactiveRecord= getCountOfSpecificInactiveTotalRecord("L");
+                    inactiveArraylist.clear();//INITIALLY ARRAYLIST HAS DATA SO REMOVING
+
+                    db=new PersonRecordDatabase(getContext());//on start only database should be create
+                    Cursor advanceBalanceCursor=db.getData("SELECT SUM(ADVANCE),SUM(BALANCE) FROM "+db.TABLE_NAME1+" WHERE TYPE='L' AND (ACTIVE='0')");
+                    advanceBalanceCursor.moveToFirst();
+                    advance.setText(HtmlCompat.fromHtml("ADVANCE- "+"<b>"+advanceBalanceCursor.getLong(0)+"</b>",HtmlCompat.FROM_HTML_MODE_LEGACY));
+                    balance.setText(HtmlCompat.fromHtml("BALANCE-"+"<b>"+advanceBalanceCursor.getLong(1)+"</b>",HtmlCompat.FROM_HTML_MODE_LEGACY));
+                    advanceBalanceCursor.close();
+                    db.close();
+                    break;
+                }
+                case R.id.g_total_inactive_radiogroup:{
+                    skillIndicator=3;
+                    holdDataToLoad=29;
+                    totalSpecificInactiveRecord= getCountOfSpecificInactiveTotalRecord("G");
+                    inactiveArraylist.clear();//INITIALLY ARRAYLIST HAS DATA SO REMOVING
+
+                    db=new PersonRecordDatabase(getContext());//on start only database should be create
+                    Cursor advanceBalanceCursor=db.getData("SELECT SUM(ADVANCE),SUM(BALANCE) FROM "+db.TABLE_NAME1+" WHERE TYPE='G' AND (ACTIVE='0')");
+                    advanceBalanceCursor.moveToFirst();
+                    advance.setText(HtmlCompat.fromHtml("ADVANCE- "+"<b>"+advanceBalanceCursor.getLong(0)+"</b>",HtmlCompat.FROM_HTML_MODE_LEGACY));
+                    balance.setText(HtmlCompat.fromHtml("BALANCE-"+"<b>"+advanceBalanceCursor.getLong(1)+"</b>",HtmlCompat.FROM_HTML_MODE_LEGACY));
+                    advanceBalanceCursor.close();
+                    db.close();
+                    break;
+                }
+            }
+        });
+
+//        Cursor advanceBalanceCursor=db.getData("SELECT SUM(ADVANCE),SUM(BALANCE) FROM "+db.TABLE_NAME1+" WHERE (TYPE='M' OR TYPE='L' OR TYPE='G') AND (ACTIVE='0')");
+//        advanceBalanceCursor.moveToFirst();
+//        advance.setText(HtmlCompat.fromHtml("ADVANCE- "+"<b>"+advanceBalanceCursor.getLong(0)+"</b>",HtmlCompat.FROM_HTML_MODE_LEGACY));
+//        balance.setText(HtmlCompat.fromHtml("BALANCE-"+"<b>"+advanceBalanceCursor.getLong(1)+"</b>",HtmlCompat.FROM_HTML_MODE_LEGACY));
+//        advanceBalanceCursor.close();
+//
+//        Cursor cursormestre=db.getData("SELECT IMAGE,ID,ADVANCE,BALANCE FROM "+db.TABLE_NAME1 +" WHERE (TYPE='M' OR TYPE='L' OR TYPE='G') AND ACTIVE='0' ORDER BY ADVANCE DESC LIMIT 29");
+//         inactiveArraylist =new ArrayList<>(150);//capacity is 150 because when arraylist size become greater then 100 then arraylist will be cleared.extra 50 is kept because we dont know arraylist size become greater then 100 is exactly how much
+//        while(cursormestre.moveToNext()){
+//            MestreLaberGModel data=new MestreLaberGModel();
+//            data.setPerson_img(cursormestre.getBlob(0));
+//            data.setId(cursormestre.getString(1));
+//            data.setAdvanceAmount(cursormestre.getInt(2));
+//            data.setBalanceAmount(cursormestre.getInt(3));
+//            inactiveArraylist.add(data);
+//        }
+//        inactiveArraylist.trimToSize();//to free space
+//        cursormestre.close();
+//         db.close();
         inactiveAdapter =new InactiveAdapter(getContext(), inactiveArraylist);
         inactiveRecyclerView.setAdapter(inactiveAdapter);
         layoutManager =new GridLayoutManager(getContext(),4);//grid layout
         inactiveRecyclerView.setLayoutManager(layoutManager);
         inactiveRecyclerView.setHasFixedSize(true);//telling to recycler view that dont calculate item size every time when added and remove from recyclerview
         inactiveRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+
             @Override//this method is called when we start scrolling recycleview
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
@@ -100,67 +155,82 @@ public class InactiveFragment extends Fragment {
                 currentItem1 = layoutManager.getChildCount();
                 totalItem1 = inactiveAdapter.getItemCount();// totalItem=manager.getItemCount();
                 scrollOutItems1 = layoutManager.findFirstVisibleItemPosition();
-               // Toast.makeText(getContext(), "c= "+currentItem1+"o= "+scrollOutItems1+"t= "+totalItem1, Toast.LENGTH_SHORT).show();
 
-                if(isScrolling1 && (currentItem1 + scrollOutItems1 == totalItem1)){
+
+                if(isScrolling1 && ((currentItem1 + scrollOutItems1) == totalItem1)){
                     isScrolling1 =false;
                     progressBar.setVisibility(View.VISIBLE);//progressbar
                     Toast.makeText(getContext(), "PLEASE WAIT LOADING", Toast.LENGTH_SHORT).show();
-                    fetchData("SELECT IMAGE,ID,ADVANCE,BALANCE FROM " + db.TABLE_NAME1 + " WHERE (TYPE='M' OR TYPE='L' OR TYPE='G') AND ACTIVE='0' ORDER BY ADVANCE DESC", inactiveArraylist);
-                    inactiveRecyclerView.clearOnScrollListeners();//this will remove scrollListener so we wont be able to scroll after loading all data and finished scrolling to last
-                }
+                     switch (skillIndicator){
+                         case 1:{//M
+                             fetchData("SELECT IMAGE,ID,ADVANCE,BALANCE FROM " + db.TABLE_NAME1 + " WHERE TYPE='M' AND ACTIVE='0' ORDER BY ADVANCE DESC LIMIT "+ holdDataToLoad +","+40, inactiveArraylist);
+                           //  holdDataToLoad = holdDataToLoad +40;//40 data will be loaded
+                             break;
+                         }
+                         case 2:{//L
+                             fetchData("SELECT IMAGE,ID,ADVANCE,BALANCE FROM " + db.TABLE_NAME1 + " WHERE TYPE='L'  AND ACTIVE='0' ORDER BY ADVANCE DESC LIMIT "+ holdDataToLoad +","+40, inactiveArraylist);
+                            // holdDataToLoad = holdDataToLoad +40;//40 data will be loaded
+                         }
+                         case 3:{//G
+                             fetchData("SELECT IMAGE,ID,ADVANCE,BALANCE FROM " + db.TABLE_NAME1 + " WHERE  TYPE='G' AND ACTIVE='0' ORDER BY ADVANCE DESC LIMIT "+ holdDataToLoad +","+40, inactiveArraylist);
+                            // holdDataToLoad = holdDataToLoad +40;//40 data will be loaded
+                         }
+                     }
+                   holdDataToLoad = holdDataToLoad +40;//40 data will be loaded
+                    if(holdDataToLoad > totalSpecificInactiveRecord) {//when all record loaded then remove scroll listener
+                        inactiveRecyclerView.clearOnScrollListeners();//this will remove scrollListener so we wont be able to scroll after loading all data and finished scrolling to last
+                    }
+
+                    }
             }
         });
-
-
-////        //6001-ABOVE                                                                                                                   ACTIVE='0' change
-//        Cursor cursorinactive=db.getData("SELECT IMAGE,ID,ADVANCE,BALANCE FROM " + db.TABLE_NAME1 + " WHERE  (TYPE='L' OR TYPE='G') AND (ACTIVE='0') ORDER BY ADVANCE DESC LIMIT 14 ");//getting image from database
-//        // Cursor cursorinactive=db.getImage("SELECT IMAGE,ADVANCEAMOUNT FROM "+db.TABLE_NAME+" WHERE ADVANCEAMOUNT  BETWEEN 10001 AND 1000000 AND ACTIVE='0' ORDER BY ADVANCEAMOUNT DESC");
-//
-//        arrayList6001_above =new ArrayList<>();
-//        while(cursorinactive.moveToNext()){
-//            MestreLaberGModel data=new MestreLaberGModel();
-//            data.setId(cursorinactive.getString(1));
-//            data.setPerson_img(cursorinactive.getBlob(0));
-//            data.setAdvanceAmount(cursorinactive.getInt(2));
-//            data.setBalanceAmount(cursorinactive.getInt(3));
-//            arrayList6001_above.add(data);
-//        }
-//        cursorinactive.close();
-//        db.close();
-//        System.out.println("inactive2");
-//        inactiveLGAdapter =new InactiveLGAdapter(getContext(), arrayList6001_above);
-//
-//        manager2 =new GridLayoutManager(getContext(),2);//grid layout
-//        recyclerView6001_above.setAdapter(inactiveLGAdapter);
-//        recyclerView6001_above.setLayoutManager(manager2);
-//        recyclerView6001_above.setHasFixedSize(true);
-//        recyclerView6001_above.addOnScrollListener(new RecyclerView.OnScrollListener() {
-//
-//            @Override//this method is called when we start scrolling recycleview
-//            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-//                super.onScrollStateChanged(recyclerView, newState);
-//                //this will tell the state of scrolling if user is scrolling then isScrolling variable will become true
-//                if(newState== AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL){
-//                    isScrolling2 =true;//when user start to scroll then this varilable will be true
-//                }
-//            }
-//            @Override//after scrolling finished then this method will be called
-//            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-//                super.onScrolled(recyclerView, dx, dy);
-//                currentItem2 = manager2.getChildCount();
-//                totalItem2 = inactiveLGAdapter.getItemCount();// totalItem=manager.getItemCount();
-//                scrollOutItems2 = manager2.findFirstVisibleItemPosition();
-//
-//                if(isScrolling2 && (currentItem2 + scrollOutItems2 == totalItem2)){
-//                     isScrolling2 =false;
-//                    Toast.makeText(getContext(), "PLEASE WAIT LOADING", Toast.LENGTH_SHORT).show();
-//                    fetchData("SELECT IMAGE,ID,ADVANCE,BALANCE FROM " + db.TABLE_NAME1 + " WHERE  (TYPE='L' OR TYPE='G') AND (ACTIVE='0') ORDER BY ADVANCE DESC",arrayList6001_above);
-//                    recyclerView6001_above.clearOnScrollListeners();//this will remove scrollListener so we wont be able to scroll after loading all data and finished scrolling to last
-//                }
-//            }
-//        });
         return root;
+    }
+
+    public void loadDefaultDataHavingTotalAdvanceNBalanceOfInactive(TextView advance, TextView balance) {
+        mInActiveRadio.setChecked(true);
+        db=new PersonRecordDatabase(getContext());//on start only database should be create
+        Cursor advanceBalanceCursor=db.getData("SELECT SUM(ADVANCE),SUM(BALANCE) FROM "+db.TABLE_NAME1+" WHERE (TYPE='M' OR TYPE='L' OR TYPE='G') AND (ACTIVE='0')");
+        advanceBalanceCursor.moveToFirst();
+        advance.setText(HtmlCompat.fromHtml("ADVANCE- "+"<b>"+advanceBalanceCursor.getLong(0)+"</b>",HtmlCompat.FROM_HTML_MODE_LEGACY));
+        balance.setText(HtmlCompat.fromHtml("BALANCE-"+"<b>"+advanceBalanceCursor.getLong(1)+"</b>",HtmlCompat.FROM_HTML_MODE_LEGACY));
+        advanceBalanceCursor.close();
+
+       // Cursor cursormestre=db.getData("SELECT IMAGE,ID,ADVANCE,BALANCE FROM "+db.TABLE_NAME1 +" WHERE (TYPE='M' OR TYPE='L' OR TYPE='G') AND ACTIVE='0' ORDER BY ADVANCE DESC LIMIT 29");
+
+        Cursor cursormestre=db.getData("SELECT IMAGE,ID,ADVANCE,BALANCE FROM "+db.TABLE_NAME1 +" WHERE TYPE='M'  AND ACTIVE='0' ORDER BY ADVANCE DESC LIMIT 29");
+        inactiveArraylist =new ArrayList<>(150);//capacity is 150 because when arraylist size become greater then 100 then arraylist will be cleared.extra 50 is kept because we dont know arraylist size become greater then 100 is exactly how much
+        while(cursormestre.moveToNext()){
+            MestreLaberGModel data=new MestreLaberGModel();
+            data.setPerson_img(cursormestre.getBlob(0));
+            data.setId(cursormestre.getString(1));
+            data.setAdvanceAmount(cursormestre.getInt(2));
+            data.setBalanceAmount(cursormestre.getInt(3));
+            inactiveArraylist.add(data);
+        }
+        inactiveArraylist.trimToSize();//to free space
+        cursormestre.close();
+        db.close();
+    }
+
+    public int getCountOfSpecificInactiveTotalRecord(String x) {
+        int count=0;
+        PersonRecordDatabase  db=new PersonRecordDatabase(getContext());
+        Cursor cursor=null;
+        switch (x){
+            case "M":cursor=db.getData("SELECT COUNT() FROM "+db.TABLE_NAME1 +" WHERE TYPE='M' AND ACTIVE='0'");
+                     break;
+            case "L":cursor=db.getData("SELECT COUNT() FROM "+db.TABLE_NAME1 +" WHERE TYPE='L' AND ACTIVE='0'");
+                break;
+            case "G":cursor=db.getData("SELECT COUNT() FROM "+db.TABLE_NAME1 +" WHERE TYPE='G' AND ACTIVE='0'");
+                break;
+        }
+
+        cursor.moveToFirst();
+        count=cursor.getInt(0);
+        cursor.close();
+        db.close();
+        return count;
     }
 
     private void fetchData(String query, ArrayList<MestreLaberGModel> arraylist) {
@@ -169,16 +239,17 @@ public class InactiveFragment extends Fragment {
             public void run() {
                 dataLoad(query,arraylist);
                 progressBar.setVisibility(View.GONE);//after data loading progressbar disabled
-                //Cursor cursorinactive=db.getImage("SELECT IMAGE,ADVANCEAMOUNT FROM "+db.TABLE_NAME+" WHERE ADVANCEAMOUNT  BETWEEN  50000 AND 1000000 AND ACTIVE='0' ORDER BY ADVANCEAMOUNT DESC");//this query will fetch image and advanceamount between 0 to 3000 and is not active ie;0 in decending order
-            }
-        }, 1000);
+             }
+        }, 3000);//wait for 3 seconds
     }
 
     private void dataLoad(String querys,ArrayList<MestreLaberGModel> arraylist){
         db=new PersonRecordDatabase(getContext());
         Cursor cursormestre = db.getData(querys);//getting image from database
-        //Toast.makeText(getContext(), ""+arraylist.size(), Toast.LENGTH_SHORT).show(); error null pointer exception
-        arraylist.clear();//clearing the previous object which is there ie.14 object
+        if(arraylist.size()>=100){//when arraylist size is greater then 100 then free space but ensurcapacity will be as mention during declaration ie.150
+            arraylist.clear();
+        }
+
         while (cursormestre.moveToNext()) {
             MestreLaberGModel data = new MestreLaberGModel();
              data.setPerson_img(cursormestre.getBlob(0));
@@ -186,10 +257,11 @@ public class InactiveFragment extends Fragment {
              data.setBalanceAmount(cursormestre.getInt(3));
              data.setId(cursormestre.getString(1));
              arraylist.add(data);
-             inactiveAdapter.notifyDataSetChanged();//Use the notifyDataSetChanged() every time the list is updated,or inserted or deleted
         }
-        arraylist.trimToSize();//to free space
 
+        inactiveAdapter.notifyDataSetChanged();//Use the notifyDataSetChanged() every time the list is updated,or inserted or deleted
+
+        arraylist.trimToSize();//If the size of the ArrayList is increased, the ensureCapacity() method will not have any effect. The ensureCapacity() method is used to ensure that the ArrayList has enough room to store the specified number of elements. If the size of the ArrayList is increased, the ensureCapacity() method will not be triggered.
         cursormestre.close();
         db.close();//closing database
     }

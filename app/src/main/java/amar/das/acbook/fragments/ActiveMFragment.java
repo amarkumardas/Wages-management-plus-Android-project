@@ -1,6 +1,7 @@
 package amar.das.acbook.fragments;
 
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -29,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
 
 
 import amar.das.acbook.adapters.MestreLaberGAdapter;
@@ -36,6 +38,7 @@ import amar.das.acbook.model.MestreLaberGModel;
 import amar.das.acbook.PersonRecordDatabase;
 import amar.das.acbook.R;
 import amar.das.acbook.databinding.FragmentActiveMBinding;
+import amar.das.acbook.utility.MyProjectUtility;
 
 
 public class ActiveMFragment extends Fragment {
@@ -54,7 +57,7 @@ public class ActiveMFragment extends Fragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
          binding=FragmentActiveMBinding.inflate(inflater,container,false);
          View root=binding.getRoot();
          db=new PersonRecordDatabase(getContext());
@@ -75,10 +78,24 @@ public class ActiveMFragment extends Fragment {
 //        LocalDate todayDate = LocalDate.now();//current date; return 2022-05-01
 //        String currentDateDBPattern =""+ todayDate.getDayOfMonth()+"-"+ todayDate.getMonthValue()+"-"+ todayDate.getYear();//converted to 1-5-2022
 
-         //mestre
-        Cursor cursormestre=db.getData("SELECT IMAGE,ID,NAME,ADVANCE,BALANCE,LATESTDATE,TIME FROM "+db.TABLE_NAME1 +" WHERE TYPE='M' AND ACTIVE='1' ORDER BY LATESTDATE  LIMIT 28");//if lastestdate is null then  it will top of record asc so that today data entered will be below and not entered data person will be up which will indicate that data is not entered/tis query does not return latestdate in sorted order but it keep the null obj top.thus y manually sorting array gy taking latestdate
+       // int totalRecord=getCountOfTotalRecordFromDb();//this will execute when refreshed ie.when new person is added and it will be helpfull to know exactly how much the record is there to load
 
-        mestreactiveArrayList =new ArrayList<>(60);//insuring initial capacity of arraylist
+        Cursor cursormestre=null;
+        mestreactiveArrayList =new ArrayList<>(40);//insuring initial capacity to 40 because at first at least 40 record will be inserted 37+if new person present
+        //**if lastestdate is null then first it will be top of arraylist thats why two whileoop is used
+        cursormestre=db.getData("SELECT IMAGE,ID,NAME,ADVANCE,BALANCE,LATESTDATE,TIME FROM "+db.TABLE_NAME1 +" WHERE TYPE='M' AND ACTIVE='1' AND LATESTDATE IS NULL");
+        while(cursormestre.moveToNext()){//if cursor has 0 record then cursormestre.moveToNext() return false
+            MestreLaberGModel data=new MestreLaberGModel();
+            data.setName(cursormestre.getString(2));
+            data.setPerson_img(cursormestre.getBlob(0));
+            data.setId(cursormestre.getString(1));
+            data.setAdvanceAmount(cursormestre.getInt(3));
+            data.setBalanceAmount(cursormestre.getInt(4));
+            data.setLatestDate(cursormestre.getString(5));
+            data.setTime(cursormestre.getString(6));
+            mestreactiveArrayList.add(data);
+        }
+        cursormestre=db.getData("SELECT IMAGE,ID,NAME,ADVANCE,BALANCE,LATESTDATE,TIME FROM "+db.TABLE_NAME1 +" WHERE TYPE='M' AND ACTIVE='1' AND LATESTDATE IS NOT NULL ORDER BY LATESTDATE DESC LIMIT 37");
         while(cursormestre.moveToNext()){
             MestreLaberGModel data=new MestreLaberGModel();
             data.setName(cursormestre.getString(2));
@@ -88,51 +105,11 @@ public class ActiveMFragment extends Fragment {
             data.setBalanceAmount(cursormestre.getInt(4));
             data.setLatestDate(cursormestre.getString(5));
             data.setTime(cursormestre.getString(6));
-            mestreactiveArrayList.add(data);//adding data to mestrearraylist
+            mestreactiveArrayList.add(data);
         }
+
         mestreactiveArrayList.trimToSize();//to release free space
-
         sortArrayList(mestreactiveArrayList);
-//        int nullCountInArraylist[]=countNullAndTodayLatestdate(mestreactiveArrayList);//it has null count and lastestdate count
-//         Collections.sort(mestreactiveArrayList.subList(nullCountInArraylist[0],mestreactiveArrayList.size()), new Comparator<MestreLaberGModel>() {
-//            DateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-//            @Override
-//            public int compare(MestreLaberGModel obj1, MestreLaberGModel obj2) {//asc
-//                try {
-//                    return sdf.parse(obj1.getLatestDate()).compareTo(sdf.parse(obj2.getLatestDate()));
-//                } catch (ParseException e) {
-//                    throw new IllegalArgumentException(e);
-//                }
-//            }
-//        });//asc arraylist sorted
-//
-//         if(nullCountInArraylist[1]!= 0) {//if there is today latestdate
-//            Collections.sort(mestreactiveArrayList.subList(mestreactiveArrayList.size() - nullCountInArraylist[1],mestreactiveArrayList.size()), (obj1, obj2) -> {
-//                Date obj1Date=null,obj2Date=null;
-//                SimpleDateFormat format24hrs = new SimpleDateFormat("HH:mm:ss aa");//24 hrs format
-//                SimpleDateFormat format12hrs = new SimpleDateFormat("hh:mm:ss aa");//12 hrs format
-//                try {
-//                    obj1Date = format12hrs.parse(obj1.getTime());
-//                    obj2Date = format12hrs.parse(obj2.getTime());
-//                }catch(ParseException e){
-//                    e.printStackTrace();
-//                }
-////                    String obj1StringDate=format24hrs.format(obj1Date);
-////                    String obj2StringDate=format24hrs.format(obj2Date);
-//                return Integer.parseInt(format24hrs.format(obj2Date).replaceAll("[:]","").substring(0,6))-Integer.parseInt(format24hrs.format(obj1Date).replaceAll("[:]","").substring(0,6));
-//            });//first making "00:59:30 PM" to 5930 .removing start 0 and :,AM,PM.PARSING TO INTEGER so that start 0 will remove.//sort   time in desc order.index start from 0 n-1.this will keep todays time on top so that search would be easy.arraylist is already sorted so we are sorting only last half obj which has todays time
-//
-//                     if(nullCountInArraylist[0]!= 0) { //this will execute when new person is there and latest date is null
-//                        // if mestreactiveArrayList.size() is 25 then till 24 sublist will be created
-//                        Collections.sort(mestreactiveArrayList.subList(nullCountInArraylist[0], mestreactiveArrayList.size() - nullCountInArraylist[1]));//natural sorting based on latestdate desc
-//
-//                     }else{//this will execute when no new person is there and latest date is not null
-//                        Collections.sort(mestreactiveArrayList.subList(0, (mestreactiveArrayList.size() - nullCountInArraylist[1])));//desc by taking latestdate
-//                    }
-//        }else if(nullCountInArraylist[1]== 0 && nullCountInArraylist[0] == 0){//if todayLAtestdate is not there and new person not there the execute this
-//             Collections.sort(mestreactiveArrayList.subList(0, mestreactiveArrayList.size()));//natural sorting based on latestdate desc
-//         }
-
         cursormestre.close();//closing cursor after finish
         db.close();//closing database to prevent dataleak
         mestreLaberGAdapter =new MestreLaberGAdapter(getContext(), mestreactiveArrayList);
@@ -141,9 +118,9 @@ public class ActiveMFragment extends Fragment {
         layoutManager=new GridLayoutManager(getContext(),4);//spancount is number of rows
         mestreRecyclerView.setLayoutManager(layoutManager);
         mestreRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-
+        //int hold=40;
             @Override
-            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) { //Callback method to be invoked when RecyclerView's scroll state changes.
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {//Callback method to be invoked when RecyclerView's scroll state changes.
                 super.onScrollStateChanged(recyclerView, newState);
                 //this will tell the state of scrolling if user is scrolling then isScrolling variable will become true
                 if(newState== AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL){
@@ -162,67 +139,102 @@ public class ActiveMFragment extends Fragment {
                     isScrolling1 =false;
                     progressBar.setVisibility(View.VISIBLE);//progressbar
                     Toast.makeText(getContext(), "PLEASE WAIT LOADING", Toast.LENGTH_SHORT).show();
-                    fetchData("SELECT IMAGE,ID,NAME,ADVANCE,BALANCE,LATESTDATE,TIME FROM "+db.TABLE_NAME1 +" WHERE TYPE='M' AND ACTIVE='1' ORDER BY LATESTDATE ",mestreactiveArrayList);
-                    mestreRecyclerView.clearOnScrollListeners();//this will remove scrollListener so we wont be able to scroll after loading all data and finished scrolling to last
-
+                    fetchData("SELECT IMAGE,ID,NAME,ADVANCE,BALANCE,LATESTDATE,TIME FROM "+db.TABLE_NAME1 +" WHERE TYPE='M' AND ACTIVE='1' AND LATESTDATE IS NOT NULL ORDER BY LATESTDATE DESC ",mestreactiveArrayList);
+                    //fetchData("SELECT IMAGE,ID,NAME,ADVANCE,BALANCE,LATESTDATE,TIME FROM "+db.TABLE_NAME1 +" WHERE TYPE='M' AND ACTIVE='1' AND LATESTDATE IS NOT NULL ORDER BY LATESTDATE DESC LIMIT "+(hold)+","+40,mestreactiveArrayList);
+                    // hold=hold+40;
+                   // mestreRecyclerView.scrollToPosition(0);
+                   // if((hold) > totalRecord){
+                       // Toast.makeText(getContext(), "hold-"+hold+"-total record "+totalRecord, Toast.LENGTH_SHORT).show();
+                        mestreRecyclerView.clearOnScrollListeners();//this will remove scrollListener so we wont be able to scroll after loading all data and finished scrolling to last
+                   // }
                 }
             }
         });
         return root;
     }
 
-    private void sortArrayList(ArrayList<MestreLaberGModel> mestreactiveArrayList) {
-        int nullCountInArraylist[]=countNullAndTodayLatestdate(mestreactiveArrayList);//it has null count and lastestdate count
-        //sorting to original array
-        Collections.sort(mestreactiveArrayList.subList(nullCountInArraylist[0],mestreactiveArrayList.size()), new Comparator<MestreLaberGModel>() {
-            DateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-            @Override
-            public int compare(MestreLaberGModel obj1, MestreLaberGModel obj2) {//asc
-                try {
-                    return sdf.parse(obj1.getLatestDate()).compareTo(sdf.parse(obj2.getLatestDate()));
-                } catch (ParseException e) {
-                    throw new IllegalArgumentException(e);
-                }
-            }
-        });//asc arraylist sorted
 
-        //arraylist Manipulation
-        if(nullCountInArraylist[1]!= 0) {//if there is today latestdate
-            Collections.sort(mestreactiveArrayList.subList(mestreactiveArrayList.size() - nullCountInArraylist[1],mestreactiveArrayList.size()), (obj1, obj2) -> {
-                Date obj1Date=null,obj2Date=null;
-                SimpleDateFormat format24hrs = new SimpleDateFormat("HH:mm:ss aa");//24 hrs format
-                SimpleDateFormat format12hrs = new SimpleDateFormat("hh:mm:ss aa");//12 hrs format
-                try {
-                    obj1Date = format12hrs.parse(obj1.getTime());
-                    obj2Date = format12hrs.parse(obj2.getTime());
-                }catch(ParseException e){
-                    e.printStackTrace();
+
+    public int getCountOfTotalRecordFromDb() {
+        int count=0;
+        PersonRecordDatabase  db=new PersonRecordDatabase(getContext());
+        Cursor cursor=null;
+        cursor=db.getData("SELECT COUNT() FROM "+db.TABLE_NAME1 +" WHERE TYPE='M' AND ACTIVE='1' AND LATESTDATE IS NULL");
+        cursor.moveToFirst();
+        count=cursor.getInt(0);
+        cursor=db.getData("SELECT COUNT() FROM "+db.TABLE_NAME1 +" WHERE TYPE='M' AND ACTIVE='1' AND LATESTDATE IS NOT NULL");
+        cursor.moveToFirst();
+        count=count+cursor.getInt(0);
+        db.close();
+        return count;
+    }
+
+    public static void sortArrayList(ArrayList<MestreLaberGModel> mestreactiveArrayList) {
+     /**
+      *This function will sort Arraylist in such a way that all LatestDate which is null will be at top.
+      * and based on that it will sort the remaining record*/
+
+        int nullCountInArraylist[]=countNullAndTodayLatestdateAndBringAllLatestDateWhichIsNullAtTop(mestreactiveArrayList);//it will return null count and lastestdate count and swap all lastestdate which is null and bring at top of arrayList
+
+        if(nullCountInArraylist[0]== 0 && nullCountInArraylist[1] == 0){//if today LAtestdate is not there and new person not there then execute this
+            Collections.sort(mestreactiveArrayList.subList(0, mestreactiveArrayList.size()));//natural sorting based on latestdate desc
+         }else {
+            //sorting to original array in asc order by taking latestdate
+            Collections.sort(mestreactiveArrayList.subList(nullCountInArraylist[0], mestreactiveArrayList.size()), new Comparator<MestreLaberGModel>() {
+                DateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+                @Override
+                public int compare(MestreLaberGModel obj1, MestreLaberGModel obj2) {
+                    try {
+                        return sdf.parse(obj1.getLatestDate()).compareTo(sdf.parse(obj2.getLatestDate()));
+                    } catch (ParseException e) {
+                        throw new IllegalArgumentException(e);
+                    }
                 }
+            });
+            //arraylist Manipulation
+            if (nullCountInArraylist[1] != 0) { //if there is today latestdate then sort last part using time desc order
+                Collections.sort(mestreactiveArrayList.subList(mestreactiveArrayList.size() - nullCountInArraylist[1], mestreactiveArrayList.size()), (obj1, obj2) -> {
+                    Date obj1Date = null, obj2Date = null;
+                    SimpleDateFormat format24hrs = new SimpleDateFormat("HH:mm:ss aa");//24 hrs format
+                    SimpleDateFormat format12hrs = new SimpleDateFormat("hh:mm:ss aa");//12 hrs format
+                    try {
+                        obj1Date = format12hrs.parse(obj1.getTime());
+                        obj2Date = format12hrs.parse(obj2.getTime());
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
 //                    String obj1StringDate=format24hrs.format(obj1Date);
 //                    String obj2StringDate=format24hrs.format(obj2Date);
-                return Integer.parseInt(format24hrs.format(obj2Date).replaceAll("[:]","").substring(0,6))-Integer.parseInt(format24hrs.format(obj1Date).replaceAll("[:]","").substring(0,6));
-            });//first making "00:59:30 PM" to 5930 .removing start 0 and :,AM,PM.PARSING TO INTEGER so that start 0 will remove.//sort   time in desc order.index start from 0 n-1.this will keep todays time on top so that search would be easy.arraylist is already sorted so we are sorting only last half obj which has todays time
-
-            if(nullCountInArraylist[0]!= 0) { //this will execute when new person is there and latest date is null
-                // if mestreactiveArrayList.size() is 25 then till 24 sublist will be created
-                Collections.sort(mestreactiveArrayList.subList(nullCountInArraylist[0], mestreactiveArrayList.size() - nullCountInArraylist[1]));//natural sorting based on latestdate desc
-
-            }else{//this will execute when no new person is there and latest date is not null
-                Collections.sort(mestreactiveArrayList.subList(0, (mestreactiveArrayList.size() - nullCountInArraylist[1])));//desc by taking latestdate
+                   return Integer.parseInt(format24hrs.format(obj2Date).replaceAll("[:]", "").substring(0, 6)) - Integer.parseInt(format24hrs.format(obj1Date).replaceAll("[:]", "").substring(0, 6));
+                });//first making "00:59:30 PM" to 5930 .removing start 0 and :,AM,PM.PARSING TO INTEGER so that start 0 will remove.//sort   time in desc order.index start from 0 n-1.this will keep todays time on top so that search would be easy.arraylist is already sorted so we are sorting only last half obj which has todays time
             }
-        }else if(nullCountInArraylist[1]== 0 && nullCountInArraylist[0] == 0){//if todayLAtestdate is not there and new person not there the execute this
-            Collections.sort(mestreactiveArrayList.subList(0, mestreactiveArrayList.size()));//natural sorting based on latestdate desc
+            //since array list already sorted in asc order so just reversing to get desc order
+            reverseArrayListUsingIndex(mestreactiveArrayList,nullCountInArraylist[0], mestreactiveArrayList.size() - nullCountInArraylist[1]);
         }
     }
 
-    private int[] countNullAndTodayLatestdate(ArrayList<MestreLaberGModel> al) {
+    public static <T> void reverseArrayListUsingIndex(List<T> al, int start, int end){
+        while (start < end) {
+            T a=al.get(start);
+            T b=al.get(end-1);
+            al.set(start,b);
+            al.set(end-1,a);
+            start++;
+            end--;
+        }
+    }
+
+    public static int[] countNullAndTodayLatestdateAndBringAllLatestDateWhichIsNullAtTop(ArrayList<MestreLaberGModel> al) {
         int arr[]=new int[2];
+        int nullIndex=0;
        // LocalDate todayDate = LocalDate.now();//current date; return 2022-05-01
        // String currentDateDBPattern =""+ todayDate.getDayOfMonth()+"-"+ todayDate.getMonthValue()+"-"+ todayDate.getYear();//converted to 1-5-2022
         for (int i = 0; i < al.size(); i++) {
             if(al.get(i).getLatestDate()== null){
+                swapAndBringNullObjAtTopOfArrayList(al,nullIndex,i);
+                nullIndex++;
                 arr[0]++;//nullCount
-            }
+            }                                                    //today date
             else if(al.get(i).getLatestDate().equals(""+LocalDate.now().getDayOfMonth()+"-"+ LocalDate.now().getMonthValue()+"-"+ LocalDate.now().getYear())){
                arr[1]++;//todayLatestDateCount
             }
@@ -230,6 +242,12 @@ public class ActiveMFragment extends Fragment {
         return arr;
     }
 
+    public static void swapAndBringNullObjAtTopOfArrayList(ArrayList<MestreLaberGModel> al, int nullIndex, int i) {
+        MestreLaberGModel nullObj=al.get(i);
+        MestreLaberGModel nonNullObj=al.get(nullIndex);
+        al.set(i,nonNullObj);
+        al.set(nullIndex,nullObj);
+    }
 
     private void fetchData(String query, ArrayList<MestreLaberGModel> arraylist) {
         new Handler().postDelayed(() -> {
@@ -238,10 +256,29 @@ public class ActiveMFragment extends Fragment {
          }, 1000);
     }
 
-    private void dataLoad(String querys,ArrayList<MestreLaberGModel> arraylist){
+    private void dataLoad(String querys,ArrayList<MestreLaberGModel> arraylist) {
         db=new PersonRecordDatabase(getContext());//this should be first statement to load data from db
-        Cursor cursormestre = db.getData(querys);//getting image from database
+        Cursor cursormestre=null;
         arraylist.clear();//clearing the previous object which is there
+        arraylist.ensureCapacity(getCountOfTotalRecordFromDb());//to get exact arraylist storage to store exact record
+
+        //**if lastestdate is null then first it will be top of arraylist thats why two whileoop is used
+        cursormestre=db.getData("SELECT IMAGE,ID,NAME,ADVANCE,BALANCE,LATESTDATE,TIME FROM "+db.TABLE_NAME1 +" WHERE TYPE='M' AND ACTIVE='1' AND LATESTDATE IS NULL");
+        while(cursormestre.moveToNext()){//if cursor has 0 record then cursormestre.moveToNext() return false
+            MestreLaberGModel data=new MestreLaberGModel();
+            data.setName(cursormestre.getString(2));
+            data.setPerson_img(cursormestre.getBlob(0));
+            data.setId(cursormestre.getString(1));
+            data.setAdvanceAmount(cursormestre.getInt(3));
+            data.setBalanceAmount(cursormestre.getInt(4));
+            data.setLatestDate(cursormestre.getString(5));
+            data.setTime(cursormestre.getString(6));
+            arraylist.add(data);//adding data to mestrearraylist
+        }
+       // mestreLaberGAdapter.notifyDataSetChanged();//Use the notifyDataSetChanged() when the list is updated,or inserted or deleted
+
+
+        cursormestre = db.getData(querys);//getting data from db
         while (cursormestre.moveToNext()) {
             MestreLaberGModel data = new MestreLaberGModel();
             data.setName(cursormestre.getString(2));
@@ -252,86 +289,11 @@ public class ActiveMFragment extends Fragment {
             data.setLatestDate(cursormestre.getString(5));
             data.setTime(cursormestre.getString(6));
             arraylist.add(data);
-            mestreLaberGAdapter.notifyDataSetChanged();//Use the notifyDataSetChanged() when the list is updated,or inserted or deleted
         }
-//        LocalDate todayDate = LocalDate.now();//current date; return 2022-05-01
-//                                                                                                                                            //converted to 1-5-2022
-//        cursormestre=db.getData("SELECT  COUNT(*) FROM " +db.TABLE_NAME1+" WHERE TYPE='M' AND ACTIVE='1' AND LATESTDATE= '"+todayDate.getDayOfMonth()+"-"+ todayDate.getMonthValue()+"-"+ todayDate.getYear()+"'");//to get number of rows to decide sublist.The COUNT(*) function returns the number of rows in a table, including the rows including NULL and duplicates.
-//        if(cursormestre!=null) {
-//            cursormestre.moveToFirst();//since only 1 column so movetoFirst
-////            if(cursormestre.getInt(0) != 0) { //if 0 then no need to sort                                                                         //if mestreactiveArrayList.size() is 25 then till 24 sublist will be created
-////               // Collections.sort(arraylist.subList(0, arraylist.size() - cursormestre.getInt(0)));//index start from 0 n-1.this will keep todays date on top so that search would be easy.arraylist is already sorted so we are sorting only last half obj which has todays date
-////               // Collections.sort(arraylist.subList(arraylist.size() - cursormestre.getInt(0), arraylist.size()),(obj1,obj2)-> -obj1.getTime().compareTo(obj2.getTime()));//sort data by taking time in desc order.index start from 0 n-1.this will keep todays date on top so that search would be easy.arraylist is already sorted so we are sorting only last half obj which has todays time
-////            }
-//            int holdCount=0;
-//            if(cursormestre.getInt(0) != 0) { //if 0 then no need to sort
-//
-//                // if mestreactiveArrayList.size() is 25 then till 24 sublist will be created
-//                System.out.println(arraylist.size()-cursormestre.getInt(0)+"-"+arraylist.size());
-//                Collections.sort(arraylist.subList(arraylist.size() - cursormestre.getInt(0),arraylist.size()), (obj1, obj2) -> {
-//                    Date obj1Date=null,obj2Date=null;
-//                    SimpleDateFormat format24hrs = new SimpleDateFormat("HH:mm:ss aa");//24 hrs format
-//                    SimpleDateFormat format12hrs = new SimpleDateFormat("hh:mm:ss aa");//12 hrs format
-//                    try {
-//                        obj1Date = format12hrs.parse(obj1.getTime());
-//                        obj2Date = format12hrs.parse(obj2.getTime());
-//                    }catch(ParseException e){
-//                        e.printStackTrace();
-//                    }
-////                    String obj1StringDate=format24hrs.format(obj1Date);
-////                    String obj2StringDate=format24hrs.format(obj2Date);
-//                    return Integer.parseInt(format24hrs.format(obj2Date).replaceAll("[:]","").substring(0,6))-Integer.parseInt(format24hrs.format(obj1Date).replaceAll("[:]","").substring(0,6));
-//                });//first making "00:59:30 PM" to 5930 .removing start 0 and :,AM,PM.PARSING TO INTEGER so that start 0 will remove.//sort   time in desc order.index start from 0 n-1.this will keep todays time on top so that search would be easy.arraylist is already sorted so we are sorting only last half obj which has todays time
-//
-//
-//                holdCount=cursormestre.getInt(0);
-//               // System.out.println("sort last1");
-//
-//                cursormestre=db.getData("SELECT  COUNT(*) FROM " +db.TABLE_NAME1+" WHERE TYPE='M' AND ACTIVE='1' AND LATESTDATE IS NULL");//to get number of rows to decide sublist.The COUNT(*) function returns the number of rows in a table, including the rows including NULL and duplicates.
-//                if(cursormestre!=null) {
-//                    cursormestre.moveToFirst();//since only 1 column so movetoFirst
-//                    if(cursormestre.getInt(0) != 0) { //this will execute when new person is added and latest date in null
-//                        // if mestreactiveArrayList.size() is 25 then till 24 sublist will be created
-//                      // System.out.println(cursormestre.getInt(0)+"-"+(arraylist.size()-holdCount));
-//                        Collections.sort(arraylist.subList(cursormestre.getInt(0),arraylist.size()-holdCount));
-//
-////                        Collections.sort(arraylist.subList(cursormestre.getInt(0),arraylist.size()-holdCount),(obj1, obj2) -> {
-////                            DateFormat f = new SimpleDateFormat("dd-MM-yyyy");
-////                            try {
-////                                return f.parse(obj2.getLatestDate()).compareTo(f.parse(obj1.getLatestDate()));
-////                            } catch (ParseException e) {
-////                                throw new IllegalArgumentException(e);
-////                            }
-////                        });//sort data by taking latestdate in desc order.index start from 0 n-1.this will keep todays date on top so that search would be easy.arraylist is already sorted so we are sorting only last half obj which has todays latestdate
-////                        System.out.println("sort middle1");
-////                        for (MestreLaberGModel i:arraylist.subList(cursormestre.getInt(0),arraylist.size()-holdCount)) {
-////                            System.out.println(i.getLatestDate());
-////                        }
-//                    }else{//this will execute when no new person is added and latest date is not null
-//                       // System.out.println( "0 -"+(arraylist.size()-holdCount));
-//                        Collections.sort(arraylist.subList(0,arraylist.size()-holdCount));
-////                        Collections.sort(arraylist.subList(0,arraylist.size()-holdCount),(obj1, obj2) -> {
-////                            DateFormat f = new SimpleDateFormat("dd-MM-yyyy");
-////                            try {
-////                                return f.parse(obj2.getLatestDate()).compareTo(f.parse(obj1.getLatestDate()));
-////                            } catch (ParseException e) {
-////                                throw new IllegalArgumentException(e);
-////                            }
-////                        });//desc
-////                        System.out.println("sort first1");
-////                        for (MestreLaberGModel i:arraylist.subList(0,arraylist.size()-holdCount)) {
-////                            System.out.println(i.getLatestDate());
-////                        }
-//                    }
-//                }
-//            }
-//        }
+        mestreLaberGAdapter.notifyDataSetChanged();//Use the notifyDataSetChanged() when the list is updated,or inserted or deleted
 
         arraylist.trimToSize();//to release free space
-        mestreLaberGAdapter.notifyDataSetChanged();
-       sortArrayList(arraylist);
-
-
+        sortArrayList(arraylist);
         cursormestre.close();
         db.close();//closing database
     }

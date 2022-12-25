@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
     tools:context=".fragments.InactiveFragment"
     android:background="#470000">
@@ -33,6 +33,48 @@
             android:id="@+id/inactive_balance"
             />
     </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#FFFFFF"
+        android:orientation="horizontal">
+
+        <RadioGroup
+            android:id="@+id/inactive_radiogroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="60dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginBottom="3dp"
+            android:orientation="horizontal"
+            android:weightSum="3">
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/mestre_total_inactive_radiogroup"
+                android:text="@string/mestre"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/laber"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:id="@+id/laber_total_inactive_radiogroup"/>
+            <RadioButton
+                android:id="@+id/g_total_inactive_radiogroup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/women_laber"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+        </RadioGroup>
+    </LinearLayout>
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -42,14 +84,15 @@
             android:layout_height="wrap_content"
             android:padding="4dp"
             android:orientation="vertical">
+
             <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycleview_inactive"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="2dp"
                 android:layout_marginRight="2dp"
-                tools:listitem="@layout/inactive_single_person_profile"
-                android:id="@+id/recycleview_inactive">
-            </androidx.recyclerview.widget.RecyclerView>
+                tools:listitem="@layout/inactive_single_person_profile"></androidx.recyclerview.widget.RecyclerView>
+
             <ProgressBar
                 android:id="@+id/progress_bar_inactive"
                 android:layout_width="wrap_content"
