@@ -2032,12 +2032,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                     Toast.makeText(IndividualPersonDetailActivity.this, "TAB ON MIC TO START RECORDING", Toast.LENGTH_SHORT).show();
             }
         });
-        cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-            }
-        });
+        cancel.setOnClickListener(view -> dialog.dismiss());
         dialog.show();
         toGive_Amount.addTextChangedListener(new TextWatcher() {
             @Override
