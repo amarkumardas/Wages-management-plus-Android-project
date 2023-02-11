@@ -33,8 +33,6 @@ import amar.das.acbook.databinding.FragmentInactiveBinding;
 public class InactiveFragment extends Fragment {
     private FragmentInactiveBinding binding;
     ArrayList<MestreLaberGModel> inactiveArraylist;
-
-
     RecyclerView inactiveRecyclerView;
     InactiveAdapter inactiveAdapter;
     PersonRecordDatabase db;
@@ -43,7 +41,8 @@ public class InactiveFragment extends Fragment {
 
     LinearLayoutManager layoutManager;
     int currentItem1, totalItem1, scrollOutItems1, totalNumberOfLoadedData,totalSpecificInactiveRecord;
-    char skillIndicator='M';
+    //char skillIndicator='M';//for loading initial data
+    char skillIndicator;//for not loading initial data
     ProgressBar progressBar;
 
 
@@ -61,8 +60,9 @@ public class InactiveFragment extends Fragment {
         advance=root.findViewById(R.id.inactive_advance);//binding not taken becoz we are passing in method
         balance=root.findViewById(R.id.inactive_balance);
 
-        binding.mestreTotalInactiveRadiogroup.setChecked(true);//mestre radio button BY DEFAULT SHOW mestre record
-        loadDataByTakingSkillAndDefaultNoOfDataToLoadInitially('M',29);
+        //to load initial inactive data
+       // binding.mestreTotalInactiveRadiogroup.setChecked(true);//mestre radio button BY DEFAULT SHOW mestre record
+       // loadDataByTakingSkillAndDefaultNoOfDataToLoadInitially('M',29);
 
         binding.inactiveRadiogroup.setOnCheckedChangeListener((radioGroup1, checkedidOfRadioBtn) -> {
             switch(checkedidOfRadioBtn){
@@ -130,8 +130,8 @@ public class InactiveFragment extends Fragment {
 
         Cursor advanceBalanceCursor=db.getData("SELECT SUM(ADVANCE),SUM(BALANCE) FROM "+db.TABLE_NAME1+" WHERE TYPE='"+skill+"' AND (ACTIVE='0')");
         advanceBalanceCursor.moveToFirst();
-        advance.setText(HtmlCompat.fromHtml("ADVANCE- "+"<b>"+advanceBalanceCursor.getLong(0)+"</b>",HtmlCompat.FROM_HTML_MODE_LEGACY));
-        balance.setText(HtmlCompat.fromHtml("BALANCE-"+"<b>"+advanceBalanceCursor.getLong(1)+"</b>",HtmlCompat.FROM_HTML_MODE_LEGACY));
+        advance.setText(HtmlCompat.fromHtml("ADVANCE: "+"<b>"+advanceBalanceCursor.getLong(0)+"</b>",HtmlCompat.FROM_HTML_MODE_LEGACY));
+        balance.setText(HtmlCompat.fromHtml("BALANCE: "+"<b>"+advanceBalanceCursor.getLong(1)+"</b>",HtmlCompat.FROM_HTML_MODE_LEGACY));
         advanceBalanceCursor.close();
 
         Cursor dataCursonMLG=db.getData("SELECT IMAGE,ID,ADVANCE,BALANCE FROM "+db.TABLE_NAME1 +" WHERE TYPE='"+skill+"' AND ACTIVE='0' ORDER BY ADVANCE DESC LIMIT "+limit);

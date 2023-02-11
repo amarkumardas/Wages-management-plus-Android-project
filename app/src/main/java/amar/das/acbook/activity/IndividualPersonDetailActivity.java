@@ -1,13 +1,10 @@
 package amar.das.acbook.activity;
 
-import androidx.activity.OnBackPressedDispatcher;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.core.text.HtmlCompat;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.Manifest;
@@ -18,11 +15,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.drawable.Drawable;
-import android.graphics.pdf.PdfDocument;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.net.Uri;
@@ -51,7 +44,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -66,10 +58,8 @@ import amar.das.acbook.PersonRecordDatabase;
 import amar.das.acbook.R;
 import amar.das.acbook.adapters.WagesDetailsAdapter;
 import amar.das.acbook.databinding.ActivityIndividualPersonDetailBinding;
-import amar.das.acbook.fragments.ActiveLGFragment;
-import amar.das.acbook.fragments.ActiveMFragment;
 import amar.das.acbook.model.WagesDetailsModel;
-import amar.das.acbook.ui.search.SearchFragment;
+import amar.das.acbook.pdfgenerator.MakePdf;
 
 public class IndividualPersonDetailActivity extends AppCompatActivity {
      ActivityIndividualPersonDetailBinding binding;
@@ -79,7 +69,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
     long mstartingTimeMillis=0;
     long mElapsedMillis=0;
     File file;
-    String fileName;
+    public static String fileName;
     MediaPlayer mediaPlayer;
     boolean mStartRecording =false;
 
@@ -615,12 +605,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                     mycustomDialog.setCancelable(false);//if user touch to other place then dialog will not be close
                     final AlertDialog dialog=mycustomDialog.create();//mycustomDialog varialble cannot be use in inner class so creating another final varialbe  to use in inner class
                     initialiseIDs(myView);//ids
-                    cancel.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            dialog.dismiss();
-                        }
-                    });
+                    cancel.setOnClickListener(view15 -> dialog.dismiss());
 
                     Cursor defaultSkillCursor=db.getData("SELECT TYPE FROM " + db.TABLE_NAME1 + " WHERE ID= '" + fromIntentPersonId +"'");//for sure it will return type or skill
                     defaultSkillCursor.moveToFirst();
@@ -932,43 +917,41 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                     });
                     skillNRateCursor.close();
                     sumCursor.close();
-                    saveAndCreatePdf.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            if((checkInternalStorageAvailability()*1000) >= 50){//(checkInternalStorageAvailability()*1000) converted to MB so if it is greater or equal to 50 MB then true
-                                if(checkPermissionForReadAndWriteToExternalStorage()) {//Take permission
+                    saveAndCreatePdf.setOnClickListener(view14 -> {//Avoiding to check internal storage of device
+                        //if((checkInternalStorageAvailability()*1000) >= 50){//(checkInternalStorageAvailability()*1000) converted to MB so if it is greater or equal to 50 MB then true
+                            if(checkPermissionForReadAndWriteToExternalStorage()) {//Take permission
 
-                                    if(updateTotalAdvanceOrBalanceToDatabase()) {
-                                        if(generatePDF()){
-                                            if (savePdfToDatabase(fileName)) {//fileName is global variable actually its pdf Absolute path ie.pdf created in device so absolute path of pdf which is in device.First store pdf to database so that if deleteWagesFromDBorRecyclerView failed then this pdf can be used to see previous data
-                                                if (viewPDFFromDb((byte) 2,fromIntentPersonId)) {//column name should be correct
+                                if(updateTotalAdvanceOrBalanceToDatabase()) {
+                                    if(generatePDFAndUpdateGlobalVariableFileName(fromIntentPersonId)){
+                                        if (savePdfToDatabase(fileName)) {//fileName is global variable actually its pdf Absolute path ie.pdf created in device so absolute path of pdf which is in device.First store pdf to database so that if deleteWagesFromDBorRecyclerView failed then this pdf can be used to see previous data
+                                            if (viewPDFFromDb((byte) 2,fromIntentPersonId)) {//column name should be correct Viewing pdf2
 
-                                                    if (modifyToDB()) {
-                                                        Toast.makeText(IndividualPersonDetailActivity.this, "operation successful", Toast.LENGTH_LONG).show();
-                                                    } else {
-                                                        Toast.makeText(IndividualPersonDetailActivity.this, "operation failed", Toast.LENGTH_LONG).show();
-                                                    }
+                                                if (modifyToDB()) {
+                                                    Toast.makeText(IndividualPersonDetailActivity.this, "successfully created", Toast.LENGTH_SHORT).show();
                                                 } else {
-                                                    Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO VIEW PDF\n(NOTHING LOST)", Toast.LENGTH_LONG).show();
+                                                    Toast.makeText(IndividualPersonDetailActivity.this, "check remarks\n in recyclerview", Toast.LENGTH_LONG).show();
                                                 }
-                                            }else{
-                                                Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO SAVE PDF IN DB\n(NOTHING LOST)", Toast.LENGTH_LONG).show();
+
+                                            } else {
+                                                Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO VIEW PDF\n(NOTHING LOST)", Toast.LENGTH_LONG).show();
                                             }
                                         }else{
-                                            Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO GENERATE PDF\n(NOTHING LOST)", Toast.LENGTH_LONG).show();
+                                            Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO SAVE PDF IN DB\n(NOTHING LOST)", Toast.LENGTH_LONG).show();
                                         }
-
-                                    }else {
-                                        Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO UPDATE ADVANCE OR BALANCE TO DB\n(NOTHING LOST)", Toast.LENGTH_LONG).show();
+                                    }else{
+                                        Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO GENERATE PDF\n(NOTHING LOST)", Toast.LENGTH_LONG).show();
                                     }
 
-                                }else {//request for permission
-                                    Toast.makeText(IndividualPersonDetailActivity.this, "READ,WRITE EXTERNAL STORAGE PERMISSION REQUIRED", Toast.LENGTH_LONG).show();
-                                    ActivityCompat.requestPermissions(IndividualPersonDetailActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 20);
+                                }else {
+                                    Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO UPDATE ADVANCE OR BALANCE TO DB\n(NOTHING LOST)", Toast.LENGTH_LONG).show();
                                 }
-                            }else//we will let user know what gone wrong
-                                Toast.makeText(IndividualPersonDetailActivity.this, "FAILED-NO SUFFICIENT MEMORY \nINTERNAL MEMORY AVAILABLE- "+(checkInternalStorageAvailability()*1000)+" MB", Toast.LENGTH_LONG).show();
-                        }
+
+                            }else {//request for permission
+                                Toast.makeText(IndividualPersonDetailActivity.this, "READ,WRITE EXTERNAL STORAGE PERMISSION REQUIRED", Toast.LENGTH_LONG).show();
+                                ActivityCompat.requestPermissions(IndividualPersonDetailActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 20);
+                            }
+//                        }else//we will let user know what gone wrong
+//                            Toast.makeText(IndividualPersonDetailActivity.this, "FAILED-NO SUFFICIENT MEMORY \nINTERNAL MEMORY AVAILABLE- "+(checkInternalStorageAvailability()*1000)+" MB", Toast.LENGTH_LONG).show();
                     });
                     dialog.show();
                     return false;
@@ -981,37 +964,67 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
 //                                if (!deleted) {
 //                                    Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO DELETE PDF FILE FROM DEVICE", Toast.LENGTH_SHORT).show();
 //                                }
-                            if (deleteAudios(fromIntentPersonId)) {
-                            if (deleteWagesFromDBorRecyclerView(fromIntentPersonId)) {//delete records from recycle view this should be perform first so that update will be visible else update message will also be deleted //if this failed then recycler view still contain previous data
+                       // if(updateInvoiceNumberBy1ToDb(fromIntentPersonId)){//updating invoice number by 1
+                           // if (deleteAudios(fromIntentPersonId)) {
+                                if (deleteWagesFromDBorRecyclerView(fromIntentPersonId)) {//delete records from recycle view this should be perform first so that update will be visible else update message will also be deleted //if this failed then recycler view still contain previous data
 
-                                if (!addMessageAfterFinalCalculationToRecyclerview(fromIntentPersonId)) { //update balance or advance to db
-                                    Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO ADD MESSAGE AFTER FINAL CALCULATION IN RECYCLER VIEW.\nCHECK PREVIOUS PDF2 TO KNOW ABOUT PREVIOUS CALCULATION", Toast.LENGTH_LONG).show();
-                                    success = personDb.insert_1_Person_WithWagesTable2(fromIntentPersonId, "0-0-0", "0:0:0:0", null, "[FAILED TO ADD MESSAGE AFTER FINAL CALCULATION IN RECYCLER VIEW. CHECK PREVIOUS PDF2 TO KNOW ABOUT PREVIOUS CALCULATION]", 0, 0, "0");
-                                    if (!success)
-                                        Toast.makeText(IndividualPersonDetailActivity.this, "CHECK PREVIOUS PDF2 TO KNOW ABOUT PREVIOUS CALCULATION", Toast.LENGTH_LONG).show();
-                                    return false;
-                                }
-                            }else{ //once more try to delete data from db
-                                if (deleteWagesFromDBorRecyclerView(fromIntentPersonId)) {
-                                    if (!addMessageAfterFinalCalculationToRecyclerview(fromIntentPersonId)) { //update balance or advance to db
-                                        Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO ADD MESSAGE AFTER FINAL CALCULATION IN RECYCLER VIEW.\nCHECK PREVIOUS PDF2 TO KNOW ABOUT PREVIOUS CALCULATION", Toast.LENGTH_LONG).show();
-                                        success = personDb.insert_1_Person_WithWagesTable2(fromIntentPersonId, "0-0-0", "0:0:0:0", null, "[FAILED TO ADD MESSAGE AFTER FINAL CALCULATION IN RECYCLER VIEW. CHECK PREVIOUS PDF2 TO KNOW ABOUT PREVIOUS CALCULATION]", 0, 0, "0");
+                                    if (!addMessageAfterFinalCalculationToRecyclerview(fromIntentPersonId)){ //update balance or advance to db
+                                        Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO ADD MESSAGE AFTER FINAL CALCULATION IN RECYCLER VIEW.\nCHECK PREVIOUS INVOICE2 TO KNOW ABOUT PREVIOUS CALCULATION\n\n\ncheck remarks in recyclerview", Toast.LENGTH_LONG).show();
+                                        success = personDb.insert_1_Person_WithWagesTable2(fromIntentPersonId, "0-0-0", "0:0:0:0", null, "[CHECK INVOICE2 TO KNOW ABOUT PREVIOUS CALCULATION AND ADD DATA TO RECYCLERVIEW (LIKE HOW YOU ADD WAGES) WHATEVER ADVANCE OR BALANCE IS.ITS MANDATORY TO GET CORRECT CALCULATION]", 0, 0, "0");
                                         if (!success)
-                                            Toast.makeText(IndividualPersonDetailActivity.this, "CHECK PREVIOUS PDF2 TO KNOW ABOUT PREVIOUS CALCULATION", Toast.LENGTH_LONG).show();
-                                        return false;
+                                            Toast.makeText(IndividualPersonDetailActivity.this, "UPDATE RECYCLERVIEW \nCHECK INVOICE2 TO KNOW ABOUT PREVIOUS CALCULATION", Toast.LENGTH_LONG).show();
                                     }
-                                }else{//if again it fail then return false
-                                    Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO DELETE RECORD FROM DB. CURRENT DATA IS SAVED TO PREVIOUS PDF2 \nSO MANUALLY EDIT ABOVE ALL DATA TO 0 IN RECYCLER VIEW", Toast.LENGTH_LONG).show();
-                                    success = personDb.insert_1_Person_WithWagesTable2(fromIntentPersonId, "0-0-0", "0:0:0:0", null, "[FAILED TO DELETE RECORD FROM DB.CURRENT DATA IS SAVED TO PREVIOUS PDF2 SO MANUALLY EDIT ABOVE ALL DATA TO 0 IN RECYCLER VIEW OTHERWISE IT WILL CALCULATE TWICE AND GIVE INCORRECT RESULT]", 0, 0, "0");
-                                    if (!success)
-                                        Toast.makeText(IndividualPersonDetailActivity.this, "CURRENT DATA IS SAVED TO PREVIOUS PDF2 \nSO MANUALLY EDIT ABOVE ALL DATA TO 0 IN RECYCLER VIEW", Toast.LENGTH_LONG).show();//because data is deleted so set all data to 0
-                                    return false;
+
+                                    if(!updateInvoiceNumberBy1ToDb(fromIntentPersonId)) {//updating invoice number by 1
+                                        Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO UPDATE INVOICE NUMBER IN DATABASE NOTHING TO DO JUST REMEMBER FROM NOW INVOICE NUMBER WOULD NOT BE CORRECT FOR THIS ID: "+fromIntentPersonId+"\n\n\ncheck remarks in recyclerview", Toast.LENGTH_LONG).show();
+                                        success = personDb.insert_1_Person_WithWagesTable2(fromIntentPersonId, "0-0-0", "0:0:0:0", null, "[FAILED TO UPDATE INVOICE NUMBER IN DATABASE NOTHING TO DO JUST REMEMBER FROM NOW INVOICE NUMBER WOULD NOT BE CORRECT FOR THIS ID: "+fromIntentPersonId+" BECAUSE PDF/INVOICE IS GENERATED BUT INVOICE NUMBER NOT UPDATED IN DATABASE]", 0, 0, "0");
+                                        if (!success)
+                                            Toast.makeText(IndividualPersonDetailActivity.this, "NOTHING TO DO JUST REMEMBER FROM NOW INVOICE NUMBER \nWOULD NOT BE CORRECT FOR THIS ID: "+fromIntentPersonId, Toast.LENGTH_LONG).show();
+                                    }
+
+                                    if (!deleteAudios(fromIntentPersonId)){//deleting audio
+                                        Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO DELETE AUDIOS SO MANUALLY DELETE BY YOURSELF FROM YOUR DEVICE AUDIO ID: "+fromIntentPersonId+"\n\n\ncheck remarks in recycler view", Toast.LENGTH_LONG).show();
+                                        success = personDb.insert_1_Person_WithWagesTable2(fromIntentPersonId, "0-0-0", "0:0:0:0", null, "[DELETE AUDIOS MANUALLY HAVING ID:"+fromIntentPersonId+" (IF NOT DELETED THEN IT WILL BE IN DEVICE)", 0, 0, "0");
+                                        if (!success)
+                                            Toast.makeText(IndividualPersonDetailActivity.this, "OPTIONAL TO DO \nMANUALLY DELETE BY YOURSELF FROM YOUR DEVICE AUDIO ID: "+fromIntentPersonId, Toast.LENGTH_LONG).show();
+                                    }
                                 }
-                            }
-                        }else{
-                                Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO DELETE AUDIOS FROM DEVICE\n(NOTHING LOST)", Toast.LENGTH_LONG).show();
-                               return false;
-                            }
+//                                else { //once more try to delete data from db
+//                                    if (deleteWagesFromDBorRecyclerView(fromIntentPersonId)) {
+//                                        if (!addMessageAfterFinalCalculationToRecyclerview(fromIntentPersonId)) { //update balance or advance to db
+//                                            Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO ADD MESSAGE AFTER FINAL CALCULATION IN RECYCLER VIEW.\nCHECK PREVIOUS INVOICE2 TO KNOW ABOUT PREVIOUS CALCULATION", Toast.LENGTH_LONG).show();
+//                                            success = personDb.insert_1_Person_WithWagesTable2(fromIntentPersonId, "0-0-0", "0:0:0:0", null, "[FAILED TO ADD MESSAGE AFTER FINAL CALCULATION IN RECYCLER VIEW. CHECK PREVIOUS INVOICE2 TO KNOW ABOUT PREVIOUS CALCULATION]", 0, 0, "0");
+//                                            if (!success)
+//                                                Toast.makeText(IndividualPersonDetailActivity.this, "CHECK PREVIOUS INVOICE2 TO KNOW ABOUT PREVIOUS CALCULATION", Toast.LENGTH_LONG).show();
+//                                            return false;
+//                                        }
+//                                    }
+                                    else{//if again it fail then return false and add this message to recycle view
+                                        String  message=  "FAILED TO DELETE RECORD FROM DATABASE. CURRENT DATA IS SAVED TO PREVIOUS INVOICE2. ACTION TO PERFORM BY YOURSELF SEQUENTIALLY \n\n " +
+                                                "1.SO MANUALLY EDIT ALL WAGES DATA TO 0 ie.set all wages and work days to 0 IN RECYCLER VIEW (IF NOT DONE THEN PREVIOUS DATA WILL BE THERE AND GIVE INCORRECT CALCULATION ITS MANDATORY) AFTER THAT\n\n " +
+                                                "2.CHECK INVOICE2 TO KNOW ABOUT PREVIOUS CALCULATION AND ADD DATA TO RECYCLERVIEW (LIKE HOW YOU ADD WAGES) WHATEVER ADVANCE OR BALANCE IS.ITS MANDATORY TO GET CORRECT CALCULATION\n\n" +
+                                                "3.DELETE AUDIOS MANUALLY HAVING ID:"+fromIntentPersonId+" (IF NOT DELETED THEN IT WILL BE IN DEVICE)\n\n" +
+                                                "*JUST REMEMBER FROM NOW INVOICE NUMBER WOULD NOT BE CORRECT FOR THIS ID:"+fromIntentPersonId+" BECAUSE PDF/INVOICE IS GENERATED BUT INVOICE NUMBER NOT UPDATED IN DATABASE";
+
+                                        Toast.makeText(IndividualPersonDetailActivity.this, message, Toast.LENGTH_LONG).show();
+
+                                        success = personDb.insert_1_Person_WithWagesTable2(fromIntentPersonId, "0-0-0", "0:0:0:0", null, "["+message+"]", 0, 0, "0");
+                                        if (success) {
+                                            Toast.makeText(IndividualPersonDetailActivity.this, "CHECK RECYCLERVIEW DESCRIPTION/REMARKS TO KNOW", Toast.LENGTH_LONG).show();//because data is deleted so set all data to 0
+                                        }else{
+                                            Toast.makeText(IndividualPersonDetailActivity.this,"ATTENTION \nNOTE ALL DATA BY HAND\n IN PAPER MANUALLY", Toast.LENGTH_LONG).show();
+                                        }
+                                            return false;
+                                    }
+                                //}
+//                            } else {
+//                                Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO DELETE AUDIOS FROM DEVICE\n(NOTHING LOST)", Toast.LENGTH_LONG).show();
+//                                return false;
+//                            }
+//                        }else{
+//                            Toast.makeText(IndividualPersonDetailActivity.this, "FAILED TO UPDATE INVOICE NUMBER IN DB\n(MANUALLY REMOVE RECYCLER VIEW DATA)", Toast.LENGTH_LONG).show();
+//                            return false;
+//                        }
 
                     }catch (Exception ex){
                         Toast.makeText(IndividualPersonDetailActivity.this, "File not Found Exception", Toast.LENGTH_LONG).show();
@@ -1019,6 +1032,21 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                         return false;
                     }
                       return true;
+                }
+                private boolean updateInvoiceNumberBy1ToDb(String id) {
+                    try(PersonRecordDatabase db=new PersonRecordDatabase(getApplicationContext())){
+                        Cursor cursor = db.getData("SELECT "+db.COL_396_PDFSEQUENCE +" FROM " + db.TABLE_NAME3 + " WHERE ID= '" + id + "'");
+                        cursor.moveToFirst();//means only one row is returned
+                       if(!db.updateTable("UPDATE " + db.TABLE_NAME3 + " SET  "+db.COL_396_PDFSEQUENCE +" ='" + (cursor.getInt(0)+1) +"' WHERE ID='" + id + "'")){
+                          return false;
+                       }
+                        cursor.close();
+                    }catch (Exception ex){
+                        ex.printStackTrace();
+                        Toast.makeText(IndividualPersonDetailActivity.this, "INVOICE NUMBER NOT UPDATED TO DB ERROR OCCURRED", Toast.LENGTH_LONG).show();
+                        return false;
+                    }
+                    return true;
                 }
                 private boolean deleteAudios(String fromIntentPersonId) {
                     try(PersonRecordDatabase personDb=new PersonRecordDatabase(getApplicationContext());
@@ -1106,15 +1134,21 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
 
                 }
                 private boolean dontPassNullPathDeletePdfOrRecordingsFromDevice(String pdfPath) {
-                    File filePath= new File(pdfPath);//file to be delete
-                    if(filePath.exists()) {//checks file is present in device  or not
-                        return filePath.delete();//only this can return false
+                    try {
+                        File filePath = new File(pdfPath);//file to be delete
+                        if (filePath.exists()) {//checks file is present in device  or not
+                            return filePath.delete();//only this can return false
+                        }
+                    }catch (Exception ex){
+                        ex.printStackTrace();
+                        return false;
                     }
                     return true;//if user deleted file from device then also code will work so passing true
                 }
                 private boolean savePdfToDatabase(String pdfAbsolutePath) {
                     try(PersonRecordDatabase db=new PersonRecordDatabase(getApplicationContext());
-                        Cursor cursor= db.getData("SELECT PDF2 FROM " + db.TABLE_NAME3 + " WHERE ID= '" + fromIntentPersonId +"'")) {//so that object close automatically
+                        Cursor cursor= db.getData("SELECT PDF2 FROM " + db.TABLE_NAME3 + " WHERE ID= '" + fromIntentPersonId +"'"))
+                    {//so that object close automatically
                         cursor.moveToFirst();
                         byte[] newPDF = Files.readAllBytes(Paths.get(pdfAbsolutePath));//CONVERTED pdf file to byte array if path is not found then catch block execute
 
@@ -1152,8 +1186,62 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                         return false;
                     }
                 }
-                private boolean generatePDF() {
+                private boolean generatePDFAndUpdateGlobalVariableFileName(String id) {
                     //create PDF
+                    try(PersonRecordDatabase db=new PersonRecordDatabase(getApplicationContext())) {
+                        MakePdf makePdf = new MakePdf();
+
+                        makePdf.createNewPage1(MakePdf.defaultPageWidth, MakePdf.defaultPageHeight, 1);//created page 1 height weight
+                        makePdf.makeTopHeader1("RRD Construction Work", "9436018408", "7005422684", "rrdconstructionbench@gmail.com");//adding data to header
+
+                        Cursor cursor = db.getData("SELECT "+db.COL_2_NAME+" , "+db.COL_3_BANKAC+" , "+db.COL_6_AADHAAR+" , "+db.COL_10_IMAGE+" FROM " + db.TABLE_NAME1 + " WHERE ID='" + id + "'");
+                        if (cursor != null) {
+                            cursor.moveToFirst();
+                            String bankaccount,aadhaar,name;
+                            Integer pdfSequenceNo=null;
+                            byte[] image=null;
+                            if(cursor.getBlob(3)!= null){
+                                  image=cursor.getBlob(3);
+                            }else {
+                                image=null;
+                            }
+                            if(cursor.getString(0).length()>0){
+                                name=cursor.getString(0);
+                            } else{
+                               name="null";
+                            }
+                            if(cursor.getString(1).length()>4) {
+                               bankaccount=cursor.getString(1).substring(cursor.getString(1).length() - 4);
+                            }else{
+                                bankaccount="null";
+                            }
+
+                            if(cursor.getString(2).length()>5) {
+                                aadhaar=cursor.getString(2).substring(cursor.getString(2).length() - 5);
+                            }
+                            else{
+                                aadhaar="null";
+                            }
+                            cursor=db.getData("SELECT "+db.COL_396_PDFSEQUENCE+" FROM " + db.TABLE_NAME3 + " WHERE ID= '" + id + "'");
+                            if(cursor!=null){
+                                cursor.moveToFirst();
+                                pdfSequenceNo=(cursor.getInt(0)+1); /**pdf sequence in db is updated when pdf is generated successfully so for now increasing manually so that if pdf generation is failed sequence should not be updated in db*/
+                            }else {
+                                pdfSequenceNo=0;
+                            }
+                            makePdf.makeSubHeader2ImageDetails(name, id,bankaccount, aadhaar, image, String.valueOf(pdfSequenceNo));//
+                            cursor.close();
+
+                        } else {
+                            Toast.makeText(IndividualPersonDetailActivity.this, "NO DATA IN CURSOR", Toast.LENGTH_LONG).show();
+                            makePdf.makeSubHeader2ImageDetails("[NULL NO DATA IN CURSOR]", "[NULL NO DATA IN CURSOR]", "[NULL NO DATA IN CURSOR]", "[NULL NO DATA IN CURSOR]", null, "[NULL]");
+                        }
+
+
+                        makePdf.createdPageFinish2();
+                        fileName = makePdf.createFileToSavePdfDocumentAndReturnFilePath3(getExternalFilesDir(null).toString(), generateFileName(id));//we have to update filename which is global static variable to view pdf using file path
+                        makePdf.closeDocumentLastOperation4();
+
                             /*PdfDocument myPdfDocument=new PdfDocument();//pdf instance
                             Paint myPaint=new Paint();//it is responsible for text color
 
@@ -1161,7 +1249,7 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                             PdfDocument.Page mypage1=myPdfDocument.startPage(myPageInfo);
                             //to write in pdf page 1
                             Canvas canvas=mypage1.getCanvas();
-                            canvas.drawText("WELCOME  AMAR KUMAR DAS 1 love you ................",10,50,myPaint);
+                            canvas.drawText("WELCOME  AMAR KUMAR DAS................",10,50,myPaint);
                             myPdfDocument.finishPage(mypage1);
 
                             PdfDocument.PageInfo myPageInfo2=new PdfDocument.PageInfo.Builder(250,400,1).create();//meta data of pdf
@@ -1170,199 +1258,93 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
                             Canvas canvas2=mypage2.getCanvas();
                             canvas2.drawText("WELCOME  AMAR KUMAR DAS 2 love you ................",10,50,myPaint);
                             myPdfDocument.finishPage(mypage2);*/
-                  try {
-                      PdfDocument myPdfDocument = new PdfDocument();//pdf instance
-                      Paint myPaint = new Paint();//it is responsible for text color
-
-                      PdfDocument.PageInfo myPageInfo = new PdfDocument.PageInfo.Builder(250, 400, 1).create();//meta data of pdf
-                      PdfDocument.Page mypage = myPdfDocument.startPage(myPageInfo);
-
-                      //to write in pdf page 1
-                      Canvas canvas = mypage.getCanvas();
-                      myPaint.setTextAlign(Paint.Align.CENTER);
-                      myPaint.setTextSize(12.0f);                 //so that it will be in middle
-                      canvas.drawText("HR Enterprises", myPageInfo.getPageWidth() / 2, 30, myPaint);
-
-                      myPaint.setTextSize(6.0f);
-                      //myPaint.setColor(Color.rgb(122,199,199));// myPaint.setColor(getResources().getColor(R.color.green)); or
-                      myPaint.setColor(ContextCompat.getColor(IndividualPersonDetailActivity.this, R.color.background));
-                      canvas.drawText("Street No. 15,Bharat Nagar,Haryana", myPageInfo.getPageWidth() / 2, 40, myPaint);
-
-                      myPaint.setTextAlign(Paint.Align.LEFT);
-                      myPaint.setTextSize(9.0f);
-                      myPaint.setColor(Color.rgb(122, 199, 199));//this is here because if in future upper color is changed then this link color will not change
-                      canvas.drawText("Customer Information", 10, 70, myPaint);
-
-                      myPaint.setTextAlign(Paint.Align.LEFT);
-                      myPaint.setTextSize(8.0f);
-                      myPaint.setColor(Color.BLACK);
-
-                      String information[] = new String[]{"Name", "Company Name", "Address", "Phone", "Email"};
-                      int startXPosition = 10;
-                      int endXPosition = myPageInfo.getPageWidth() - 10;
-                      int startYPosition = 100;
-
-                      for (int i = 0; i < 5; i++) {
-                          canvas.drawText(information[i], startXPosition, startYPosition, myPaint);
-                          canvas.drawLine(startXPosition, startYPosition + 3, endXPosition, startYPosition + 3, myPaint);
-                          startYPosition = startYPosition + 20;
-                      }
-                      canvas.drawLine(80, 92, 80, 190, myPaint);
-
-                      myPaint.setStyle(Paint.Style.STROKE);
-                      myPaint.setStrokeWidth(2);
-                      canvas.drawRect(10, 200, myPageInfo.getPageWidth() - 10, 300, myPaint);
-                      canvas.drawLine(85, 200, 85, 300, myPaint);
-                      canvas.drawLine(163, 200, 163, 300, myPaint);
-                      myPaint.setStrokeWidth(0);
-                      myPaint.setStyle(Paint.Style.FILL);//Geometry and text drawn with this style will be filled, ignoring all stroke-related settings in the paint.
-
-                      canvas.drawText("Photo", 35, 250, myPaint);
-                      canvas.drawText("Photo", 110, 250, myPaint);
-                      canvas.drawText("Photo", 190, 250, myPaint);
-
-                      canvas.drawText("Note", 10, 320, myPaint);
-                      canvas.drawLine(35, 325, myPageInfo.getPageWidth() - 10, 325, myPaint);
-                      canvas.drawLine(10, 345, myPageInfo.getPageWidth() - 10, 345, myPaint);
-                      canvas.drawLine(10, 365, myPageInfo.getPageWidth() - 10, 365, myPaint);
-                      myPdfDocument.finishPage(mypage);
-//----------------------------------------------------------------------------------------------------------------------
-                      PdfDocument.PageInfo myPageInfo3 = new PdfDocument.PageInfo.Builder(250, 400, 1).create();//meta data of pdf
-                      PdfDocument.Page mypage3 = myPdfDocument.startPage(myPageInfo3);
-                      //to write in pdf page 1
-                      Canvas canvas3 = mypage3.getCanvas();
-                      myPaint.setTextAlign(Paint.Align.CENTER);
-                      myPaint.setTextSize(12.0f);                 //so that it will be in middle
-                      canvas3.drawText("HR Enterprises", myPageInfo3.getPageWidth() / 2, 30, myPaint);
-
-                      myPaint.setTextSize(6.0f);
-                      //myPaint.setColor(Color.rgb(122,199,199));// myPaint.setColor(getResources().getColor(R.color.green)); or
-                      myPaint.setColor(ContextCompat.getColor(IndividualPersonDetailActivity.this, R.color.background));
-                      canvas3.drawText("Street No. 15,Bharat Nagar,Haryana", myPageInfo3.getPageWidth() / 2, 40, myPaint);
-
-                      myPaint.setTextAlign(Paint.Align.LEFT);
-                      myPaint.setTextSize(9.0f);
-                      myPaint.setColor(Color.rgb(122, 199, 199));//this is here because if in future upper color is changed then this link color will not change
-                      canvas3.drawText("Customer Information", 10, 70, myPaint);
-
-                      myPaint.setTextAlign(Paint.Align.LEFT);
-                      myPaint.setTextSize(8.0f);
-                      myPaint.setColor(Color.BLACK);
-
-                      String information3[] = new String[]{"Name", "Company Name", "Address", "Phone", "Email"};
-                      int startXPosition3 = 10;
-                      int endXPosition3 = myPageInfo.getPageWidth() - 10;
-                      int startYPosition3 = 100;
-
-                      for (int i = 0; i < 5; i++) {
-                          canvas3.drawText(information3[i], startXPosition, startYPosition3, myPaint);
-                          canvas3.drawLine(startXPosition3, startYPosition3 + 3, endXPosition3, startYPosition3 + 3, myPaint);
-                          startYPosition3 = startYPosition3 + 20;
-                      }
-                      canvas3.drawLine(80, 92, 80, 190, myPaint);
-
-                      myPaint.setStyle(Paint.Style.STROKE);
-                      myPaint.setStrokeWidth(2);
-                      canvas3.drawRect(10, 200, myPageInfo3.getPageWidth() - 10, 300, myPaint);
-                      canvas3.drawLine(85, 200, 85, 300, myPaint);
-                      canvas3.drawLine(163, 200, 163, 300, myPaint);
-                      myPaint.setStrokeWidth(0);
-                      myPaint.setStyle(Paint.Style.FILL);//Geometry and text drawn with this style will be filled, ignoring all stroke-related settings in the paint.
-
-                      canvas3.drawText("Photo", 35, 250, myPaint);
-                      canvas3.drawText("Photo", 110, 250, myPaint);
-                      canvas3.drawText("Photo", 190, 250, myPaint);
-
-                      canvas3.drawText("Note", 10, 320, myPaint);
-                      canvas3.drawLine(35, 325, myPageInfo3.getPageWidth() - 10, 325, myPaint);
-                      canvas3.drawLine(10, 345, myPageInfo3.getPageWidth() - 10, 345, myPaint);
-                      canvas3.drawLine(10, 365, myPageInfo3.getPageWidth() - 10, 365, myPaint);
-                      myPdfDocument.finishPage(mypage3);
-//----------------------------------------------------------------------------------
-                      PdfDocument.PageInfo myPageInfo4 = new PdfDocument.PageInfo.Builder(250, 400, 1).create();//meta data of pdf
-                      PdfDocument.Page mypage4 = myPdfDocument.startPage(myPageInfo4);
-                      //to write in pdf page 1
-                      Canvas canvas4 = mypage4.getCanvas();
-                      myPaint.setTextAlign(Paint.Align.CENTER);
-                      myPaint.setTextSize(12.0f);                 //so that it will be in middle
-                      canvas4.drawText("HR Enterprises", myPageInfo4.getPageWidth() / 2, 30, myPaint);
-
-                      myPaint.setTextSize(6.0f);
-                      //myPaint.setColor(Color.rgb(122,199,199));// myPaint.setColor(getResources().getColor(R.color.green)); or
-                      myPaint.setColor(ContextCompat.getColor(IndividualPersonDetailActivity.this, R.color.background));
-                      canvas4.drawText("Street No. 15,Bharat Nagar,Haryana", myPageInfo4.getPageWidth() / 2, 40, myPaint);
-
-                      myPaint.setTextAlign(Paint.Align.LEFT);
-                      myPaint.setTextSize(9.0f);
-                      myPaint.setColor(Color.rgb(122, 199, 199));//this is here because if in future upper color is changed then this link color will not change
-                      canvas4.drawText("Customer Information", 10, 70, myPaint);
-
-                      myPaint.setTextAlign(Paint.Align.LEFT);
-                      myPaint.setTextSize(8.0f);
-                      myPaint.setColor(Color.BLACK);
-
-                      String information4[] = new String[]{"Name", "Company Name", "Address", "Phone", "Email"};
-                      int startXPosition4 = 10;
-                      int endXPosition4 = myPageInfo.getPageWidth() - 10;
-                      int startYPosition4 = 100;
-
-                      for (int i = 0; i < 5; i++) {
-                          canvas4.drawText(information4[i], startXPosition, startYPosition4, myPaint);
-                          canvas4.drawLine(startXPosition4, startYPosition4 + 3, endXPosition4, startYPosition4 + 3, myPaint);
-                          startYPosition4 = startYPosition4 + 20;
-                      }
-                      canvas4.drawLine(80, 92, 80, 190, myPaint);
-
-                      myPaint.setStyle(Paint.Style.STROKE);
-                      myPaint.setStrokeWidth(2);
-                      canvas4.drawRect(10, 200, myPageInfo4.getPageWidth() - 10, 300, myPaint);
-                      canvas4.drawLine(85, 200, 85, 300, myPaint);
-                      canvas4.drawLine(163, 200, 163, 300, myPaint);
-                      myPaint.setStrokeWidth(0);
-                      myPaint.setStyle(Paint.Style.FILL);//Geometry and text drawn with this style will be filled, ignoring all stroke-related settings in the paint.
-
-                      canvas4.drawText("Photo", 35, 250, myPaint);
-                      canvas4.drawText("Photo", 110, 250, myPaint);
-                      canvas4.drawText("Photo", 190, 250, myPaint);
-
-                      canvas4.drawText("Note", 10, 320, myPaint);
-                      canvas4.drawLine(35, 325, myPageInfo4.getPageWidth() - 10, 325, myPaint);
-                      canvas4.drawLine(10, 345, myPageInfo4.getPageWidth() - 10, 345, myPaint);
-                      canvas4.drawLine(10, 365, myPageInfo4.getPageWidth() - 10, 365, myPaint);
-                      myPdfDocument.finishPage(mypage4);
-
-
-                      File folder = new File(getExternalFilesDir(null) + "/acBookPDF");
-                      if (!folder.exists()) {//of folder not exist then create folder
-                          folder.mkdir();//File createNewFile() method returns true if new file is created and false if file already exists.
-                          Toast.makeText(IndividualPersonDetailActivity.this, "Creating acBookPDF folder to store PDF", Toast.LENGTH_LONG).show();
-                      }
-
-                      File filees = new File(getExternalFilesDir(null) + "/acBookPDF/" +generateFileName(fromIntentPersonId) + ".pdf");//path of pdf where it is saved in device
-
-                      try {
-                          myPdfDocument.writeTo(new FileOutputStream(filees.getAbsolutePath()));//if FileOutputStream cannot find file then it will create automatically
-                      } catch (IOException e) {
-                          Toast.makeText(IndividualPersonDetailActivity.this, "CREATED PDF NOT COPIED TO DEVICE PDF FILE", Toast.LENGTH_LONG).show();
-                          e.printStackTrace();
-                          return false;
-                      }
-                      myPdfDocument.close();
-                      Toast.makeText(IndividualPersonDetailActivity.this, "created", Toast.LENGTH_SHORT).show();
-                      fileName = filees.getAbsolutePath();//fileName is global variable
-                  }catch (Exception i){
-                      Toast.makeText(IndividualPersonDetailActivity.this, "PDF GENERATION ERROR", Toast.LENGTH_LONG).show();
-                      i.printStackTrace();
-                      return false;
-                  }
+//                  try {
+//                      PdfDocument myPdfDocument = new PdfDocument();//pdf instance
+//                      Paint myPaint = new Paint();//it is responsible for text color
+//
+//                      PdfDocument.PageInfo myPageInfo = new PdfDocument.PageInfo.Builder(250, 400, 1).create();//meta data of pdf
+//                      PdfDocument.Page mypage = myPdfDocument.startPage(myPageInfo);
+//
+//                      //to write in pdf page 1
+//                      Canvas canvas = mypage.getCanvas();
+//                      myPaint.setTextAlign(Paint.Align.CENTER);//so that it will be in middle
+//                      myPaint.setTextSize(12.0f);
+//                      canvas.drawText("HR Enterprises", myPageInfo.getPageWidth() / 2, 30, myPaint);
+//                      myPaint.setTextSize(6.0f);
+//                      //myPaint.setColor(Color.rgb(122,199,199));// myPaint.setColor(getResources().getColor(R.color.green)); or
+//                      myPaint.setColor(ContextCompat.getColor(IndividualPersonDetailActivity.this, R.color.background));
+//                      canvas.drawText("Street No. 15,Bharat Nagar,Haryana", myPageInfo.getPageWidth() / 2, 40, myPaint);
+//
+//                      myPaint.setTextAlign(Paint.Align.LEFT);
+//                      myPaint.setTextSize(9.0f);
+//                      myPaint.setColor(Color.rgb(122, 199, 199));//this is here because if in future upper color is changed then this link color will not change
+//                      canvas.drawText("Customer Information", 10, 70, myPaint);
+//
+//                      myPaint.setTextAlign(Paint.Align.LEFT);
+//                      myPaint.setTextSize(8.0f);
+//                      myPaint.setColor(Color.BLACK);
+//
+//                      String information[] = new String[]{"Name", "Company Name", "Address", "Phone", "Email"};
+//                      int startXPosition = 10;
+//                      int endXPosition = myPageInfo.getPageWidth() - 10;
+//                      int startYPosition = 100;
+//
+//                      for (int i = 0; i < 5; i++) {
+//                          canvas.drawText(information[i], startXPosition, startYPosition, myPaint);
+//                          canvas.drawLine(startXPosition, startYPosition + 3, endXPosition, startYPosition + 3, myPaint);
+//                          startYPosition = startYPosition + 20;
+//                      }
+//                      canvas.drawLine(80, 92, 80, 190, myPaint);
+//
+//                      myPaint.setStyle(Paint.Style.STROKE);
+//                      myPaint.setStrokeWidth(2);
+//                      canvas.drawRect(10, 200, myPageInfo.getPageWidth() - 10, 300, myPaint);
+//                      canvas.drawLine(85, 200, 85, 300, myPaint);
+//                      canvas.drawLine(163, 200, 163, 300, myPaint);
+//                      myPaint.setStrokeWidth(0);
+//                      myPaint.setStyle(Paint.Style.FILL);//Geometry and text drawn with this style will be filled, ignoring all stroke-related settings in the paint.
+//
+//                      canvas.drawText("Photo", 35, 250, myPaint);
+//                      canvas.drawText("Photo", 110, 250, myPaint);
+//                      canvas.drawText("Photo", 190, 250, myPaint);
+//
+//                      canvas.drawText("Note", 10, 320, myPaint);
+//                      canvas.drawLine(35, 325, myPageInfo.getPageWidth() - 10, 325, myPaint);
+//                      canvas.drawLine(10, 345, myPageInfo.getPageWidth() - 10, 345, myPaint);
+//                      canvas.drawLine(10, 365, myPageInfo.getPageWidth() - 10, 365, myPaint);
+//                      myPdfDocument.finishPage(mypage);
+////----------------------------------------------------------------------------------------------------------------------//
+//                      File folder = new File(getExternalFilesDir(null) + "/acBookPDF");
+//                      if (!folder.exists()) {//of folder not exist then create folder
+//                          folder.mkdir();//File createNewFile() method returns true if new file is created and false if file already exists.
+//                          Toast.makeText(IndividualPersonDetailActivity.this, "Creating acBookPDF folder to store PDF", Toast.LENGTH_LONG).show();
+//                      }
+//
+//                      File filees = new File(getExternalFilesDir(null) + "/acBookPDF/" +generateFileName(fromIntentPersonId) + ".pdf");//path of pdf where it is saved in device
+//
+//                      try {
+//                          myPdfDocument.writeTo(new FileOutputStream(filees.getAbsolutePath()));//if FileOutputStream cannot find file then it will create automatically
+//                      } catch (IOException e) {
+//                          Toast.makeText(IndividualPersonDetailActivity.this, "CREATED PDF NOT COPIED TO DEVICE PDF FILE", Toast.LENGTH_LONG).show();
+//                          e.printStackTrace();
+//                          return false;
+//                      }
+//                      myPdfDocument.close();
+//                      Toast.makeText(IndividualPersonDetailActivity.this, "created", Toast.LENGTH_SHORT).show();
+//                      fileName = filees.getAbsolutePath();//fileName is global variable
+//                  }catch (Exception i){
+//                      Toast.makeText(IndividualPersonDetailActivity.this, "PDF GENERATION ERROR", Toast.LENGTH_LONG).show();
+//                      i.printStackTrace();
+//                      return false;
+//                  }
+                    }catch (Exception ex){
+                        Toast.makeText(IndividualPersonDetailActivity.this, "PDF GENERATION ERROR", Toast.LENGTH_LONG).show();
+                        ex.printStackTrace();
+                        return false;
+                    }
                     return true;
                 }
-                private String generateFileName(String ID) {
-                    final Calendar current=Calendar.getInstance();//to get current date and time
-                    Date d=Calendar.getInstance().getTime();//To get time
-                    SimpleDateFormat sdf=new SimpleDateFormat("hhmma");//a stands for is AM or PM
-                    return "id"+ID+"date"+current.get(Calendar.DAY_OF_MONTH)+"_"+(current.get(Calendar.MONTH)+1)+"_"+current.get(Calendar.YEAR)+"at"+sdf.format(d);
-                }
+
                 private void displFinalResult(String title,String message) {
                     AlertDialog.Builder showDataFromDataBase=new AlertDialog.Builder(IndividualPersonDetailActivity.this);
                     showDataFromDataBase.setCancelable(false);
@@ -1595,6 +1577,37 @@ public class IndividualPersonDetailActivity extends AppCompatActivity {
             arr=new int[7];//so that when again enter data fresh array will be created
              insertDataToRecyclerView_ALertDialogBox(get_indicator(fromIntentPersonId));
         });
+    }
+    public String generateFileName(String id) {
+        try(PersonRecordDatabase db=new PersonRecordDatabase(getApplicationContext())){
+            StringBuilder fileName = new StringBuilder();
+            fileName.append("id"+id);
+            Cursor cursor = db.getData("SELECT PDFSEQUENCE FROM " + db.TABLE_NAME3 + " WHERE ID= '" + id + "'");
+            cursor.moveToFirst();//means only one row is returned
+            fileName.append("invoice"+(cursor.getInt(0)+1)); /**pdf sequence in db is updated when pdf is generated successfully so for now increasing manually so that if pdf generation is failed sequence should not be updated in db*/
+
+            cursor =db.getData("SELECT BANKACCOUNT,AADHARCARD FROM " + db.TABLE_NAME1 + " WHERE ID= '" + id + "'");
+            cursor.moveToFirst();
+            if(cursor.getString(0).length()>4) {
+                fileName.append("ac" + cursor.getString(0).substring(cursor.getString(0).length() - 4));
+            }else{
+                fileName.append("acnull");
+            }
+
+            if(cursor.getString(1).length()>5) {
+                fileName.append("aadhaar" + cursor.getString(1).substring(cursor.getString(1).length() - 5));
+            }
+            else{
+                fileName.append("aadhaarnull");
+            }
+
+            cursor.close();
+            return fileName.toString();
+        }catch (Exception ex){
+            ex.printStackTrace();
+            Toast.makeText(IndividualPersonDetailActivity.this, "error occurred pdf name not generated", Toast.LENGTH_LONG).show();
+            return "errorOccurredInvoiceNameNull";
+        }
     }
     private void indicator1234CalculateAndUpdate(Cursor sumCursor, int rate1IntoSump1, int rate2IntoSump2, int rate3IntoSump3, int rate4IntoSump4) {
         boolean bool;

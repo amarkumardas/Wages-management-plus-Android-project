@@ -181,9 +181,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:weightSum="16">
+            android:weightSum="4">
             <TextView
-                android:layout_weight="4"
+                android:layout_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="EDIT"
@@ -192,12 +192,12 @@
                 android:background="@drawable/dark_blue_buttonbg"
                 android:textSize="14dp"
                 android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
+                android:layout_marginRight="5dp"
                 android:textAlignment="center"
                 android:id="@+id/edit_tv"/>
 
             <TextView
-                android:layout_weight="4"
+                android:layout_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="INFO"
@@ -205,12 +205,12 @@
                 android:textColor="#FFFFFF"
                 android:background="@drawable/dark_blue_buttonbg"
                 android:textSize="14dp"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
                 android:textAlignment="center"
                 android:id="@+id/info_tv"/>
             <TextView
-                android:layout_weight="4"
+                android:layout_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="PDF"
@@ -218,17 +218,17 @@
                 android:textColor="#FFFFFF"
                 android:background="@drawable/dark_blue_buttonbg"
                 android:textSize="14dp"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
                 android:textAlignment="center"
                 android:id="@+id/pdf_tv"/>
 
             <TextView
                 android:id="@+id/share_to_whatsapp_tv"
-                android:layout_weight="4"
+                android:layout_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="15dp"
+                android:layout_marginLeft="5dp"
                 android:layout_marginRight="11dp"
                 android:background="@drawable/dark_blue_buttonbg"
                 android:textAlignment="center"

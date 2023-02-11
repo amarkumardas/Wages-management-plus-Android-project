@@ -30,18 +30,19 @@ import amar.das.acbook.activity.FindActivity;
 import amar.das.acbook.activity.InsertDataActivity;
 import amar.das.acbook.R;
 import amar.das.acbook.adapters.FragmentAdapter;
-import amar.das.acbook.databinding.FragmentSearchBinding;
+import amar.das.acbook.databinding.FragmentSearchTabBinding;
 
 public class SearchFragment extends Fragment  {
-    private FragmentSearchBinding binding ;
+    private FragmentSearchTabBinding binding ;
     TextView searchBox;
+   //public static Integer currentTabPosition=0;
     private String[] titles=new String[]{"M","L","INACTIVE"};//to set on pager
     //important
     //to store image in db we have to convert Bitmap to bytearray
     //to set in imageview we have to get from db as Blob known as large byte and convert it to Bitmap then set in imageview
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        binding = FragmentSearchBinding.inflate(inflater, container, false);
+        binding = FragmentSearchTabBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         //Taking multiple permission at once by user https://www.youtube.com/watch?v=y0gX4FD3nxk or  https://www.youtube.com/watch?v=y0gX4FD3nxk
@@ -58,6 +59,22 @@ public class SearchFragment extends Fragment  {
         //setting adapter to viewpager
         binding.viewPager2.setAdapter(new FragmentAdapter(getActivity()));
         new TabLayoutMediator(binding.tabLayout, binding.viewPager2,((tab,position)-> tab.setText(titles[position]))).attach();//set text to page according to position
+//        binding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {//when tab select or swipe it will perform operation so we are getting position
+//            @Override
+//            public void onTabSelected(TabLayout.Tab tab) {
+//
+//            }
+//
+//            @Override
+//            public void onTabUnselected(TabLayout.Tab tab) {
+//
+//            }
+//
+//            @Override
+//            public void onTabReselected(TabLayout.Tab tab) {
+//
+//            }
+//        });
 
         searchBox.setOnClickListener(view -> {
              Intent intent=new Intent(getContext(),FindActivity.class);

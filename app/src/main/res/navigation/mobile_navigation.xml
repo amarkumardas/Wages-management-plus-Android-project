@@ -15,7 +15,7 @@
         android:id="@+id/navigation_dashboard"
         android:name="amar.das.acbook.ui.home.HomeFragment"
         android:label="@string/title_houseowner"
-        tools:layout="@layout/fragment_search" />
+        tools:layout="@layout/fragment_search_tab" />
 
     <fragment
         android:id="@+id/navigation_notifications"
